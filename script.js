@@ -45,22 +45,25 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = true;
 
             fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-                .then(response => {
-                    msg.innerHTML = "Message sent successfully!";
-                    msg.style.color = "#4ade80"; // Success color
-                    setTimeout(() => {
-                        msg.innerHTML = "";
-                    }, 5000);
-                    form.reset();
-                    submitBtn.innerText = originalBtnText;
-                    submitBtn.disabled = false;
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === 'success') {
+                        msg.innerHTML = "Message sent successfully!";
+                        msg.style.color = "#4ade80"; 
+                        form.reset();
+                    } else {
+                        throw new Error(data.error || 'Server error');
+                    }
                 })
                 .catch(error => {
                     console.error('Error!', error.message);
-                    msg.innerHTML = "Something went wrong. Please try again.";
-                    msg.style.color = "#f87171"; // Error color
+                    msg.innerHTML = "Something went wrong. Check if your Script is correctly deployed.";
+                    msg.style.color = "#f87171";
+                })
+                .finally(() => {
                     submitBtn.innerText = originalBtnText;
                     submitBtn.disabled = false;
+                    setTimeout(() => { msg.innerHTML = ""; }, 5000);
                 });
         });
     }
