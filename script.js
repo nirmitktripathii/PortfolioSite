@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
     // Contact Form Submission to Google Sheet
-    const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL_HERE'; // Replace with your actual script URL
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyMcs6xKTii0cE87NLLcQh6ciwVF3b6n2AuYxpFPO5aqrqY_VH49J6yLVP7Mlbnu-0k/exec'; 
     const form = document.forms['submit-to-google-sheet'];
     const msg = document.getElementById('form-msg');
 
