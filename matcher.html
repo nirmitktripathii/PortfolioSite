@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Matcher - Nirmit K. Tripathii</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root { --accent: #6366f1; --bg: #0f172a; --card: rgba(30, 41, 59, 0.7); }
+        body { background: var(--bg); color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .container { max-width: 900px; margin: 60px auto; padding: 40px; background: var(--card); border-radius: 24px; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        
+        .upload-section { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px; }
+        .drop-zone { border: 2px dashed rgba(255,255,255,0.2); padding: 40px 20px; text-align: center; border-radius: 20px; cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.03); }
+        .drop-zone:hover { border-color: var(--accent); background: rgba(99, 102, 241, 0.05); }
+        .drop-zone.active { border-color: var(--accent); background: rgba(99, 102, 241, 0.1); }
+        .drop-zone i { font-size: 2.5rem; margin-bottom: 15px; color: var(--accent); }
+        .drop-zone p { font-size: 0.9rem; color: rgba(255,255,255,0.6); }
+        .file-name { margin-top: 10px; font-weight: 600; color: var(--accent); display: none; }
+        
+        .btn-match { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--accent); color: #fff; cursor: pointer; font-weight: 700; font-size: 1.1rem; transition: 0.3s; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4); }
+        .btn-match:hover { transform: translateY(-2px); box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.4); }
+        .btn-match:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        
+        .result-layout { display: grid; grid-template-columns: 250px 1fr; gap: 40px; margin-top: 50px; display: none; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .score-display { text-align: center; }
+        .score-circle { width: 180px; height: 180px; border-radius: 50%; border: 10px solid #1e293b; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto; background: radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%); }
+        .score-value { font-size: 3rem; font-weight: 800; color: var(--accent); }
+        .score-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.5); }
+        
+        .analysis-section h3 { margin-bottom: 20px; font-size: 1.4rem; }
+        .skill-group { margin-bottom: 25px; }
+        .skill-label { font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-bottom: 12px; text-transform: uppercase; display: flex; justify-content: space-between; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+        .tag { padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; }
+        .tag.match { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.2); }
+        .tag.missing { background: rgba(244, 63, 94, 0.1); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.2); }
+        
+        .back-btn { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 30px; color: rgba(255,255,255,0.6); text-decoration: none; transition: 0.3s; }
+        .back-btn:hover { color: var(--accent); }
+        
+        .loading-shimmer { height: 20px; background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← Back to Portfolio</a>
+        <div class="header" style="margin-bottom: 40px;">
+            <h1 style="font-size: 2.2rem; margin-bottom: 10px;">AI Resume Matcher</h1>
+            <p style="color: rgba(255,255,255,0.6);">Powered by SBERT (all-MiniLM-L6-v2) for deep semantic matching.</p>
+        </div>
+        
+        <div class="upload-section">
+            <div class="drop-zone" id="resumeZone">
+                <i class="fas fa-file-pdf"></i>
+                <p>Upload Resume (PDF)</p>
+                <div class="file-name" id="resumeName">None</div>
+                <input type="file" id="resumeInput" hidden accept=".pdf">
+            </div>
+            <div class="drop-zone" id="jdZone">
+                <i class="fas fa-file-alt"></i>
+                <p>Upload Job Description (PDF)</p>
+                <div class="file-name" id="jdName">None</div>
+                <input type="file" id="jdInput" hidden accept=".pdf">
+            </div>
+        </div>
+        
+        <button class="btn-match" id="matchBtn" onclick="runMatch()">Analyze Compatibility</button>
+        
+        <div class="result-layout" id="resultCard">
+            <div class="score-display">
+                <div class="score-circle" id="scoreCircle">
+                    <div class="score-value" id="scoreValue">--%</div>
+                    <div class="score-label">Match</div>
+                </div>
+                <p id="scoreMessage" style="margin-top: 20px; font-size: 0.9rem; color: rgba(255,255,255,0.6);"></p>
+            </div>
+            
+            <div class="analysis-section">
+                <h3>Skill Extraction Analysis</h3>
+                
+                <div class="skill-group">
+                    <div class="skill-label">Matching Skills <span id="matchCount">0</span></div>
+                    <div class="skill-tags" id="commonSkills">
+                        <!-- Tags will be injected here -->
+                    </div>
+                </div>
+                
+                <div class="skill-group">
+                    <div class="skill-label">Missing Skills <span id="missingCount" style="color: #fb7185;">0</span></div>
+                    <div class="skill-tags" id="missingSkills">
+                        <!-- Tags will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://nirmitk-resume-matcher-api.hf.space/match';
+
+        // Handle file inputs
+        const resumeInput = document.getElementById('resumeInput');
+        const jdInput = document.getElementById('jdInput');
+        
+        document.getElementById('resumeZone').onclick = () => resumeInput.click();
+        document.getElementById('jdZone').onclick = () => jdInput.click();
+
+        resumeInput.onchange = (e) => updateFileDisplay(e, 'resumeName');
+        jdInput.onchange = (e) => updateFileDisplay(e, 'jdName');
+
+        function updateFileDisplay(e, elementId) {
+            const name = e.target.files[0]?.name || "None";
+            const el = document.getElementById(elementId);
+            el.innerText = name;
+            el.style.display = 'block';
+        }
+
+        async function runMatch() {
+            const resumeFile = resumeInput.files[0];
+            const jdFile = jdInput.files[0];
+            const matchBtn = document.getElementById('matchBtn');
+            const resultCard = document.getElementById('resultCard');
+
+            if (!resumeFile || !jdFile) {
+                alert("Please upload both Resume and Job Description.");
+                return;
+            }
+
+            try {
+                matchBtn.disabled = true;
+                matchBtn.innerText = "Processing Semantic Embeddings...";
+                resultCard.style.display = 'none';
+
+                const formData = new FormData();
+                formData.append('resume', resumeFile);
+                formData.append('jd', jdFile);
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || `Server Error: ${response.status}`);
+                }
+
+                if (data.status === 'success') {
+                    resultCard.style.display = 'grid';
+                    const score = Math.round(data.match_score * 100);
+                    document.getElementById('scoreValue').innerText = score + "%";
+                    
+                    // Colors based on score
+                    const circle = document.getElementById('scoreCircle');
+                    if(score > 75) circle.style.borderColor = "#22c55e";
+                    else if(score > 50) circle.style.borderColor = "#eab308";
+                    else circle.style.borderColor = "#f43f5e";
+
+                    // Skills injection
+                    const commonTags = document.getElementById('commonSkills');
+                    commonTags.innerHTML = data.analysis.common_skills.map(s => `<span class="tag match">${s}</span>`).join('') || '<span style="opacity:0.5">No common skills detected</span>';
+                    document.getElementById('matchCount').innerText = data.analysis.common_skills.length;
+
+                    const missingTags = document.getElementById('missingSkills');
+                    missingTags.innerHTML = data.analysis.missing_skills.map(s => `<span class="tag missing">${s}</span>`).join('') || '<span style="opacity:0.5">None detected</span>';
+                    document.getElementById('missingCount').innerText = data.analysis.missing_skills.length;
+
+                    document.getElementById('scoreMessage').innerText = score > 70 ? "Excellent alignment with this role's requirements." : "Consider adding more relevant keywords to your resume.";
+
+                } else {
+                    alert(data.error || "Processing failed.");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("API Error. Make sure the Hugging Face Space is active.");
+            } finally {
+                matchBtn.disabled = false;
+                matchBtn.innerText = "Analyze Compatibility";
+            }
+        }
+    </script>
+</body>
+</html>
