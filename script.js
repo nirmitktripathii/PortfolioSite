@@ -47,8 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
             fetch(scriptURL, { method: 'POST', body: new FormData(form) })
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Server Response:', data); // Diagnostic log
                     if (data.result === 'success') {
-                        msg.innerHTML = "Message sent successfully!";
+                        msg.innerHTML = `Message sent! (Recorded in ${data.sheetUsed || 'Sheet'})`;
                         msg.style.color = "#4ade80"; 
                         form.reset();
                     } else {
@@ -57,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch(error => {
                     console.error('Error!', error.message);
-                    msg.innerHTML = "Something went wrong. Check if your Script is correctly deployed.";
+                    msg.innerHTML = "Something went wrong. Check the console for details.";
                     msg.style.color = "#f87171";
                 })
                 .finally(() => {
@@ -65,6 +66,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     submitBtn.disabled = false;
                     setTimeout(() => { msg.innerHTML = ""; }, 5000);
                 });
+        });
+    }
+    // Theme Toggle Logic
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    const themeIcon = themeToggle.querySelector('i');
+
+    // Load saved theme or use system preference
+    const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    
+    const applyTheme = (theme) => {
+        html.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        themeIcon.className = theme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+    };
+
+    applyTheme(savedTheme);
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            applyTheme(newTheme);
         });
     }
 });
