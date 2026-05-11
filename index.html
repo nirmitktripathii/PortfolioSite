@@ -47,14 +47,15 @@
     <div class="hero-cta">
       <a href="#projects" class="btn-primary"><i class="fas fa-code"></i> View Projects</a>
       <a href="#contact" class="btn-outline"><i class="fas fa-paper-plane"></i> Get in Touch</a>
+      <a href="images/Nirmitk_Tripathii_Resume_2026.pdf" class="btn-outline" download><i class="fas fa-file-download"></i> Download CV</a>
     </div>
     <div class="hero-stats">
-      <div><div class="stat-num">3+</div><div class="stat-label">Years Experience</div></div>
-      <div><div class="stat-num">10+</div><div class="stat-label">AI Projects Shipped</div></div>
-      <div>
-  <div class="stat-num">SoccerNet</div>
-  <div class="stat-label">2026 Challenge</div>
-</div>
+      <div class="stat-item"><div class="stat-num">3+</div><div class="stat-label">Years Experience</div></div>
+      <div class="stat-item"><div class="stat-num">10+</div><div class="stat-label">AI Projects Shipped</div></div>
+      <div class="stat-item"><div class="stat-num">22</div><div class="stat-label">Indic Languages</div></div>
+      <div class="stat-item"><div class="stat-num">SoccerNet</div><div class="stat-label">2026 Challenge</div></div>
+    </div>
+  </div>
 </section>
 
 <section id="about">
@@ -69,7 +70,7 @@
     </div>
     <div class="about-body">
       <p>I'm a certified AI/ML Engineer with a M.Tech in Modeling &amp; Simulation and 3+ years of industry experience building intelligent systems across NLP, LLMs, multimodal ML, and agentic AI.</p>
-      <p>My work spans production deployments at Chetu India and BLU PARROT — including an agentic event-commerce chatbot, a Video-to-SOP multimodal pipeline, legal AI for Indian law, football action anticipation research and model training, and a thesis on predicting shot probability.</p>
+      <p>My work spans production deployments at Chetu India and BLU PARROT — including an agentic event-commerce chatbot, a Video-to-SOP multimodal pipeline, legal AI for Indian law, sports action anticipation research, and a participant in the SoccerNet 2026 Challenge.</p>
       <p>Currently at <strong style="color:var(--accent)">Chetu India</strong> as AI/ML Software Engineer.</p>
       <div class="tabs">
         <button class="tab-btn active" onclick="openTab(event,'tab-skills')">Skills</button>
@@ -114,7 +115,7 @@
     <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-brain"></i></div><h3>Deep Learning &amp; Vision</h3><p>CNNs, Transformers, VideoRAG, ImageBind multimodal embeddings, OpenCV, FUTR anticipation models, T-DEED temporal spotting.</p></div>
     <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-language"></i></div><h3>NLP &amp; Speech</h3><p>BERT variants (InLegalBERT, XLM-RoBERTa, IndicBERT), FasterWhisper ASR, multilingual NMT, text classification, summarization.</p></div>
     <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-database"></i></div><h3>Data &amp; MLOps</h3><p>FAISS, HNSWLib, Neo4j, NetworkX, HuggingFace, W&amp;B, Python scraping, Azure OCR, data engineering pipelines.</p></div>
-    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-futbol"></i></div><h3>Sports AI</h3><p>Expected Goals (xG) modelling (89.77% accuracy), FAANTRA ball action anticipation, pass network analysis.</p></div>
+    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-futbol"></i></div><h3>Sports AI</h3><p>Expected Goals (xG) modelling (89.77% accuracy), FAANTRA ball action anticipation, SoccerNet 2026 Challenge participant, pass network analysis.</p></div>
     <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-scale-balanced"></i></div><h3>Legal AI</h3><p>LegalGPT: case summarization, 150+ contract types classification, compliance AI, Opennyai, InCaseLawBERT fine-tuning.</p></div>
   </div>
 </section>
@@ -133,6 +134,7 @@
       <div class="tl-items">
         <div class="tl-item">Built DIGEST &mdash; agentic LangGraph chatbot for event discovery &amp; ticket commerce with full Automatiq B2B transaction lifecycle.</div>
         <div class="tl-item">Architected SOP CHATBOT &mdash; multimodal VideoRAG pipeline converting screen-recorded workflows to structured SOPs via ImageBind, Gemini &amp; LangSmith.</div>
+        <div class="tl-item">Built IKS Oracle (Gyanstrot) &mdash; RAG-powered AI system for Indian Knowledge Systems, enabling semantic querying of Vedic &amp; ancient Indian texts.</div>
       </div>
     </div>
     <div class="timeline-item reveal">
@@ -169,6 +171,20 @@
   </div>
   <div class="projects-grid">
     <div class="project-card reveal">
+      <div class="project-emoji" style="background:linear-gradient(135deg,#0a0a1a,#120a20)">
+        <img src="images/iks_oracle.png" alt="IKS Oracle Gyanstrot" style="width:100%;height:100%;object-fit:cover;opacity:0.7">
+      </div>
+      <div class="project-body">
+        <div class="project-tags"><span class="tag">RAG</span><span class="tag">LangGraph</span><span class="tag">Sanskrit NLP</span><span class="tag">IKS</span></div>
+        <h3>IKS Oracle — Gyanstrot</h3>
+        <p>AI-powered Indian Knowledge System oracle enabling semantic querying of Vedic texts, Upanishads, and ancient Indian manuscripts using multilingual RAG &amp; graph-based retrieval.</p>
+        <div class="project-links">
+          <a href="https://github.com/nirmitktripathii" target="_blank">View Repo →</a>
+          <a href="https://huggingface.co/spaces/nirmitk" class="btn-demo" target="_blank"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+        </div>
+      </div>
+    </div>
+    <div class="project-card reveal" style="transition-delay:0.1s">
       <div class="project-emoji" style="background:linear-gradient(135deg,#0a2012,#15200a)">
         <img src="images/plant_disease.png" alt="Plant Disease Classification" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
       </div>
@@ -178,53 +194,53 @@
         <p>CNN-based mobile diagnostic tool for identifying crop diseases in real-time. Achieved 98% accuracy on the PlantVillage dataset.</p>
         <div class="project-links">
           <a href="https://github.com/nirmitktripathii/plant_disease_classification" target="_blank">View Repo →</a>
-          <a href="plant_disease.html" class="btn-demo"><i class="fas fa-external-link-alt"></i> Live Demo</a>
-        </div>
-      </div>
-    </div>
-    <div class="project-card reveal" style="transition-delay:0.1s">
-      <div class="project-emoji" style="background:linear-gradient(135deg,#0a1520,#0a0a20)">
-        <img src="images/xg_model.png" alt="Football Analytics xG" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
-      </div>
-      <div class="project-body">
-        <div class="project-tags"><span class="tag">ML</span><span class="tag">XGBoost</span><span class="tag">Sports Analytics</span></div>
-        <h3>Football Analytics — xG Model</h3>
-        <p>Advanced Expected Goals (xG) model trained on 100k+ shots to evaluate scoring probability based on spatial and temporal features.</p>
-        <div class="project-links">
-          <a href="https://github.com/nirmitktripathii/Modeling-Shot-Quality-Using-Expected-Goals-Metric" target="_blank">View Repo →</a>
-          <a href="shot_predict.html" class="btn-demo"><i class="fas fa-external-link-alt"></i> Try xG Generator </a>
+          <a href="plant_disease.html" target="_blank" class="btn-demo"><i class="fas fa-external-link-alt"></i> Live Demo</a>
         </div>
       </div>
     </div>
     <div class="project-card reveal" style="transition-delay:0.2s">
-      <div class="project-emoji" style="background:linear-gradient(135deg,#20150a,#200a0a)">
-        <img src="images/cv_jd_matcher.png" alt="CV-JD Matcher" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
+      <div class="project-emoji" style="background:linear-gradient(135deg,#0a1520,#0a0a20)">
+        <img src="images/xg_model.png" alt="Football Analytics xG" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
       </div>
       <div class="project-body">
-        <div class="project-tags"><span class="tag">NLP</span><span class="tag">Transformers</span><span class="tag">BERT</span></div>
-        <h3>CV-JD Matcher</h3>
-        <p>Semantic matching engine using BERT embeddings to rank candidate resumes against job descriptions with high precision.</p>
+        <div class="project-tags"><span class="tag">ML</span><span class="tag">XGBoost</span><span class="tag">Heatmap</span></div>
+        <h3>Football Analytics — xG Model</h3>
+        <p>Interactive Expected Goals (xG) simulator with pitch-mapping and heatmap visualization. Evaluates scoring probability in real-time.</p>
         <div class="project-links">
-          <a href="https://github.com/nirmitktripathii/PortfolioSite" target="_blank">View Repo →</a>
-          <a href="matcher.html" class="btn-demo"><i class="fas fa-search-plus"></i> Launch Matcher</a>
+          <a href="https://github.com/nirmitktripathii/Modeling-Shot-Quality-Using-Expected-Goals-Metric" target="_blank">View Repo →</a>
+          <a href="shot_predict.html" target="_blank" class="btn-demo"><i class="fas fa-bullseye"></i> Try Simulator</a>
         </div>
       </div>
     </div>
     <div class="project-card reveal" style="transition-delay:0.3s">
-      <div class="project-emoji" style="background:linear-gradient(135deg,#15200a,#0a201a)">
-        <img src="images/weather_app.png" alt="Weather Dashboard" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
+      <div class="project-emoji" style="background:linear-gradient(135deg,#20150a,#200a0a)">
+        <img src="images/cv_jd_matcher.png" alt="CV-JD Matcher" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
       </div>
       <div class="project-body">
-        <div class="project-tags"><span class="tag">Frontend</span><span class="tag">API Integration</span><span class="tag">JS</span></div>
-        <h3>Weather Dashboard</h3>
-        <p>Dynamic weather application featuring real-time data fetching, location-based services, and interactive forecasting charts.</p>
+        <div class="project-tags"><span class="tag">NLP</span><span class="tag">SBERT</span><span class="tag">Skill Gap</span></div>
+        <h3>AI Resume Matcher</h3>
+        <p>Advanced semantic matching engine using Sentence-Transformers. Features skill extraction and gap analysis for job applications.</p>
         <div class="project-links">
-          <a href="https://github.com/nirmitktripathii/nirmitktripathii.github.io" target="_blank">View Repo →</a>
-          <a href="weather.html" class="btn-demo"><i class="fas fa-cloud-sun"></i> Open Dashboard</a>
+          <a href="https://github.com/nirmitktripathii/PortfolioSite" target="_blank">View Repo →</a>
+          <a href="matcher.html" target="_blank" class="btn-demo"><i class="fas fa-microchip"></i> Analyze Resume</a>
         </div>
       </div>
     </div>
     <div class="project-card reveal" style="transition-delay:0.4s">
+      <div class="project-emoji" style="background:linear-gradient(135deg,#0a2020,#0a200a)">
+        <img src="images/weather_app.png" alt="Weather Dashboard" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
+      </div>
+      <div class="project-body">
+        <div class="project-tags"><span class="tag">API</span><span class="tag">Proxy</span><span class="tag">Throttled</span></div>
+        <h3>Global Weather Dashboard</h3>
+        <p>Real-time weather tracking with a secure proxy layer. Implements global rate limiting and intelligent caching to manage API quotas.</p>
+        <div class="project-links">
+          <a href="https://github.com/nirmitktripathii/PortfolioSite" target="_blank">View Repo →</a>
+          <a href="weather.html" target="_blank" class="btn-demo"><i class="fas fa-cloud-sun"></i> Check Weather</a>
+        </div>
+      </div>
+    </div>
+    <div class="project-card reveal" style="transition-delay:0.5s">
       <div class="project-emoji" style="background:linear-gradient(135deg,#0a201a,#0a1a20)">
         <img src="images/football_analytics.png" alt="VAEP Football Analysis" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
       </div>
@@ -259,6 +275,7 @@
       <div class="social-row">
         <a href="https://www.linkedin.com/in/nirmitk-tripathii-553a92158/" class="social-btn" target="_blank"><i class="fab fa-linkedin-in"></i></a>
         <a href="https://github.com/nirmitktripathii" class="social-btn" target="_blank"><i class="fab fa-github"></i></a>
+        <a href="images/Nirmitk_Tripathii_Resume_2026.pdf" class="social-btn" download title="Download Resume"><i class="fas fa-file-pdf"></i></a>
       </div>
     </div>
     <form class="contact-form" name="submit-to-google-sheet">
