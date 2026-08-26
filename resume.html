@@ -14,7 +14,7 @@
   *{margin:0;padding:0;box-sizing:border-box}
   html{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   body{ font-family:'DM Sans',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif; color:var(--ink); background:#fff; font-size:10.2px; line-height:1.42; }
-  .page{ width:210mm; min-height:297mm; margin:0 auto; background:#fff; }
+  .page{ width:210mm; min-height:294mm; margin:0 auto; background:#fff; }
   .mono{ font-family:'Space Mono',ui-monospace,monospace; }
 
   /* Header */
@@ -29,7 +29,7 @@
   /* Body grid */
   .grid{ display:grid; grid-template-columns:63mm 1fr; }
   aside{ background:var(--sidebg); padding:16px 18px 24px; border-right:1px solid var(--line); }
-  main{ padding:16px 22px 24px; }
+  main{ padding:16px 22px 6px; }
 
   h2{ font-family:'Space Mono',monospace; font-size:9.4px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin:0 0 8px; padding-bottom:4px; border-bottom:1px solid var(--line); }
   aside .sec + .sec{ margin-top:16px; }
@@ -55,13 +55,13 @@
   .job-org{ color:var(--accent); font-weight:500; }
   .job-date{ color:var(--muted); font-size:8.8px; white-space:nowrap; }
   ul.pts{ list-style:none; margin-top:4px; }
-  ul.pts li{ position:relative; padding-left:11px; margin:2.5px 0; color:var(--sub); line-height:1.45; }
+  ul.pts li{ position:relative; padding-left:11px; margin:2px 0; color:var(--sub); line-height:1.45; }
   ul.pts li::before{ content:''; position:absolute; left:0; top:6px; width:4px; height:4px; border-radius:50%; background:var(--accent); }
   ul.pts li b{ color:var(--ink); }
   .metric{ color:var(--accent2); font-weight:700; }
 
   /* Projects */
-  .proj{ margin-bottom:8px; }
+  .proj{ margin-bottom:6px; }
   .proj .p-t{ font-weight:700; font-size:10px; }
   .proj .p-t .tech{ color:var(--muted); font-weight:400; font-size:8.8px; }
   .proj .p-d{ color:var(--sub); margin-top:1px; }
@@ -116,7 +116,7 @@
 
       <div class="sec">
         <h2>Writing</h2>
-        <div class="kv"><div class="v">10 engineering deep-dives — dubbing fine-tuning, multi-agent MCP infrastructure, SoccerNet anticipation, civic-tech systems &amp; agri-policy research. On the portfolio.</div></div>
+        <div class="kv"><div class="v">11 engineering deep-dives — dubbing fine-tuning, multi-agent MCP infrastructure, resilient zero-cost video generation, SoccerNet anticipation, civic-tech systems &amp; agri-policy research. On the portfolio.</div></div>
       </div>
     </aside>
 
@@ -165,6 +165,7 @@
         <div class="proj"><div class="p-t">FAANTRA — SoccerNet 2026 Ball Action Anticipation <span class="tech">· PyTorch · FUTR · T-DEED · RegNetY-008</span></div><div class="p-d">Predicts ball actions seconds ahead from broadcast video with decoupled what/when heads. Official challenge-server <span class="metric">mAP_Average 17.69</span> (mAP@∞ 23.59, mAP@5 22.47) — the ∞-vs-1 gap shows the model reads <em>what</em> far better than <em>when</em>.</div></div>
         <div class="proj"><div class="p-t">India Aaspaas — Civic Reporting Platform <span class="tech">· Node/Express · PostgreSQL · React · Cloudflare R2</span></div><div class="p-d">Production map-based civic-issue platform with server-rendered social share cards, a two-tier trust model, and a hardened upload path — 67 tests against a real Postgres engine, ~$3/month to run.</div></div>
         <div class="proj"><div class="p-t">Podcast Shorts Factory <span class="tech">· Multi-agent · Python · open source (MIT)</span></div><div class="p-d">Ten cooperating AI agents that turn long podcasts into scheduled short-form videos — provider-agnostic LLM layer with automatic fallback, a learning feedback loop, and a QA gate; runs unattended on free providers.</div></div>
+        <div class="proj"><div class="p-t">AI Video Style Cloner <span class="tech">· Streamlit · Multi-provider LLM failover · Edge-TTS · MoviePy</span></div><div class="p-d">Paste a YouTube channel URL → it reverse-engineers the house style, writes an original script in that voice, then narrates, illustrates &amp; compiles a finished MP4 for <span class="metric">$0</span>. A three-tier LLM failover, self-healing JSON validators, and a zero-network procedural fallback guarantee output even when every API is down.</div></div>
         <div class="proj"><div class="p-t">Football Analytics — VAEP &amp; Expected Goals <span class="tech">· RF · SVR · Streamlit</span></div><div class="p-d">VAEP action-valuation dashboard across Top-5 leagues &amp; World Cup 2018; published xG thesis (RF Classifier, 89.77% / 90.55% post-HPO).</div></div>
       </div>
     </main>

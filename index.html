@@ -14,11 +14,11 @@
   <img src="images/logo.png" class="logo-img" alt="Logo"/>
   <ul class="nav-links">
     <li><a href="#hero">Home</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#writing">Writing</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#skills">Skills</a></li>
     <li><a href="#experience">Experience</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#writing">Writing</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
   <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme">
@@ -28,11 +28,11 @@
 </nav>
 <div class="mobile-menu" id="mobileMenu">
   <a href="#hero" onclick="toggleMenu()">Home</a>
+  <a href="#projects" onclick="toggleMenu()">Projects</a>
+  <a href="#writing" onclick="toggleMenu()">Writing</a>
   <a href="#about" onclick="toggleMenu()">About</a>
   <a href="#skills" onclick="toggleMenu()">Skills</a>
   <a href="#experience" onclick="toggleMenu()">Experience</a>
-  <a href="#projects" onclick="toggleMenu()">Projects</a>
-  <a href="#writing" onclick="toggleMenu()">Writing</a>
   <a href="#contact" onclick="toggleMenu()">Contact</a>
 </div>
 
@@ -53,114 +53,9 @@
     </div>
     <div class="hero-stats">
       <div class="stat-item"><div class="stat-num">3+</div><div class="stat-label">Years Experience</div></div>
-      <div class="stat-item"><div class="stat-num">12+</div><div class="stat-label">AI Projects Shipped</div></div>
+      <div class="stat-item"><div class="stat-num">13+</div><div class="stat-label">AI Projects Shipped</div></div>
       <div class="stat-item"><div class="stat-num">22</div><div class="stat-label">Indic Languages</div></div>
-      <div class="stat-item"><div class="stat-num">10</div><div class="stat-label">Deep-Dive Write-ups</div></div>
-    </div>
-  </div>
-</section>
-
-<section id="about">
-  <div class="reveal">
-    <div class="section-tag">Who I am</div>
-    <h2 class="section-title">About Me</h2>
-  </div>
-  <div class="about-grid reveal">
-    <div class="about-img-wrap">
-      <img src="images/user.png" class="about-img" alt="Nirmit K. Tripathii"/>
-      <div class="about-img-frame"></div>
-    </div>
-    <div class="about-body">
-      <p>I'm a certified AI/ML Engineer with a M.Tech in Modeling &amp; Simulation and 3+ years of industry experience building intelligent systems across NLP, LLMs, multimodal ML, and agentic AI.</p>
-      <p>My work spans production deployments at Chetu India and BLU PARROT — including an agentic event-commerce chatbot, a Video-to-SOP multimodal pipeline, legal AI for Indian law, sports action anticipation research, and a participant in the SoccerNet 2026 Challenge.</p>
-      <p>Most recently AI/ML Software Engineer at <strong style="color:var(--accent)">Chetu India</strong> (through mid-2026). Now available for freelance, consulting, and research collaboration &mdash; remote &mdash; and open to full-time roles from September 2026.</p>
-      <div class="tabs">
-        <button class="tab-btn active" onclick="openTab(event,'tab-skills')">Skills</button>
-        <button class="tab-btn" onclick="openTab(event,'tab-experience')">Experience</button>
-        <button class="tab-btn" onclick="openTab(event,'tab-education')">Education</button>
-      </div>
-      <div class="tab-panel active" id="tab-skills">
-        <ul>
-          <li><strong>Machine Learning</strong><span>Random Forests, XGBoost, SVM, Clustering, Regression, Classification</span></li>
-          <li><strong>NLP &amp; LLMs</strong><span>RAG variants, LangChain, LangGraph, Fine-tuning, ASR, NMT, Summarization</span></li>
-          <li><strong>Deep Learning &amp; Vision</strong><span>CNNs, Transformers, Video Understanding, ImageBind, FUTR, T-DEED</span></li>
-          <li><strong>Agentic AI</strong><span>LangGraph StateGraph, Multi-node agents, Tool use, LangSmith observability</span></li>
-        </ul>
-      </div>
-      <div class="tab-panel" id="tab-experience">
-        <ul>
-          <li><strong>AI/ML Software Engineer</strong><span>Chetu India &middot; Apr 2025 &ndash; Jun 2026</span></li>
-          <li><strong>AI/ML Engineer</strong><span>BLU PARROT &middot; Jan 2024 &ndash; Apr 2025</span></li>
-          <li><strong>Subject Matter Expert: AI/ML</strong><span>House of Coutons &middot; Nov 2023 &ndash; Jan 2024</span></li>
-          <li><strong>AI/ML Programmer</strong><span>HRBOTICS &middot; Apr 2022 &ndash; Mar 2023</span></li>
-          <li><strong>Football Data Analyst</strong><span>Boomer 11 &middot; Nov 2021 &ndash; Mar 2022</span></li>
-        </ul>
-      </div>
-      <div class="tab-panel" id="tab-education">
-        <ul>
-          <li><strong>M.Tech &mdash; Modeling &amp; Simulation</strong><span>Savitribai Phule Pune University &middot; 2019&ndash;2022</span></li>
-          <li><strong>B.Tech &mdash; Electrical Engineering</strong><span>Pandit Deendayal Petroleum University &middot; 2014&ndash;2018</span></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="skills">
-  <div class="reveal">
-    <div class="section-tag">What I do</div>
-    <h2 class="section-title">Core Competencies</h2>
-    <p class="section-sub">From classical ML to cutting-edge multimodal AI &mdash; built and shipped in production.</p>
-  </div>
-  <div class="skills-grid">
-    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-robot"></i></div><h3>Agentic AI &amp; LLMs</h3><p>LangGraph multi-node agents, RAG variants (Naive/LightRAG/CRAG/VideoRAG), LangSmith tracing, OpenAI &amp; Gemini APIs, FastAPI.</p></div>
-    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-brain"></i></div><h3>Deep Learning &amp; Vision</h3><p>CNNs, Transformers, VideoRAG, ImageBind multimodal embeddings, OpenCV, FUTR anticipation models, T-DEED temporal spotting.</p></div>
-    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-language"></i></div><h3>NLP &amp; Speech</h3><p>BERT variants (InLegalBERT, XLM-RoBERTa, IndicBERT), FasterWhisper ASR, multilingual NMT, text classification, summarization.</p></div>
-    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-database"></i></div><h3>Data &amp; MLOps</h3><p>FAISS, HNSWLib, Neo4j, NetworkX, HuggingFace, W&amp;B, Python scraping, Azure OCR, data engineering pipelines.</p></div>
-    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-futbol"></i></div><h3>Sports AI</h3><p>Expected Goals (xG) modelling (89.77% accuracy), FAANTRA ball action anticipation, SoccerNet 2026 Challenge participant, pass network analysis.</p></div>
-    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-scale-balanced"></i></div><h3>Legal AI</h3><p>LegalGPT: case summarization, 150+ contract types classification, compliance AI, Opennyai, InCaseLawBERT fine-tuning.</p></div>
-  </div>
-</section>
-
-<section id="experience">
-  <div class="reveal">
-    <div class="section-tag">Where I've worked</div>
-    <h2 class="section-title">Experience</h2>
-    <p class="section-sub">Building AI that ships &mdash; from startup chaos to enterprise scale.</p>
-  </div>
-  <div class="timeline">
-    <div class="timeline-item reveal">
-      <div class="timeline-dot"></div>
-      <div class="tl-meta"><span class="tl-company">Chetu India</span><span class="tl-date">Apr 2025 &ndash; Jun 2026</span></div>
-      <div class="tl-title">AI/ML Software Engineer</div>
-      <div class="tl-items">
-        <div class="tl-item">Built DIGEST &mdash; agentic LangGraph chatbot for event discovery &amp; ticket commerce with full Automatiq B2B transaction lifecycle.</div>
-        <div class="tl-item">Architected SOP CHATBOT &mdash; multimodal VideoRAG pipeline converting screen-recorded workflows to structured SOPs via ImageBind, Gemini &amp; LangSmith.</div>
-        <div class="tl-item">Built IKS Oracle (Gyanstrot) &mdash; RAG-powered AI system for Indian Knowledge Systems, enabling semantic querying of Vedic &amp; ancient Indian texts.</div>
-      </div>
-    </div>
-    <div class="timeline-item reveal">
-      <div class="timeline-dot" style="background:var(--accent3);box-shadow:0 0 12px rgba(123,97,255,0.5)"></div>
-      <div class="tl-meta"><span class="tl-company" style="color:var(--accent3)">BLU PARROT</span><span class="tl-date">Jan 2024 &ndash; Apr 2025</span></div>
-      <div class="tl-title">AI/ML Engineer</div>
-      <div class="tl-items">
-        <div class="tl-item">LegalGPT &mdash; full RAG pipeline for Indian legal research, contract analysis (150+ types), and compliance checking.</div>
-        <div class="tl-item">Hindi ASR portal with SoTA Conformer-CTC + Gemini NLP call summarization.</div>
-        <div class="tl-item">22-language Indic translation portal (IndicBERT + Indic-TransV2).</div>
-        <div class="tl-item">Promoted to Project Lead for UK real-estate multimodal regression model.</div>
-      </div>
-    </div>
-    <div class="timeline-item reveal">
-      <div class="timeline-dot" style="background:var(--accent2);box-shadow:0 0 12px rgba(255,45,107,0.5)"></div>
-      <div class="tl-meta"><span class="tl-company" style="color:var(--accent2)">HRBOTICS</span><span class="tl-date">Apr 2022 &ndash; Mar 2023</span></div>
-      <div class="tl-title">AI/ML Programmer</div>
-      <div class="tl-items"><div class="tl-item">Multi-threaded Python scrapers for NCR commercial data and automated LinkedIn hiring workflows via Selenium + BeautifulSoup.</div></div>
-    </div>
-    <div class="timeline-item reveal">
-      <div class="timeline-dot" style="background:#ffd700;box-shadow:0 0 12px rgba(255,215,0,0.5)"></div>
-      <div class="tl-meta"><span class="tl-company" style="color:#ffd700">BOOMER 11</span><span class="tl-date">Nov 2021 &ndash; Mar 2022</span></div>
-      <div class="tl-title">Football Data Analyst</div>
-      <div class="tl-items"><div class="tl-item">Expected Goals (xG) model with 89.77% accuracy using RF Classifier &mdash; published research paper.</div></div>
+      <div class="stat-item"><div class="stat-num">11</div><div class="stat-label">Deep-Dive Write-ups</div></div>
     </div>
   </div>
 </section>
@@ -205,6 +100,17 @@
         <div class="project-links">
           <a href="https://github.com/nirmitktripathii/podcast-shorts-factory" target="_blank">View Repo →</a>
           <a href="whitepaper-podcast-factory.html" class="btn-demo"><i class="fas fa-file-lines"></i> White Paper</a>
+        </div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-emoji" style="background:linear-gradient(135deg,#12002a,#001a2a);font-size:52px">🎥</div>
+      <div class="project-body">
+        <div class="project-tags"><span class="tag">Streamlit</span><span class="tag">LLM Failover</span><span class="tag">Self-Healing</span><span class="tag">Zero-Cost</span></div>
+        <h3>AI Video Style Cloner</h3>
+        <p>Paste a YouTube channel URL and it reverse-engineers the style, writes an original script in that voice, narrates and illustrates it, and compiles a finished MP4 &mdash; for $0. A three-tier LLM failover, self-healing JSON validators, and a zero-network procedural generator guarantee output even when every API is down.</p>
+        <div class="project-links">
+          <a href="whitepaper-video-cloner.html">White Paper &rarr;</a>
         </div>
       </div>
     </div>
@@ -421,6 +327,19 @@
       </div>
     </a>
 
+    <a href="whitepaper-video-cloner.html" class="paper-card reveal">
+      <div class="paper-top pt-agents">
+        <span class="paper-kind">White Paper &middot; Resilience</span>
+        <i class="fas fa-shield-halved paper-glyph"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">LLM Failover</span><span class="tag">Self-Healing</span><span class="tag">Zero-Cost</span></div>
+        <h3>Never Return Empty: A Zero-Cost AI Video Pipeline Engineered to Always Ship</h3>
+        <p>One channel URL in, a finished narrated video out &mdash; for $0. The engineering that matters isn't any single model but the resilience layer: a three-tier failover cascade, self-healing validators, and a procedural generator that guarantees output when every API fails.</p>
+        <div class="paper-foot"><span>Aug 2026</span><span class="read">12 min read &rarr;</span></div>
+      </div>
+    </a>
+
     <a href="whitepaper-farm-mech.html" class="paper-card reveal">
       <div class="paper-top pt-vision">
         <span class="paper-kind">Research · Agri &amp; Policy</span>
@@ -460,6 +379,111 @@
       </div>
     </a>
 
+  </div>
+</section>
+
+<section id="about">
+  <div class="reveal">
+    <div class="section-tag">Who I am</div>
+    <h2 class="section-title">About Me</h2>
+  </div>
+  <div class="about-grid reveal">
+    <div class="about-img-wrap">
+      <img src="images/user.png" class="about-img" alt="Nirmit K. Tripathii"/>
+      <div class="about-img-frame"></div>
+    </div>
+    <div class="about-body">
+      <p>I'm a certified AI/ML Engineer with a M.Tech in Modeling &amp; Simulation and 3+ years of industry experience building intelligent systems across NLP, LLMs, multimodal ML, and agentic AI.</p>
+      <p>My work spans production deployments at Chetu India and BLU PARROT — including an agentic event-commerce chatbot, a Video-to-SOP multimodal pipeline, legal AI for Indian law, sports action anticipation research, and a participant in the SoccerNet 2026 Challenge.</p>
+      <p>Most recently AI/ML Software Engineer at <strong style="color:var(--accent)">Chetu India</strong> (through mid-2026). Now available for freelance, consulting, and research collaboration &mdash; remote &mdash; and open to full-time roles from September 2026.</p>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="openTab(event,'tab-skills')">Skills</button>
+        <button class="tab-btn" onclick="openTab(event,'tab-experience')">Experience</button>
+        <button class="tab-btn" onclick="openTab(event,'tab-education')">Education</button>
+      </div>
+      <div class="tab-panel active" id="tab-skills">
+        <ul>
+          <li><strong>Machine Learning</strong><span>Random Forests, XGBoost, SVM, Clustering, Regression, Classification</span></li>
+          <li><strong>NLP &amp; LLMs</strong><span>RAG variants, LangChain, LangGraph, Fine-tuning, ASR, NMT, Summarization</span></li>
+          <li><strong>Deep Learning &amp; Vision</strong><span>CNNs, Transformers, Video Understanding, ImageBind, FUTR, T-DEED</span></li>
+          <li><strong>Agentic AI</strong><span>LangGraph StateGraph, Multi-node agents, Tool use, LangSmith observability</span></li>
+        </ul>
+      </div>
+      <div class="tab-panel" id="tab-experience">
+        <ul>
+          <li><strong>AI/ML Software Engineer</strong><span>Chetu India &middot; Apr 2025 &ndash; Jun 2026</span></li>
+          <li><strong>AI/ML Engineer</strong><span>BLU PARROT &middot; Jan 2024 &ndash; Apr 2025</span></li>
+          <li><strong>Subject Matter Expert: AI/ML</strong><span>House of Coutons &middot; Nov 2023 &ndash; Jan 2024</span></li>
+          <li><strong>AI/ML Programmer</strong><span>HRBOTICS &middot; Apr 2022 &ndash; Mar 2023</span></li>
+          <li><strong>Football Data Analyst</strong><span>Boomer 11 &middot; Nov 2021 &ndash; Mar 2022</span></li>
+        </ul>
+      </div>
+      <div class="tab-panel" id="tab-education">
+        <ul>
+          <li><strong>M.Tech &mdash; Modeling &amp; Simulation</strong><span>Savitribai Phule Pune University &middot; 2019&ndash;2022</span></li>
+          <li><strong>B.Tech &mdash; Electrical Engineering</strong><span>Pandit Deendayal Petroleum University &middot; 2014&ndash;2018</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="reveal">
+    <div class="section-tag">What I do</div>
+    <h2 class="section-title">Core Competencies</h2>
+    <p class="section-sub">From classical ML to cutting-edge multimodal AI &mdash; built and shipped in production.</p>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-robot"></i></div><h3>Agentic AI &amp; LLMs</h3><p>LangGraph multi-node agents, RAG variants (Naive/LightRAG/CRAG/VideoRAG), LangSmith tracing, OpenAI &amp; Gemini APIs, FastAPI.</p></div>
+    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-brain"></i></div><h3>Deep Learning &amp; Vision</h3><p>CNNs, Transformers, VideoRAG, ImageBind multimodal embeddings, OpenCV, FUTR anticipation models, T-DEED temporal spotting.</p></div>
+    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-language"></i></div><h3>NLP &amp; Speech</h3><p>BERT variants (InLegalBERT, XLM-RoBERTa, IndicBERT), FasterWhisper ASR, multilingual NMT, text classification, summarization.</p></div>
+    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-database"></i></div><h3>Data &amp; MLOps</h3><p>FAISS, HNSWLib, Neo4j, NetworkX, HuggingFace, W&amp;B, Python scraping, Azure OCR, data engineering pipelines.</p></div>
+    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-futbol"></i></div><h3>Sports AI</h3><p>Expected Goals (xG) modelling (89.77% accuracy), FAANTRA ball action anticipation, SoccerNet 2026 Challenge participant, pass network analysis.</p></div>
+    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-scale-balanced"></i></div><h3>Legal AI</h3><p>LegalGPT: case summarization, 150+ contract types classification, compliance AI, Opennyai, InCaseLawBERT fine-tuning.</p></div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="reveal">
+    <div class="section-tag">Where I've worked</div>
+    <h2 class="section-title">Experience</h2>
+    <p class="section-sub">Building AI that ships &mdash; from startup chaos to enterprise scale.</p>
+  </div>
+  <div class="timeline">
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="tl-meta"><span class="tl-company">Chetu India</span><span class="tl-date">Apr 2025 &ndash; Jun 2026</span></div>
+      <div class="tl-title">AI/ML Software Engineer</div>
+      <div class="tl-items">
+        <div class="tl-item">Built DIGEST &mdash; agentic LangGraph chatbot for event discovery &amp; ticket commerce with full Automatiq B2B transaction lifecycle.</div>
+        <div class="tl-item">Architected SOP CHATBOT &mdash; multimodal VideoRAG pipeline converting screen-recorded workflows to structured SOPs via ImageBind, Gemini &amp; LangSmith.</div>
+        <div class="tl-item">Built IKS Oracle (Gyanstrot) &mdash; RAG-powered AI system for Indian Knowledge Systems, enabling semantic querying of Vedic &amp; ancient Indian texts.</div>
+      </div>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot" style="background:var(--accent3);box-shadow:0 0 12px rgba(123,97,255,0.5)"></div>
+      <div class="tl-meta"><span class="tl-company" style="color:var(--accent3)">BLU PARROT</span><span class="tl-date">Jan 2024 &ndash; Apr 2025</span></div>
+      <div class="tl-title">AI/ML Engineer</div>
+      <div class="tl-items">
+        <div class="tl-item">LegalGPT &mdash; full RAG pipeline for Indian legal research, contract analysis (150+ types), and compliance checking.</div>
+        <div class="tl-item">Hindi ASR portal with SoTA Conformer-CTC + Gemini NLP call summarization.</div>
+        <div class="tl-item">22-language Indic translation portal (IndicBERT + Indic-TransV2).</div>
+        <div class="tl-item">Promoted to Project Lead for UK real-estate multimodal regression model.</div>
+      </div>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot" style="background:var(--accent2);box-shadow:0 0 12px rgba(255,45,107,0.5)"></div>
+      <div class="tl-meta"><span class="tl-company" style="color:var(--accent2)">HRBOTICS</span><span class="tl-date">Apr 2022 &ndash; Mar 2023</span></div>
+      <div class="tl-title">AI/ML Programmer</div>
+      <div class="tl-items"><div class="tl-item">Multi-threaded Python scrapers for NCR commercial data and automated LinkedIn hiring workflows via Selenium + BeautifulSoup.</div></div>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot" style="background:#ffd700;box-shadow:0 0 12px rgba(255,215,0,0.5)"></div>
+      <div class="tl-meta"><span class="tl-company" style="color:#ffd700">BOOMER 11</span><span class="tl-date">Nov 2021 &ndash; Mar 2022</span></div>
+      <div class="tl-title">Football Data Analyst</div>
+      <div class="tl-items"><div class="tl-item">Expected Goals (xG) model with 89.77% accuracy using RF Classifier &mdash; published research paper.</div></div>
+    </div>
   </div>
 </section>
 
