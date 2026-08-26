@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>One Inbox, Three Mailboxes, Zero New APIs — Nirmit K. Tripathii</title>
+  <meta name="description" content="A stakeholder wanted Gmail, Zoho and Outlook merged into one AI-summarised inbox. 'Just add the three MCP connectors to Claude' gets you a demo. Here's the missing half: one MCP server that is also an MCP client."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/d8eaa222fe.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="read-progress" id="readProgress"></div>
+<nav>
+  <a href="index.html"><img src="images/logo.png" class="logo-img" alt="Logo"/></a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="index.html#writing">Writing</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+  <div class="nav-burger" onclick="location.href='index.html'"><i class="fas fa-home"></i></div>
+</nav>
+
+<div class="article-shell">
+  <a href="index.html#writing" class="article-back"><i class="fas fa-arrow-left"></i> ALL WRITING</a>
+
+  <header class="article-hero">
+    <div class="article-kicker"><i class="fas fa-inbox"></i> Article · The Email Orchestrator · Part 1</div>
+    <h1 class="article-title">One Inbox, Three Mailboxes, Zero New APIs</h1>
+    <p class="article-standfirst">A stakeholder wanted Gmail, Zoho and Outlook merged into one AI-summarised inbox. The suggested fix — "just add the three MCP connectors to Claude" — gets you a demo. Here's the missing half: one MCP server that is also an MCP client.</p>
+    <div class="article-meta">
+      <span class="am"><i class="fas fa-user"></i> Nirmit K. Tripathii</span>
+      <span class="am"><i class="fas fa-calendar"></i> 2026</span>
+      <span class="am"><i class="fas fa-clock"></i> 12 min read</span>
+      <span class="am"><i class="fas fa-diagram-project"></i> MCP · TypeScript</span>
+    </div>
+    <div class="article-chips">
+      <span class="tag">Model Context Protocol</span><span class="tag">AI Agents</span><span class="tag">TypeScript</span><span class="tag">Fan-out</span><span class="tag">Email</span>
+    </div>
+  </header>
+
+  <div class="article-layout">
+    <aside class="article-toc">
+      <h4>On this page</h4>
+      <nav id="toc">
+        <a href="#demo">Why connectors give a demo</a>
+        <a href="#approach">Server that is also a client</a>
+        <a href="#impl">The implementation</a>
+        <a href="#surface">The surface it produces</a>
+        <a href="#broke">What broke</a>
+        <a href="#different">What I'd do differently</a>
+        <a href="#series">The series</a>
+      </nav>
+    </aside>
+
+    <article class="prose">
+      <p class="lead">The request arrived as a stack of voice notes. A non-technical stakeholder had three work inboxes — Gmail for one company, Outlook for another, a Zoho account for a third — and wanted them merged into a single view with an AI summary sitting on top, the way Gmail now shows a one-line "here's what this thread is about" before you open it.</p>
+      <p>Then, in the same thread, came the proposed solution: <em>"This will just happen through MCP, no? Add the three connectors — Gmail, Zoho, Outlook — to Claude, and prompt it to consolidate. It'll figure it out internally."</em></p>
+      <p>That is half right, and the half that's missing is the entire engineering problem. You can absolutely add three mail connectors to Claude Desktop today. What you get is an assistant that can <em>reach</em> three inboxes. What you don't get is a consolidated inbox — because "consolidated" is an object that has to be built, and nobody built it. This article is about the thing that has to exist in the gap: <strong>one more MCP server, whose clients are the other MCP servers.</strong></p>
+
+      <h2 id="demo"><span class="h2num">01</span>Why "just add the connectors" gives you a demo, not a product</h2>
+      <p>The connectors-only idea is reasonable, and it demos beautifully. You wire up the Gmail, Zoho and Outlook MCP servers, you ask "what's urgent across all my mail?", and the model dutifully calls each one, reads the results, and writes you a paragraph. Everyone nods. Then you use it for a week, and the cracks are all in the same place: <strong>there is no consolidated object, so the model rebuilds one from scratch every single turn.</strong></p>
+      <ul>
+        <li><strong>The three servers don't speak the same dialect.</strong> Gmail's MCP returns messages one way, Zoho's another, the IMAP server a third. One calls the operation <code>search_emails</code>, another <code>list_messages</code>. The model papers over this live, differently each time, and you feel it as inconsistency.</li>
+        <li><strong>"All my mail" is never a thing that exists.</strong> Each turn, the assistant re-fans-out, re-reads, re-sorts, re-decides what "urgent" means. There is no ranked, de-duplicated, cross-account list to point at, cache, or schedule against.</li>
+        <li><strong>One flaky account poisons the whole answer.</strong> If the Zoho token expired this morning, the naive flow either errors out or, worse, quietly answers as if Zoho didn't exist — and doesn't tell you which.</li>
+        <li><strong>There's nowhere to hang the actual product.</strong> The summary, the categorisation, the urgency score, the draft replies — all of that needs a place to live, a cache so it isn't recomputed on every glance, and a scheduler so a digest can fire at 9am whether or not you're chatting. A prompt has none of those.</li>
+      </ul>
+      <p>The tell is that every one of these is a <em>state</em> problem, and a prompt is stateless. The fix isn't a better prompt. It's to give the consolidation a home.</p>
+
+      <h2 id="approach"><span class="h2num">02</span>An MCP server that is also an MCP client</h2>
+      <p>Here is the whole idea in one sentence: <strong>build one MCP server that Claude connects to, and have that server be a client to the three provider MCP servers underneath it.</strong></p>
+      <p>The Model Context Protocol — the open standard that lets an assistant like Claude call external tools — is usually drawn as a straight line: the app is a <em>client</em>, your server is the <em>server</em>, tools flow across. The move here is to sit a component in the middle that is <strong>both at once</strong>. To Claude Desktop it is a server exposing tools like <code>inbox_summary</code>. To Gmail, Zoho and the IMAP server it is a client, calling <em>their</em> tools. It is a hub.</p>
+
+      <figure class="figure">
+        <svg viewBox="0 0 720 250" role="img" aria-label="Email orchestrator hub architecture">
+          <defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 z" fill="var(--accent)"/></marker></defs>
+          <rect class="svg-box" x="18" y="95" width="150" height="60" rx="10"/>
+          <text class="svg-title" x="93" y="120" text-anchor="middle" style="font-size:12px">Claude Desktop</text>
+          <text class="svg-label" x="93" y="138" text-anchor="middle">MCP client</text>
+          <rect x="250" y="80" width="190" height="90" rx="12" fill="var(--card)" stroke="var(--accent)" stroke-width="1.6"/>
+          <text class="svg-title" x="345" y="112" text-anchor="middle" style="font-size:13px">email-orchestrator</text>
+          <text class="svg-label" x="345" y="132" text-anchor="middle" style="fill:var(--accent)">server AND client</text>
+          <text class="svg-label" x="345" y="150" text-anchor="middle">normalize · fan-out · enrich</text>
+          <rect class="svg-box" x="520" y="40" width="182" height="38" rx="8"/><text class="svg-label" x="611" y="64" text-anchor="middle">Gmail MCP server</text>
+          <rect class="svg-box" x="520" y="106" width="182" height="38" rx="8"/><text class="svg-label" x="611" y="130" text-anchor="middle">Zoho MCP server</text>
+          <rect class="svg-box" x="520" y="172" width="182" height="38" rx="8"/><text class="svg-label" x="611" y="196" text-anchor="middle">IMAP server (Yahoo/Outlook)</text>
+          <line class="svg-flow" x1="170" y1="125" x2="248" y2="125"/>
+          <line class="svg-flow" x1="442" y1="118" x2="518" y2="60"/>
+          <line class="svg-flow" x1="442" y1="125" x2="518" y2="125"/>
+          <line class="svg-flow" x1="442" y1="132" x2="518" y2="190"/>
+          <text class="svg-label" x="205" y="115" text-anchor="middle" fill="var(--muted)">MCP</text>
+        </svg>
+        <figcaption class="figcap">The hub is a server to Claude and a client to every provider. One custom component; the provider servers are reused as-is.</figcaption>
+      </figure>
+
+      <p>That single architectural decision buys everything the connectors-only approach couldn't:</p>
+      <ol>
+        <li><strong>A normalization layer.</strong> The hub fetches from each provider and coerces every wire format into one <code>NormalizedEmail</code> shape — same field names, same date format, a single global id — so downstream code never branches on provider again.</li>
+        <li><strong>A real fan-out.</strong> "List all urgent mail" becomes one call to the hub, which queries every account in parallel, isolates failures per account, and returns one sorted list.</li>
+        <li><strong>A place for the AI layer.</strong> Summarisation, categorisation, urgency, draft replies — all run in the hub, against normalized mail, with a cache in front so a second glance is free.</li>
+        <li><strong>One clean tool surface.</strong> Claude doesn't see thirty provider-specific tools of varying quality. It sees <strong>17 unified tools</strong> — each of which works identically no matter which mailbox the email came from.</li>
+      </ol>
+      <p>Crucially, this adds exactly <em>one</em> custom component. The provider MCP servers already exist and are maintained by other people; the hub reuses them as libraries-over-a-pipe rather than reimplementing IMAP or the Gmail API. The stakeholder's instinct — "don't build a mail backend" — was correct. They just stopped one server too early.</p>
+
+      <h2 id="impl"><span class="h2num">03</span>The implementation</h2>
+      <p>Start with the side facing Claude. The hub is a normal MCP server: it advertises its tools, and dispatches each <code>CallTool</code> request to a handler in a registry. This is the entire dispatch core — notice what's <em>not</em> here: any mention of Gmail, Zoho, or email at all.</p>
+      <div class="code-label">orchestrator/server.ts — the server side</div>
+      <pre><code>server.setRequestHandler(CallToolRequestSchema, async request =&gt; {
+  const { name, arguments: rawArgs } = request.params;
+  const tool = toolsByName.get(name);
+  if (!tool) return { content: [{ type: 'text', text: `Unknown tool: ${name}` }], isError: true };
+
+  const output = await tool.handler((rawArgs ?? {}) as Record&lt;string, unknown&gt;, ctx);
+  return { content: [{ type: 'text', text: output.text }], ...structured(output.data) };
+});</code></pre>
+      <p>The server side is a thin router. All the interesting work is behind <code>ctx</code> — and the most interesting part of <code>ctx</code> is that the same process is also running MCP <em>clients</em>. Each provider is wrapped in an adapter that opens a client to that provider's server, completes the handshake, and — this is the load-bearing line — <strong>asks the server what tools it has</strong> instead of assuming.</p>
+      <div class="code-label">providers/provider-adapter.ts — the client side</div>
+      <pre><code>const transport = this.createTransport();               // stdio child, or an SSE/HTTP URL
+const client = new Client(ORCHESTRATOR_CLIENT_INFO, { capabilities: {} });
+
+await withTimeout(client.connect(transport), CONNECT_TIMEOUT_MS, `${this.provider} connect`);
+const { tools } = await withTimeout(client.listTools(), CONNECT_TIMEOUT_MS, `${this.provider} listTools`);
+
+this.discoveredTools = tools.map(t =&gt; t.name);           // e.g. ['search_emails', 'read_email', ...]</code></pre>
+      <p><code>discoveredTools</code> is the seam that makes the hub provider-agnostic — the adapter later maps a <em>logical</em> operation like "list emails" onto whatever this particular server happens to call it. (That mapping is its own rabbit hole.) The connect timeout is a generous 60 seconds on purpose: the Gmail server validates and refreshes its OAuth token on startup, which has been observed to take ~30 seconds.</p>
+      <p>The manager owns every adapter and does the fan-out. The one rule it never breaks: <strong>one account failing must never take down a whole-inbox query.</strong> That's <code>Promise.allSettled</code>, not <code>Promise.all</code> — the difference between "collect whatever succeeded" and "reject the moment anything does."</p>
+      <div class="code-label">providers/provider-manager.ts — the fan-out</div>
+      <pre><code>const results = await Promise.allSettled(
+  adapters.map(async adapter =&gt; {
+    await adapter.ensureConnected();     // self-heal a dropped account before using it
+    return op(adapter);                  // e.g. listEmails / searchEmails
+  }),
+);
+
+const all: NormalizedEmail[] = [];
+results.forEach((r, i) =&gt; {
+  if (r.status === 'fulfilled') all.push(...r.value);
+  else mgrLogger.warn(`account ${adapters[i]!.accountId} failed`, { error: getErrorMessage(r.reason) });
+});
+return sortNewestFirst(all);</code></pre>
+      <p>The last piece is the glue that makes cross-account addressing work at all: every email gets a <strong>global id</strong> of the form <code>accountId:messageId</code>. A message id is only unique <em>within</em> one mailbox; prefix it with the account and it's unique across all of them, and — because it's just a string with a colon — any tool can round-trip it back to "which account, which message" without a lookup table.</p>
+      <pre><code>globalId: `${accountId}:${id}`,   // "zoho-primary:18f2c…" → parseGlobalId() splits it back</code></pre>
+
+      <h2 id="surface"><span class="h2num">04</span>The surface it produces</h2>
+      <p>The proof that the abstraction holds is the tool surface. Seventeen tools, and not one of them takes a "which provider" argument — the provider is an implementation detail the global id already carries.</p>
+      <table class="data-table">
+        <thead><tr><th>Group</th><th>Tools</th><th>What the hub does underneath</th></tr></thead>
+        <tbody>
+          <tr><td>Inbox</td><td><code>inbox_summary</code>, <code>daily_digest</code>, <code>search_all</code>, <code>prioritize_inbox</code></td><td>fan-out → normalize → enrich → rank</td></tr>
+          <tr><td>Per-email</td><td><code>summarize_email</code>, <code>categorize_email</code>, <code>detect_urgency</code>, <code>suggest_actions</code>, <code>smart_reply</code>, <code>explain_email</code>, <code>extract_tasks</code></td><td>resolve global id → one provider → LLM</td></tr>
+          <tr><td>Batch</td><td><code>batch_categorize</code>, <code>batch_summarize</code>, <code>filter_by_category</code></td><td>concurrency-limited enrichment</td></tr>
+          <tr><td>Status / Schedule</td><td><code>account_status</code>, <code>configure_schedule</code>, <code>trigger_digest_now</code></td><td>connection health; cron digests</td></tr>
+        </tbody>
+      </table>
+      <div class="metric-grid">
+        <div class="metric"><div class="mv">1</div><div class="ml">custom component — the provider servers are reused as-is</div></div>
+        <div class="metric"><div class="mv">4</div><div class="ml">providers behind one surface: Gmail, Zoho, Yahoo, Outlook</div></div>
+        <div class="metric"><div class="mv">17</div><div class="ml">unified tools (asserted in the e2e test)</div></div>
+        <div class="metric"><div class="mv">49</div><div class="ml">tests across 8 files, all passing</div></div>
+      </div>
+      <p>The "1 custom component" figure is the one I'd defend hardest. The measure of this design isn't that it does a lot; it's that it does a lot by <em>adding almost nothing</em> — one hub, and four mail integrations someone else already wrote and tests.</p>
+
+      <h2 id="broke"><span class="h2num">05</span>What broke</h2>
+      <p>The representative one — the bug that first taught me the hub couldn't be naïve — was a connection that <strong>stayed "connected" forever after its child had died.</strong> The stdio transport to a provider is a child process, and child processes exit: an IMAP idle-timeout, a server crash, a laptop sleeping. The first version set <code>connected = true</code> on handshake and never revisited it. So the child would quietly die, the adapter would still report itself healthy, and every subsequent call threw <code>Unexpected close</code> — which the fan-out then dutifully logged as "this account failed," on a loop, until restart. From the user's seat, one inbox just silently vanished from every answer.</p>
+      <div class="callout">
+        <i class="fas fa-plug-circle-xmark"></i>
+        <div class="ct"><strong>The architectural cost of consolidation</strong>The moment you make your orchestrator an MCP client, you inherit the full lifecycle of every connection you open. The connectors-only approach never has to think about this because Claude Desktop owns those connections. Move consolidation into your own server and you've adopted them all. (The self-healing fix is <a href="article-email-resilience.html">Part 2</a>.)</div>
+      </div>
+      <p>The other two — a thinking model that spent its entire token budget before writing any JSON (<a href="article-email-thinking-budget.html">Part 3</a>), and the fact that no two mail MCP servers name their tools the same — are the same shape of surprise: a thing that "just works" in the demo because the demo only does it once, cleanly, on a good day.</p>
+
+      <h2 id="different"><span class="h2num">06</span>What I'd do differently</h2>
+      <p><strong>Design the <code>NormalizedEmail</code> shape on day one, from three real payloads.</strong> I started from Gmail's format and bolted on the others, which is why the normalizer has grown a long list of fallback field names (<code>from</code> or <code>sender</code> or <code>fromAddress</code>…). Diffing three real responses first would have produced the same union with less archaeology.</p>
+      <p><strong>Treat the global id as public API immediately.</strong> It leaks into tool arguments, cache keys, logs, and the notifier's dedup set. Pinning <code>accountId:messageId</code> as a contract early — including "account ids never contain a colon" — would have saved a round of "wait, which half is which."</p>
+      <p>The hub pattern itself I'd reach for again without hesitation. Any time you're tempted to ask one assistant to juggle N similar tools by prompt, the question to ask is whether the consolidation deserves to be an object. For anything you'll use more than once, it does.</p>
+
+      <div class="takeaways">
+        <h4>The transferable lesson</h4>
+        <ul>
+          <li>To put N services under one assistant, build an MCP server that is <em>itself</em> an MCP client — a hub that normalizes, fans out, and re-exposes one tool surface.</li>
+          <li>"Consolidated" is an object with state (cache, ranking, schedule); a stateless prompt can't be that object.</li>
+          <li>Fan out with <code>allSettled</code>, not <code>all</code> — one dead account must not zero the whole answer.</li>
+          <li>A composite global id (<code>accountId:messageId</code>) makes cross-account addressing a string operation, not a lookup table.</li>
+        </ul>
+      </div>
+
+      <h2 id="series"><span class="h2num">07</span>The series</h2>
+      <p>This is Part 1 of a build log on a multi-account email agent. The connection-lifecycle and model-budget problems each earned their own part:</p>
+      <div class="article-cta">
+        <a href="article-email-resilience.html" class="btn-article primary"><i class="fas fa-arrows-rotate"></i> Part 2 · Keeping it alive</a>
+        <a href="article-email-thinking-budget.html" class="btn-article ghost"><i class="fas fa-brain"></i> Part 3 · The token bug</a>
+      </div>
+
+      <div class="author-card">
+        <img src="images/user.png" alt="Nirmit K. Tripathii"/>
+        <div>
+          <div class="an">Nirmit K. Tripathii — AI/ML Engineer &amp; Football Data Scientist</div>
+          <div class="ar">Three years building NLP, agentic AI and multimodal systems in production. I write up real projects — the architecture, the numbers, and the parts that failed. Available for part-time, consulting and research collaboration (remote).</div>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026 Nirmit K. Tripathii &nbsp;&middot;&nbsp; Made with <span>&#9829;</span> by Nirmit</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  (function(){
+    const bar = document.getElementById('readProgress');
+    const links = Array.from(document.querySelectorAll('#toc a'));
+    const ids = links.map(a => a.getAttribute('href').slice(1));
+    const onScroll = () => {
+      const h = document.documentElement;
+      const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      if (bar) bar.style.width = Math.max(0, Math.min(1, scrolled)) * 100 + '%';
+      let current = ids[0];
+      for (const id of ids){
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 120) current = id;
+      }
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+</body>
+</html>

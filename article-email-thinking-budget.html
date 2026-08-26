@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Model Spent Its Whole Budget Thinking — Nirmit K. Tripathii</title>
+  <meta name="description" content="My email categoriser kept returning empty JSON. The output was 80 tokens and I'd budgeted 512. The bug: on a thinking model, the fix for a truncated answer is a bigger budget, not a smaller ask — and it fails completely silently."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/d8eaa222fe.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="read-progress" id="readProgress"></div>
+<nav>
+  <a href="index.html"><img src="images/logo.png" class="logo-img" alt="Logo"/></a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="index.html#writing">Writing</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+  <div class="nav-burger" onclick="location.href='index.html'"><i class="fas fa-home"></i></div>
+</nav>
+
+<div class="article-shell">
+  <a href="index.html#writing" class="article-back"><i class="fas fa-arrow-left"></i> ALL WRITING</a>
+
+  <header class="article-hero">
+    <div class="article-kicker"><i class="fas fa-brain"></i> Article · The Email Orchestrator · Part 3</div>
+    <h1 class="article-title">The Model Spent Its Whole Budget Thinking</h1>
+    <p class="article-standfirst">My email categoriser kept returning empty JSON. The output was 80 tokens and I'd budgeted 512. The bug: on a thinking model, the fix for a truncated answer is a bigger budget, not a smaller ask — and it fails completely silently.</p>
+    <div class="article-meta">
+      <span class="am"><i class="fas fa-user"></i> Nirmit K. Tripathii</span>
+      <span class="am"><i class="fas fa-calendar"></i> 2026</span>
+      <span class="am"><i class="fas fa-clock"></i> 11 min read</span>
+      <span class="am"><i class="fas fa-diagram-project"></i> LLM · Reliability</span>
+    </div>
+    <div class="article-chips">
+      <span class="tag">LLM</span><span class="tag">Thinking Models</span><span class="tag">Structured Output</span><span class="tag">Rate Limits</span><span class="tag">AI Agents</span>
+    </div>
+  </header>
+
+  <div class="article-layout">
+    <aside class="article-toc">
+      <h4>On this page</h4>
+      <nav id="toc">
+        <a href="#backwards">Backwards budgeting</a>
+        <a href="#approach">Floor it, double on retry</a>
+        <a href="#impl">The implementation</a>
+        <a href="#dials">The dials</a>
+        <a href="#broke">What broke</a>
+        <a href="#different">What I'd do differently</a>
+      </nav>
+    </aside>
+
+    <article class="prose">
+      <p class="lead">The categoriser returned nothing. Not an error, not bad JSON — an empty string.</p>
+      <p>The task was trivial. Hand the model an email, get back a small JSON object: a category, an urgency score, a boolean, a one-line reason. Eighty tokens of output, maybe. I'd set the output budget to 512, which felt almost wasteful — six times the size of the answer.</p>
+      <p>Every third or fourth email came back blank. The response's <code>finishReason</code> was <code>MAX_TOKENS</code> — the model had hit its output ceiling — on an object that would have fit six times over. The obvious reading is that the model wrote a giant blob and got cut off. It hadn't. It had written <em>nothing at all</em> and still hit the ceiling. The model was spending the entire budget before it wrote a single character of JSON. It was thinking. <span style="color:var(--muted)">(This runs inside the enrichment layer from <a href="article-email-orchestrator.html">Part 1</a>.)</span></p>
+
+      <h2 id="backwards"><span class="h2num">01</span>Why "size the budget to the output" is exactly backwards here</h2>
+      <p>There's a rule of thumb everyone internalises: set <code>max_tokens</code> to roughly what you expect back, with some slack. It's good advice, it saves money, and on a classic model it's correct. The default model here was a <strong>thinking model</strong> — one of the current generation that does a hidden chain of reasoning <em>before</em> it emits the answer you asked for. And the thing nobody tells you until it bites: <strong>those hidden reasoning tokens are spent first, and they count against the same output budget as the visible answer.</strong></p>
+
+      <figure class="figure">
+        <svg viewBox="0 0 720 230" role="img" aria-label="Token budget: 512 starves, 2048 fits">
+          <text class="svg-title" x="20" y="28">Where a thinking model's output budget goes</text>
+          <!-- 512 budget -->
+          <text class="svg-label" x="20" y="72">budget 512</text>
+          <rect x="120" y="56" width="330" height="26" fill="var(--accent3)"/><text class="svg-label" x="130" y="74" fill="#fff">~350–460 reasoning tokens (spent first)</text>
+          <rect x="450" y="56" width="70" height="26" fill="var(--accent2)"/><text class="svg-label" x="455" y="74" fill="#fff">JSON…</text>
+          <rect x="520" y="56" width="2" height="26" fill="var(--text)"/>
+          <text class="svg-label" x="528" y="74" fill="var(--accent2)">✕ MAX_TOKENS — cut off mid-thought, empty output</text>
+          <!-- 2048 budget -->
+          <text class="svg-label" x="20" y="140">budget 2048</text>
+          <rect x="120" y="124" width="150" height="26" fill="var(--accent3)"/><text class="svg-label" x="130" y="142" fill="#fff">reasoning</text>
+          <rect x="270" y="124" width="40" height="26" fill="var(--accent)"/><text class="svg-label" x="276" y="142" fill="#000">JSON</text>
+          <rect x="310" y="124" width="300" height="26" fill="none" stroke="var(--border)" stroke-dasharray="4 3"/><text class="svg-label" x="320" y="142">unused headroom — free (generation stops at STOP)</text>
+          <text class="svg-label" x="120" y="180" fill="#3fb950">✓ reasoning + object both fit, with room to spare</text>
+        </svg>
+        <figcaption class="figcap">The smaller you make the budget — reasoning that your <em>output</em> is tiny — the more likely you strangle the response before it reaches the output. On a thinking model, headroom is free insurance.</figcaption>
+      </figure>
+
+      <p>So the accounting on my "wasteful" 512-token budget actually looked like this: ~350–460 tokens of invisible reasoning, spent first and billed to the output budget, leaving 50–160 tokens for the actual JSON. An 80-token object needs ~80. Sometimes it fit. Often it didn't, and the model hit <code>MAX_TOKENS</code> <strong>mid-thought, before the JSON started</strong> — so the visible output was empty.</p>
+      <p>Read that again, because it inverts the rule of thumb completely. On a thinking model, a too-small <code>max_tokens</code> doesn't truncate your answer. It deletes it. And it fails in the worst possible way: silently. An empty string isn't an exception. Unless you're checking <code>finishReason</code>, it looks exactly like "the model chose to say nothing."</p>
+
+      <h2 id="approach"><span class="h2num">02</span>The approach: floor it, then double on retry</h2>
+      <p>Two facts make the fix straightforward once you see them. First, <strong>the budget is a ceiling, not a target.</strong> If the model finishes its JSON and emits a stop token, generation ends there — you are not billed for the headroom, and you don't wait for it. A generous cap costs nothing on the calls that don't need it. Second, <strong>when a JSON call comes back empty or truncated, the correct response is a bigger budget, not a retry with the same one.</strong> Reasoning length varies per input, so the fix is to <em>escalate</em>: floor the budget well above the visible output, and if the reply still comes back starved, double it and try again.</p>
+
+      <h2 id="impl"><span class="h2num">03</span>The implementation</h2>
+      <p>The core is a small retry loop. The critical line is the definition of <code>starved</code>: an empty body <em>or</em> a hard token cut-off both mean "reasoning ate the budget," and both should trigger a bigger retry rather than a parse attempt on nothing.</p>
+      <div class="code-label">ai/llm-client.ts — the JSON path</div>
+      <pre><code>let budget = Math.max(options.maxTokens ?? this.config.maxTokens ?? 0, JSON_TOKEN_FLOOR);
+
+for (let attempt = 1; attempt &lt;= maxAttempts; attempt++) {
+  const response = await this.complete({ ...options, maxTokens: budget, jsonMode: true });
+  const text = (response.content ?? '').trim();
+
+  // Empty body OR a hard token cut-off means "reasoning ate the budget".
+  const starved = text.length === 0 || response.finishReason === 'MAX_TOKENS';
+  if (!starved) {
+    const parsed = extractJson(text);
+    if (parsed !== undefined) return validator ? validator(parsed) : (parsed as T);
+  }
+  if (attempt &lt; maxAttempts) budget = Math.min(budget * 2, JSON_TOKEN_CEILING); // 2048→4096→8192
+}
+throw new LLMError(`LLM did not return valid JSON after ${maxAttempts} attempts …`);</code></pre>
+      <p><code>JSON_TOKEN_FLOOR = 2048</code> and <code>JSON_TOKEN_CEILING = 8192</code> are the two numbers that matter, and the comment above the categoriser's request records <em>why</em> 2048 and not, say, 600:</p>
+      <pre><code>// THINKING model: ~350-460+ hidden reasoning tokens are spent BEFORE any JSON is
+// emitted, and they count against this budget. 512 was too tight (thinking overran
+// it → empty/MAX_TOKENS → failures). The cap adds no latency (generation stops at
+// STOP), so keep generous headroom.
+maxTokens: 2048,</code></pre>
+      <p>The tolerant parser is the other half. Models wrap JSON in fences, prepend "Here is the object:", and leave trailing commas. <code>extractJson</code> strips the fence, walks the string to the first <em>balanced</em> <code>{…}</code> or <code>[…]</code> (respecting quotes and escapes, so a brace inside a string doesn't fool it), and only then parses — with one light repair pass for trailing commas.</p>
+      <pre><code>const sliced = sliceBalanced(s);           // first balanced {…}/[…], ignoring surrounding prose
+if (sliced) s = sliced;
+for (const candidate of [s, s.replace(/,\s*([}\]])/g, '$1')]) {  // as-is, then drop trailing commas
+  try { return JSON.parse(candidate); } catch { /* try next */ }
+}
+return undefined;                          // unbalanced (truncated) → caller retries with a bigger budget</code></pre>
+      <p>There's a nice property in that last line: if the object is <em>truncated</em>, <code>sliceBalanced</code> never finds a closing brace, returns <code>undefined</code>, and the caller escalates the budget. The same code path that handles "empty" handles "cut off halfway." One mechanism, both failure shapes.</p>
+
+      <h2 id="dials"><span class="h2num">04</span>The dials, and why each is set where it is</h2>
+      <p>Every value here was set by a failure, not a guess.</p>
+      <table class="data-table">
+        <thead><tr><th>Dial</th><th>Value</th><th>Why this</th></tr></thead>
+        <tbody>
+          <tr><td><code>JSON_TOKEN_FLOOR</code></td><td>2048</td><td>Room for ~450 reasoning tokens + a normal object + slack. 512 starved it</td></tr>
+          <tr><td><code>JSON_TOKEN_CEILING</code></td><td>8192</td><td>Cap on the doubling so one bad input can't run cost away</td></tr>
+          <tr><td><code>maxAttempts</code> (JSON)</td><td>3</td><td>2048 → 4096 → 8192; three doublings clears every real case seen</td></tr>
+          <tr><td>Categoriser <code>temperature</code></td><td>0.1</td><td>Classification wants determinism, not creativity</td></tr>
+          <tr><td>Observed reasoning tokens</td><td>~350–460</td><td>Measured on real emails; <em>this</em> is why the floor is 2048</td></tr>
+          <tr><td>Enrichment concurrency</td><td>4</td><td>Empirically the free-tier line: <strong>4 = zero 429s, 8 = frequent <code>RESOURCE_EXHAUSTED</code></strong></td></tr>
+          <tr><td>Rate-limit retries</td><td>5, backoff ≤30s</td><td>Honour the server's <code>retryDelay</code> when present; else exponential + jitter</td></tr>
+        </tbody>
+      </table>
+      <p>The concurrency row is the same lesson wearing a different hat. On the free tier, four enrichment calls at once produced zero rate-limit errors; eight produced them constantly. And when a 429 hands back a <code>"retryDelay":"7s"</code> hint, the client parses it out and waits exactly that long instead of guessing:</p>
+      <pre><code>const m = msg.match(/"?retryDelay"?\s*[:=]\s*"?(\d+(?:\.\d+)?)s"?/i);
+return m ? { retryable: true, retryAfterMs: Math.ceil(parseFloat(m[1]!) * 1000) } : { retryable: true };</code></pre>
+
+      <h2 id="broke"><span class="h2num">05</span>What broke</h2>
+      <p>The token bug was bad; the way it <em>hid</em> was worse. The categoriser has a rule-based fallback — a keyword matcher — for when the LLM is genuinely unavailable. Graceful degradation, exactly as designed. Except the token starvation didn't look like "the model is down." It looked like a successful call that returned an empty string. So the categoriser caught the parse failure, shrugged, and fell through to keywords — <strong>for every email</strong>. The whole inbox quietly degraded from an LLM that understood context to a keyword matcher that didn't, and nothing anywhere reported an error. Everything that didn't hit a keyword became the default: <code>informational</code>.</p>
+      <blockquote class="pullquote">If everything is <code>informational</code>, the LLM calls are probably failing (check stderr).<cite>— the tell that made it into the troubleshooting guide</cite></blockquote>
+      <p>The cost wasn't dramatic — no crash, no data loss. It was <em>worse</em> than dramatic: a system that looked like it was working, producing plausible-but-dumb categories, for as long as nobody looked closely. The lesson I actually took: <strong>a fallback that's too graceful will hide the failure it's falling back from.</strong> The fix was two lines — treat empty/<code>MAX_TOKENS</code> as retry-and-escalate rather than as a quiet failure, and log <code>finishReason</code> on every JSON call so "the model thought itself out of budget" is visible instead of inferred.</p>
+
+      <h2 id="different"><span class="h2num">06</span>What I'd do differently</h2>
+      <p><strong>Log <code>finishReason</code> and token usage from the first call, not after the incident.</strong> The bug was diagnosable in five seconds <em>once</em> those two fields were in the logs — <code>finishReason: MAX_TOKENS</code> with <code>completionTokens</code> near the cap and an empty body is an unambiguous signature. I flew blind for an evening because I was logging the content and not the metadata about the content.</p>
+      <p><strong>Reach for a non-thinking model for pure structured extraction.</strong> Categorisation doesn't benefit from a hidden chain of thought; it just pays for it in latency and in exactly this failure mode. The thinking model earns its keep on <code>explain_email</code> and the digest narrative, where reasoning actually improves the output — so the real answer is to route by task, not to pick one model for everything.</p>
+      <p>The transferable rule is blunt enough to tape to a monitor: <strong>on a thinking model, size your token budget for the thinking, not for the answer — and never treat an empty completion as a choice the model made.</strong></p>
+
+      <div class="takeaways">
+        <h4>The transferable lesson</h4>
+        <ul>
+          <li>On a thinking model, hidden reasoning tokens are spent first and billed to the same output budget — a too-small <code>max_tokens</code> deletes the answer rather than truncating it.</li>
+          <li>The budget is a ceiling, not a target: floor it high, double on a starved reply, and headroom is free because generation stops at STOP.</li>
+          <li>One balanced-brace parser handles both "empty" and "truncated" — an unbalanced object means "retry bigger."</li>
+          <li>A fallback that's too graceful hides the failure it's covering — log <code>finishReason</code> so silent starvation is visible.</li>
+        </ul>
+      </div>
+
+      <div class="article-cta">
+        <a href="article-email-orchestrator.html" class="btn-article ghost"><i class="fas fa-diagram-project"></i> Part 1 · The hub</a>
+        <a href="article-email-resilience.html" class="btn-article ghost"><i class="fas fa-arrows-rotate"></i> Part 2 · Keeping it alive</a>
+      </div>
+
+      <div class="author-card">
+        <img src="images/user.png" alt="Nirmit K. Tripathii"/>
+        <div>
+          <div class="an">Nirmit K. Tripathii — AI/ML Engineer &amp; Football Data Scientist</div>
+          <div class="ar">Three years building NLP, agentic AI and multimodal systems in production. I write up real projects — the architecture, the numbers, and the parts that failed. Available for part-time, consulting and research collaboration (remote).</div>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026 Nirmit K. Tripathii &nbsp;&middot;&nbsp; Made with <span>&#9829;</span> by Nirmit</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  (function(){
+    const bar = document.getElementById('readProgress');
+    const links = Array.from(document.querySelectorAll('#toc a'));
+    const ids = links.map(a => a.getAttribute('href').slice(1));
+    const onScroll = () => {
+      const h = document.documentElement;
+      const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      if (bar) bar.style.width = Math.max(0, Math.min(1, scrolled)) * 100 + '%';
+      let current = ids[0];
+      for (const id of ids){
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 120) current = id;
+      }
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+</body>
+</html>

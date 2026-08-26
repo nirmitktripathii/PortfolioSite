@@ -49,13 +49,13 @@
     <div class="hero-cta">
       <a href="#projects" class="btn-primary"><i class="fas fa-code"></i> View Projects</a>
       <a href="#contact" class="btn-outline"><i class="fas fa-paper-plane"></i> Get in Touch</a>
-      <a href="images/Nirmitk_Tripathii_Resume_2026.pdf" class="btn-outline" download><i class="fas fa-file-download"></i> Download CV</a>
+      <a href="images/Nirmit_Tripathii_Resume_2026.pdf" class="btn-outline" download><i class="fas fa-file-download"></i> Download CV</a>
     </div>
     <div class="hero-stats">
       <div class="stat-item"><div class="stat-num">3+</div><div class="stat-label">Years Experience</div></div>
       <div class="stat-item"><div class="stat-num">12+</div><div class="stat-label">AI Projects Shipped</div></div>
       <div class="stat-item"><div class="stat-num">22</div><div class="stat-label">Indic Languages</div></div>
-      <div class="stat-item"><div class="stat-num">7</div><div class="stat-label">Deep-Dive Write-ups</div></div>
+      <div class="stat-item"><div class="stat-num">10</div><div class="stat-label">Deep-Dive Write-ups</div></div>
     </div>
   </div>
 </section>
@@ -172,6 +172,18 @@
     <p class="section-sub">Production systems, research implementations, and ML experiments.</p>
   </div>
   <div class="projects-grid">
+    <div class="project-card reveal">
+      <div class="project-emoji" style="background:linear-gradient(135deg,#0a1420,#1a0a20);font-size:52px">📬</div>
+      <div class="project-body">
+        <div class="project-tags"><span class="tag">MCP</span><span class="tag">AI Agents</span><span class="tag">TypeScript</span><span class="tag">Multi-Account</span></div>
+        <h3>Email Orchestrator — MCP Agent</h3>
+        <p>A multi-account email agent consolidating Gmail, Zoho, Yahoo &amp; Outlook into one AI-enriched inbox — a single MCP server that is itself an MCP client, fanning out to each provider and re-exposing 17 unified tools. 49 passing tests.</p>
+        <div class="project-links">
+          <a href="article-email-orchestrator.html">Build log →</a>
+          <a href="article-email-thinking-budget.html" class="btn-demo"><i class="fas fa-diagram-project"></i> Deep dives</a>
+        </div>
+      </div>
+    </div>
     <div class="project-card reveal">
       <div class="project-emoji" style="background:linear-gradient(135deg,#0a2012,#0a1a20);font-size:52px">🗺️</div>
       <div class="project-body">
@@ -349,6 +361,50 @@
 
   </div>
 
+  <div class="reveal"><div class="section-tag" style="margin:64px 0 26px">The Email Orchestrator &middot; a 3-part build log</div></div>
+  <div class="writing-grid">
+
+    <a href="article-email-orchestrator.html" class="paper-card reveal">
+      <div class="paper-top pt-agents">
+        <span class="paper-kind">Part 1 · MCP</span>
+        <i class="fas fa-inbox paper-glyph"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">Fan-out</span><span class="tag">17 tools</span></div>
+        <h3>One Inbox, Three Mailboxes, Zero New APIs</h3>
+        <p>The architecture: one MCP server that is also an MCP client, consolidating four mail providers behind a single 17-tool surface — with exactly one custom component.</p>
+        <div class="paper-foot"><span>2026</span><span class="read">12 min read &rarr;</span></div>
+      </div>
+    </a>
+
+    <a href="article-email-resilience.html" class="paper-card reveal">
+      <div class="paper-top pt-civic">
+        <span class="paper-kind">Part 2 · Resilience</span>
+        <i class="fas fa-arrows-rotate paper-glyph"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">Reconnection</span><span class="tag">allSettled</span></div>
+        <h3>One Dead Inbox Shouldn't Kill the Whole Query</h3>
+        <p>An MCP connection is a child process, and child processes die. The self-healing reconnection — isolation, drop-detection, and a cooldown — that makes it survivable, with two production bugs pinned in tests.</p>
+        <div class="paper-foot"><span>2026</span><span class="read">11 min read &rarr;</span></div>
+      </div>
+    </a>
+
+    <a href="article-email-thinking-budget.html" class="paper-card reveal">
+      <div class="paper-top pt-audio">
+        <span class="paper-kind">Part 3 · LLM</span>
+        <i class="fas fa-brain paper-glyph"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">Thinking Models</span><span class="tag">Token Budget</span></div>
+        <h3>The Model Spent Its Whole Budget Thinking</h3>
+        <p>Empty JSON from an 80-token task with a 512 budget. On a thinking model the fix for a truncated answer is a <em>bigger</em> budget — and it fails completely silently. Floor it, double on retry.</p>
+        <div class="paper-foot"><span>2026</span><span class="read">11 min read &rarr;</span></div>
+      </div>
+    </a>
+
+  </div>
+
   <div class="reveal"><div class="section-tag" style="margin:64px 0 26px">White papers &amp; deep-dives</div></div>
   <div class="writing-grid">
 
@@ -421,7 +477,7 @@
       <div class="social-row">
         <a href="https://www.linkedin.com/in/nirmitk-tripathii-553a92158/" class="social-btn" target="_blank"><i class="fab fa-linkedin-in"></i></a>
         <a href="https://github.com/nirmitktripathii" class="social-btn" target="_blank"><i class="fab fa-github"></i></a>
-        <a href="images/Nirmitk_Tripathii_Resume_2026.pdf" class="social-btn" download title="Download Resume"><i class="fas fa-file-pdf"></i></a>
+        <a href="images/Nirmit_Tripathii_Resume_2026.pdf" class="social-btn" download title="Download Resume"><i class="fas fa-file-pdf"></i></a>
       </div>
     </div>
     <form class="contact-form" name="submit-to-google-sheet">
