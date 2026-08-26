@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Single Origin: India आसपास Civic Platform — Nirmit K. Tripathii</title>
+  <meta name="description" content="How India आसपास turns pothole photos into shareable, crawler-friendly civic reports — server-rendered social previews, a two-tier trust model, and a hardened security posture, running for about US$3 a month."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/d8eaa222fe.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="read-progress" id="readProgress"></div>
+<nav>
+  <a href="index.html"><img src="images/logo.png" class="logo-img" alt="Logo"/></a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="index.html#writing">Writing</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+  <div class="nav-burger" onclick="location.href='index.html'"><i class="fas fa-home"></i></div>
+</nav>
+
+<div class="article-shell">
+  <a href="index.html#writing" class="article-back"><i class="fas fa-arrow-left"></i> ALL WRITING</a>
+
+  <header class="article-hero">
+    <div class="article-kicker"><i class="fas fa-city"></i> White Paper · Systems &amp; Full-Stack</div>
+    <h1 class="article-title">Single Origin: A Production Civic-Reporting Platform on a Free-Tier Budget</h1>
+    <p class="article-standfirst">India आसपास turns a photo of a pothole into a shareable, crawler-friendly civic report. The hard parts were never the map — they were making a JavaScript app describe itself to WhatsApp, trusting strangers just enough to let them post, and hardening an upload path that assumes every phone photo carries the sender's home GPS. Here is how it all fits in one Node process running for about US$3 a month.</p>
+    <div class="article-meta">
+      <span class="am"><i class="fas fa-user"></i> Nirmit K. Tripathii</span>
+      <span class="am"><i class="fas fa-calendar"></i> August 2026</span>
+      <span class="am"><i class="fas fa-clock"></i> 12 min read</span>
+      <span class="am"><i class="fab fa-github"></i> <a href="https://github.com/nirmitktripathii/india-aaspaas" target="_blank" style="color:inherit">Source on GitHub</a></span>
+    </div>
+    <div class="article-chips">
+      <span class="tag">Node 22 / Express</span>
+      <span class="tag">PostgreSQL</span>
+      <span class="tag">SSR meta shell</span>
+      <span class="tag">React + Leaflet</span>
+      <span class="tag">Cloudflare R2</span>
+      <span class="tag">Zod · JWT</span>
+    </div>
+  </header>
+
+  <div class="article-layout">
+    <aside class="article-toc">
+      <h4>On this page</h4>
+      <nav id="toc">
+        <a href="#problem">A distribution problem</a>
+        <a href="#origin">One process, one origin</a>
+        <a href="#previews">The part nobody sees</a>
+        <a href="#trust">Trust in two tiers</a>
+        <a href="#schema">A schema that does work</a>
+        <a href="#security">When input is a stranger's photo</a>
+        <a href="#budget">Shipping for the price of a coffee</a>
+        <a href="#takeaways">Key takeaways</a>
+      </nav>
+    </aside>
+
+    <article class="prose">
+      <p class="lead">Most "report a civic issue" apps die quietly. Not because the map is hard, but because a report that cannot travel is a report nobody acts on. The whole design of India आसपास — <em>भारत के लिए एक सामुदायिक समस्या रिपोर्टिंग प्लेटफॉर्म</em> — is bent toward one goal: a resident photographs a pothole, garbage dump, or broken streetlight, and the resulting link renders as a rich preview card the moment it lands in a WhatsApp group.</p>
+
+      <h2 id="problem"><span class="h2num">01</span>A civic problem that is really a distribution problem</h2>
+      <p>Residents report the ordinary failures of a shared city: potholes, garbage dumping, illegal construction, traffic, water and drainage, dead street lighting. Anyone can report anonymously and a moderator publishes it; a verified resident publishes instantly. That part is table stakes.</p>
+      <p>The part that decides whether the platform matters is what happens <strong>after</strong> a report is published. Civic pressure is a numbers game — a report shared to a neighbourhood WhatsApp group, to X, to a councillor's inbox, is worth a hundred reports sitting in a database. So every published report has to be shareable to WhatsApp, X, Facebook, Telegram and LinkedIn <em>with a real preview card</em>, not a bare grey URL. That single requirement drove almost every architectural decision below.</p>
+
+      <div class="metric-grid">
+        <div class="metric"><div class="mv">6</div><div class="ml">civic issue categories on one public map</div></div>
+        <div class="metric"><div class="mv">67</div><div class="ml">backend tests against a real Postgres engine</div></div>
+        <div class="metric"><div class="mv">1,200</div><div class="ml">seed reports across 12 Indian cities</div></div>
+        <div class="metric"><div class="mv">~$3<span style="font-size:14px">/mo</span></div><div class="ml">production hosting, Mumbai region</div></div>
+      </div>
+
+      <h2 id="origin"><span class="h2num">02</span>One process, one origin</h2>
+      <p>The most consequential choice was to serve everything — the JSON API, the metadata shell for crawlers, the generated share cards, and the built single-page app — from <strong>one Node 22 / Express process on one origin</strong>. It sits behind Cloudflare's free CDN for TLS, caching and WAF, and talks to a managed PostgreSQL and an S3-compatible object store.</p>
+
+      <figure class="figure">
+        <svg viewBox="0 0 720 360" role="img" aria-label="Single-origin architecture diagram">
+          <defs>
+            <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 z" fill="var(--accent)"/></marker>
+          </defs>
+          <!-- clients -->
+          <rect class="svg-box" x="20" y="30" width="150" height="86" rx="10"/>
+          <text class="svg-title" x="95" y="62" text-anchor="middle">Clients</text>
+          <text class="svg-label" x="95" y="82" text-anchor="middle">Browser</text>
+          <text class="svg-label" x="95" y="98" text-anchor="middle">WhatsApp / Googlebot</text>
+          <!-- cloudflare -->
+          <rect class="svg-box" x="230" y="30" width="150" height="86" rx="10"/>
+          <text class="svg-title" x="305" y="62" text-anchor="middle">Cloudflare</text>
+          <text class="svg-label" x="305" y="82" text-anchor="middle">TLS · cache · WAF</text>
+          <text class="svg-label" x="305" y="98" text-anchor="middle">free tier</text>
+          <!-- node -->
+          <rect x="440" y="20" width="255" height="200" rx="12" fill="var(--card)" stroke="var(--accent)" stroke-width="1.5"/>
+          <text class="svg-title" x="567" y="46" text-anchor="middle">Node 22 · Express 4</text>
+          <rect class="svg-box" x="458" y="62" width="220" height="30" rx="6"/><text class="svg-label" x="468" y="81">/api/*  — JSON API</text>
+          <rect class="svg-box" x="458" y="98" width="220" height="30" rx="6"/><text class="svg-label" x="468" y="117">/issue/* — SSR meta shell</text>
+          <rect class="svg-box" x="458" y="134" width="220" height="30" rx="6"/><text class="svg-label" x="468" y="153">/og/* — generated share cards</text>
+          <rect class="svg-box" x="458" y="170" width="220" height="30" rx="6"/><text class="svg-label" x="468" y="189">/* — built React SPA</text>
+          <!-- stores -->
+          <rect class="svg-box" x="440" y="250" width="120" height="80" rx="10"/>
+          <text class="svg-title" x="500" y="284" text-anchor="middle" style="font-size:12px">PostgreSQL</text>
+          <text class="svg-label" x="500" y="302" text-anchor="middle">Supabase free</text>
+          <rect class="svg-box" x="575" y="250" width="120" height="80" rx="10"/>
+          <text class="svg-title" x="635" y="284" text-anchor="middle" style="font-size:12px">Object store</text>
+          <text class="svg-label" x="635" y="302" text-anchor="middle">Cloudflare R2</text>
+          <!-- flows -->
+          <line class="svg-flow" x1="172" y1="73" x2="226" y2="73"/>
+          <line class="svg-flow" x1="382" y1="73" x2="436" y2="73"/>
+          <line class="svg-flow" x1="500" y1="222" x2="500" y2="248"/>
+          <line class="svg-flow" x1="635" y1="222" x2="635" y2="248"/>
+        </svg>
+        <figcaption class="figcap">One process answers the API, the crawler shell, the share cards and the SPA — no cross-origin surface to police.</figcaption>
+      </figure>
+
+      <p>The alternative — a static SPA host plus a separate API — is the default that quietly kills the sharing feature. It introduces CORS preflights, cross-site cookie restrictions, and the exact class of bug where a social crawler hits the static host and <em>never reaches the code that knows how to describe the page.</em> Collapsing everything onto one origin removes that entire category of problem. (A single flag, <code>SERVE_FRONTEND=false</code>, splits them again if scale ever demands it.)</p>
+
+      <h2 id="previews"><span class="h2num">03</span>The part nobody sees: server-rendered social previews</h2>
+      <p>Here is the uncomfortable fact every SPA sharing feature runs into: <strong>WhatsApp, Facebook, X, Telegram, LinkedIn and Google all fetch a URL with a plain HTTP client and read the raw HTML. None of them execute JavaScript.</strong> A Vite SPA therefore serves every crawler the same empty <code>index.html</code>, and every shared link renders as a bare grey URL. The map works perfectly for humans and is invisible to the machines that carry links between them.</p>
+      <p>The fix did not require a framework migration to Next.js. A single module, <code>ssr/metaRenderer.js</code>, reads the built <code>index.html</code> once at boot, then for a request to <code>/issue/:slug</code> or <code>/user/:username</code> it strips the placeholder <code>&lt;title&gt;</code> and description, looks up the entity, and streams <code>head + generated tags + tail</code>. React then hydrates over the top exactly as before.</p>
+
+      <figure class="figure">
+        <svg viewBox="0 0 720 250" role="img" aria-label="Crawler versus browser request flow">
+          <defs>
+            <marker id="arrow2" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 z" fill="var(--accent)"/></marker>
+          </defs>
+          <rect class="svg-box" x="20" y="40" width="150" height="60" rx="10"/>
+          <text class="svg-title" x="95" y="66" text-anchor="middle" style="font-size:12px">WhatsApp crawler</text>
+          <text class="svg-label" x="95" y="84" text-anchor="middle">no JavaScript</text>
+          <rect class="svg-box" x="20" y="150" width="150" height="60" rx="10"/>
+          <text class="svg-title" x="95" y="176" text-anchor="middle" style="font-size:12px">Human browser</text>
+          <text class="svg-label" x="95" y="194" text-anchor="middle">runs React</text>
+          <rect x="250" y="70" width="200" height="110" rx="12" fill="var(--card)" stroke="var(--accent)" stroke-width="1.5"/>
+          <text class="svg-title" x="350" y="100" text-anchor="middle" style="font-size:12px">metaRenderer.js</text>
+          <text class="svg-label" x="350" y="122" text-anchor="middle">head + generated</text>
+          <text class="svg-label" x="350" y="138" text-anchor="middle">OG/Twitter tags +</text>
+          <text class="svg-label" x="350" y="154" text-anchor="middle">embedded JSON + tail</text>
+          <rect class="svg-box" x="520" y="40" width="180" height="60" rx="10"/>
+          <text class="svg-label" x="610" y="66" text-anchor="middle">Rich preview card</text>
+          <text class="svg-label" x="610" y="84" text-anchor="middle">title · image · text</text>
+          <rect class="svg-box" x="520" y="150" width="180" height="60" rx="10"/>
+          <text class="svg-label" x="610" y="176" text-anchor="middle">Instant paint, then</text>
+          <text class="svg-label" x="610" y="194" text-anchor="middle">React hydrates</text>
+          <line class="svg-flow" x1="172" y1="70" x2="248" y2="100"/>
+          <line class="svg-flow" x1="172" y1="180" x2="248" y2="150"/>
+          <line class="svg-flow" x1="452" y1="100" x2="518" y2="70"/>
+          <line class="svg-flow" x1="452" y1="150" x2="518" y2="180"/>
+        </svg>
+        <figcaption class="figcap">Same URL, same module — the crawler gets described metadata, the human gets a page that paints from embedded JSON before hydration.</figcaption>
+      </figure>
+
+      <p>The report is also embedded as JSON in that response, so a link opened from WhatsApp <em>paints immediately</em> instead of showing a spinner while the API round-trips. And crucially, sharing is gated on moderation in three independent places — the serializer, the share endpoint, and the metadata renderer, which marks unapproved reports <code>noindex</code> and never exposes their text to a crawler. An un-approved report simply cannot leak through the preview surface.</p>
+
+      <div class="callout">
+        <i class="fas fa-lightbulb"></i>
+        <div class="ct"><strong>The reusable lesson</strong>You don't need SSR for your whole app. You need it for the handful of routes that strangers' crawlers will fetch. Isolating that to one streaming module kept a fast client-rendered map and still made every link describe itself.</div>
+      </div>
+
+      <h2 id="trust"><span class="h2num">04</span>Trust in two tiers</h2>
+      <p>Civic platforms live or die on a single tension: friction keeps out spam, but friction also keeps out the exhausted resident who just wants to report a problem once. India आसपास resolves it with a two-tier trust model where <strong>email verification is the only thing that unlocks instant publishing.</strong></p>
+      <table class="data-table">
+        <thead><tr><th>Role</th><th>Report</th><th>Comment</th><th>Moderate</th><th>Manage users</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Visitor</strong> (anonymous)</td><td>✅ → queued</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td><strong>Registered</strong> (unverified)</td><td>✅ → queued</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td><strong>Registered</strong> (verified)</td><td>✅ → <strong>instant</strong></td><td>✅</td><td>—</td><td>—</td></tr>
+          <tr><td><strong>Moderator</strong></td><td>✅ instant</td><td>✅</td><td>✅</td><td>—</td></tr>
+          <tr><td><strong>Admin</strong></td><td>✅ instant</td><td>✅</td><td>✅</td><td>✅</td></tr>
+        </tbody>
+      </table>
+      <p>Anyone can join and anyone can report; only a confirmed address skips the moderation queue. This means the barrier to <em>raising a complaint</em> is zero, while the barrier to <em>publishing unreviewed to a public map</em> is a single click in an inbox. The role a request runs under is re-read from the database on every request, so revoking someone's access takes effect immediately rather than at their next login.</p>
+
+      <h2 id="schema"><span class="h2num">05</span>A schema that does real work</h2>
+      <p>Nine tables back the whole thing, in raw parameterised SQL against PostgreSQL rather than an ORM — because the interesting behaviour lives in the database: triggers, generated columns, full-text search and percentile queries. An ORM would hide exactly the parts that carry their weight.</p>
+      <p>The sharpest example is counters. The map endpoint reads every visible row on every load, and aggregate subqueries there — <code>COUNT</code>-ing votes and comments per report — are the first thing to become a bottleneck. So <code>upvotes</code>, <code>comment_count</code> and <code>share_count</code> are denormalised columns maintained by triggers as votes and comments change, never recomputed per request.</p>
+      <div class="callout good">
+        <i class="fas fa-language"></i>
+        <div class="ct"><strong>A detail that matters in India</strong>Full-text search uses PostgreSQL's <code>simple</code> dictionary, which applies no stemming. That is what makes it behave correctly for Devanagari as well as Latin script — and it needs no extension a managed free tier might not expose. A search feature that only worked in English would have quietly excluded most of the intended users.</div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Table</th><th>Carries</th></tr></thead>
+        <tbody>
+          <tr><td><code>issues</code></td><td>Reports, moderation state, denormalised counters, a generated <code>tsvector</code></td></tr>
+          <tr><td><code>users</code></td><td>Accounts, roles, verification state, civic points</td></tr>
+          <tr><td><code>refresh_tokens</code></td><td>Hashed, rotating, individually revocable sessions</td></tr>
+          <tr><td><code>share_events</code></td><td>Which platform, which report, when — the data behind "what actually spreads"</td></tr>
+          <tr><td><code>audit_log</code></td><td>Every moderation and account action, with salted-hashed IPs</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="security"><span class="h2num">06</span>Security when the input is a stranger's phone photo</h2>
+      <p>An anonymous, public upload endpoint is one of the most hostile surfaces you can expose. The threat model here starts from an unusual but correct assumption: <strong>the photo itself is dangerous.</strong> A phone photo of a pothole outside someone's house carries EXIF GPS pointing at that house. So every upload is decoded with <code>sharp</code>, stripped of EXIF, and re-encoded to three WebP derivatives — and the image format is detected from the decoded bytes, not the client's MIME header, so a renamed executable never gets treated as an image.</p>
+      <table class="data-table">
+        <thead><tr><th>Concern</th><th>Measure</th></tr></thead>
+        <tbody>
+          <tr><td>Credential theft via XSS</td><td>Access token in memory only; refresh token in an HttpOnly cookie</td></tr>
+          <tr><td>Stolen refresh token</td><td>Rotation on every use, with family-wide revocation on replay</td></tr>
+          <tr><td>Account enumeration</td><td>Identical responses <em>and timing</em> for unknown-user vs wrong-password</td></tr>
+          <tr><td>Mass assignment</td><td>Zod parses and <em>replaces</em> the request body; unknown keys are dropped before a handler sees them</td></tr>
+          <tr><td>Data leakage</td><td>Allow-list serialisers — a newly added column cannot start appearing in public responses by accident</td></tr>
+          <tr><td>Location leakage</td><td>EXIF stripped from every upload; only server-derived coordinates are stored</td></tr>
+        </tbody>
+      </table>
+      <p>The theme across all of it is <em>defaults that fail safe</em>: input is replaced rather than merged, output is allow-listed rather than blocked, and privileges are re-checked rather than cached. Each one turns a whole class of "someone forgot to…" bug into a structural impossibility.</p>
+
+      <h2 id="budget"><span class="h2num">07</span>Shipping it for the price of a coffee</h2>
+      <p>None of this assumes a budget. The production target is a single <code>fly.toml</code> app in the Mumbai region at roughly US$3/month, fronted by Cloudflare's free tier, with PostgreSQL on a managed free plan and images on Cloudflare R2 — chosen specifically because R2 has zero egress cost, and every shared link pulls a preview image. A blueprint for Render's free tier ships alongside it.</p>
+      <p>Testing stays honest without a cloud bill too: the 67-test suite runs against <strong>PGlite</strong> — PostgreSQL compiled to WebAssembly — so tests exercise the real engine, triggers and generated columns included, with no Docker daemon and no service container in CI. The same triggers that maintain the counters in production are the ones the tests assert against.</p>
+
+      <div class="takeaways">
+        <h4>Key takeaways</h4>
+        <ul>
+          <li><strong>Design for the crawler, not just the browser.</strong> For a sharing-driven product, server-rendered metadata on a few routes is the feature — a client-only SPA makes every link invisible.</li>
+          <li><strong>One origin removes a category of bugs.</strong> Collapsing API, SSR shell, share cards and SPA into one process erased CORS, cross-site-cookie and "crawler-never-reached-the-code" failures.</li>
+          <li><strong>Push behaviour into PostgreSQL.</strong> Triggers, generated <code>tsvector</code>s and denormalised counters did the work an ORM would have hidden — and the <code>simple</code> dictionary made search work in Devanagari.</li>
+          <li><strong>Assume the input is hostile</strong> — even the photo. Fail-safe defaults (replace, allow-list, re-check) beat remembering to sanitise.</li>
+          <li><strong>Free-tier is a real constraint, not a demo.</strong> Zero-egress storage, a WASM Postgres for tests, and a $3 VM shaped the architecture as much as any feature did.</li>
+        </ul>
+      </div>
+
+      <div class="article-cta">
+        <a href="https://github.com/nirmitktripathii/india-aaspaas" target="_blank" class="btn-article primary"><i class="fab fa-github"></i> Read the source</a>
+        <a href="index.html#writing" class="btn-article ghost"><i class="fas fa-newspaper"></i> More writing</a>
+      </div>
+
+      <div class="author-card">
+        <img src="images/user.png" alt="Nirmit K. Tripathii"/>
+        <div>
+          <div class="an">Nirmit K. Tripathii</div>
+          <div class="ar">AI/ML Engineer &amp; Researcher. Building production AI systems, agentic pipelines and civic technology. Currently AI/ML Software Engineer at Chetu India.</div>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026 Nirmit K. Tripathii &nbsp;&middot;&nbsp; Made with <span>&#9829;</span> by Nirmit</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  // Reading progress + TOC scroll-spy
+  (function(){
+    const bar = document.getElementById('readProgress');
+    const links = Array.from(document.querySelectorAll('#toc a'));
+    const ids = links.map(a => a.getAttribute('href').slice(1));
+    const onScroll = () => {
+      const h = document.documentElement;
+      const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      if (bar) bar.style.width = Math.max(0, Math.min(1, scrolled)) * 100 + '%';
+      let current = ids[0];
+      for (const id of ids){
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 120) current = id;
+      }
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+</body>
+</html>

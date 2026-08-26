@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ten Agents, One Newsroom — Nirmit K. Tripathii</title>
+  <meta name="description" content="How ten cooperating AI agents turn a long podcast into scheduled short-form videos — a provider-agnostic LLM layer with automatic fallback, 24 prompt-injected craft playbooks, a learning feedback loop, and a QA gate that blocks broken clips before they post."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/d8eaa222fe.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="read-progress" id="readProgress"></div>
+<nav>
+  <a href="index.html"><img src="images/logo.png" class="logo-img" alt="Logo"/></a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="index.html#writing">Writing</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+  <div class="nav-burger" onclick="location.href='index.html'"><i class="fas fa-home"></i></div>
+</nav>
+
+<div class="article-shell">
+  <a href="index.html#writing" class="article-back"><i class="fas fa-arrow-left"></i> ALL WRITING</a>
+
+  <header class="article-hero">
+    <div class="article-kicker"><i class="fas fa-robot"></i> White Paper · Agentic AI &amp; Orchestration</div>
+    <h1 class="article-title">Ten Agents, One Newsroom: Orchestrating an Autonomous Video Factory</h1>
+    <p class="article-standfirst">Give it a YouTube podcast link and it transcribes the episode, finds the clip-worthy moments, cuts them to vertical, burns in captions, quality-checks every render, writes the titles, and schedules the posts — unattended, on a daily loop, for roughly zero cost. The interesting part isn't any single model. It's the org chart: ten specialised agents, a provider-agnostic brain, and a feedback loop that makes the whole team get better.</p>
+    <div class="article-meta">
+      <span class="am"><i class="fas fa-user"></i> Nirmit K. Tripathii</span>
+      <span class="am"><i class="fas fa-calendar"></i> August 2026</span>
+      <span class="am"><i class="fas fa-clock"></i> 13 min read</span>
+      <span class="am"><i class="fab fa-github"></i> <a href="https://github.com/nirmitktripathii/podcast-shorts-factory" target="_blank" style="color:inherit">Open source (MIT)</a></span>
+    </div>
+    <div class="article-chips">
+      <span class="tag">Multi-agent</span>
+      <span class="tag">LLM orchestration</span>
+      <span class="tag">Provider fallback</span>
+      <span class="tag">faster-whisper</span>
+      <span class="tag">ffmpeg</span>
+      <span class="tag">Tool-calling</span>
+    </div>
+  </header>
+
+  <div class="article-layout">
+    <aside class="article-toc">
+      <h4>On this page</h4>
+      <nav id="toc">
+        <a href="#orgchart">The org chart, not the model</a>
+        <a href="#roster">What each agent owns</a>
+        <a href="#brain">A provider-agnostic brain</a>
+        <a href="#skills">Craft as prompt-injected skills</a>
+        <a href="#loop">The loop that learns</a>
+        <a href="#gate">The quality gate</a>
+        <a href="#reliability">Never silently zero</a>
+        <a href="#takeaways">Key takeaways</a>
+      </nav>
+    </aside>
+
+    <article class="prose">
+      <p class="lead">Most "AI video" tools are a single prompt wearing a UI. This one is built like a small production company: every job that a human short-form team would divide among a researcher, an editor, a social manager, a QA reviewer and a showrunner is given to a dedicated agent with its own brief, its own tools, and its own craft knowledge. The design question was never "which model" — it was "who owns what, and how do they hand off?"</p>
+
+      <h2 id="orgchart"><span class="h2num">01</span>The org chart, not the model</h2>
+      <p>The pipeline is a directed hand-off between ten agents. A source URL enters at the Finder and a scheduled post leaves at the Uploader; along the way the Planner briefs the Editor, the Finishing Editor gates the render, and — the part that makes it a <em>system</em> rather than a script — the Manager writes what it learns back into a file the Finder reads on the next run.</p>
+
+      <figure class="figure">
+        <svg viewBox="0 0 720 320" role="img" aria-label="Ten-agent pipeline with feedback loop">
+          <defs>
+            <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 z" fill="var(--accent)"/></marker>
+            <marker id="arrowP" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 z" fill="var(--accent3)"/></marker>
+          </defs>
+          <!-- top row pipeline -->
+          <g>
+            <rect class="svg-box" x="14" y="40" width="96" height="48" rx="8"/><text class="svg-label" x="62" y="60" text-anchor="middle">Trend Scout</text><text class="svg-label" x="62" y="76" text-anchor="middle" style="fill:var(--accent)">trends</text>
+            <rect class="svg-box" x="130" y="40" width="96" height="48" rx="8"/><text class="svg-label" x="178" y="60" text-anchor="middle">Finder</text><text class="svg-label" x="178" y="76" text-anchor="middle" style="fill:var(--accent)">score clips</text>
+            <rect class="svg-box" x="246" y="40" width="96" height="48" rx="8"/><text class="svg-label" x="294" y="60" text-anchor="middle">Planner</text><text class="svg-label" x="294" y="76" text-anchor="middle" style="fill:var(--accent)">creative brief</text>
+            <rect class="svg-box" x="362" y="40" width="96" height="48" rx="8"/><text class="svg-label" x="410" y="60" text-anchor="middle">Editor</text><text class="svg-label" x="410" y="76" text-anchor="middle" style="fill:var(--accent)">render 9:16</text>
+            <rect x="478" y="36" width="110" height="56" rx="8" fill="var(--card)" stroke="var(--accent2)" stroke-width="1.5"/><text class="svg-label" x="533" y="58" text-anchor="middle">Finishing Ed.</text><text class="svg-label" x="533" y="74" text-anchor="middle" style="fill:var(--accent2)">QA gate</text>
+            <rect class="svg-box" x="608" y="40" width="98" height="48" rx="8"/><text class="svg-label" x="657" y="60" text-anchor="middle">Uploader</text><text class="svg-label" x="657" y="76" text-anchor="middle" style="fill:var(--accent)">schedule</text>
+          </g>
+          <line class="svg-flow" x1="110" y1="64" x2="128" y2="64"/>
+          <line class="svg-flow" x1="226" y1="64" x2="244" y2="64"/>
+          <line class="svg-flow" x1="342" y1="64" x2="360" y2="64"/>
+          <line class="svg-flow" x1="458" y1="64" x2="476" y2="64"/>
+          <line class="svg-flow" x1="588" y1="64" x2="606" y2="64"/>
+          <!-- metrics + feedback -->
+          <rect class="svg-box" x="608" y="150" width="98" height="48" rx="8"/><text class="svg-label" x="657" y="170" text-anchor="middle">Manager</text><text class="svg-label" x="657" y="186" text-anchor="middle" style="fill:var(--accent3)">metrics</text>
+          <rect class="svg-box" x="130" y="150" width="96" height="48" rx="8"/><text class="svg-label" x="178" y="170" text-anchor="middle">learnings.md</text><text class="svg-label" x="178" y="186" text-anchor="middle" style="fill:var(--accent3)">feedback</text>
+          <path d="M657,88 V150" class="svg-flow-2" marker-end="url(#arrowP)"/>
+          <path d="M608,174 H230" class="svg-flow-2" marker-end="url(#arrowP)"/>
+          <path d="M178,150 V90" class="svg-flow-2" marker-end="url(#arrowP)"/>
+          <text class="svg-label" x="400" y="140" text-anchor="middle" style="fill:var(--accent3)">the learning loop: real metrics → learnings → next run's clip selection</text>
+          <!-- weekly agents -->
+          <rect class="svg-box" x="14" y="250" width="150" height="44" rx="8"/><text class="svg-label" x="89" y="277" text-anchor="middle">Trainer — weekly craft update</text>
+          <rect class="svg-box" x="184" y="250" width="150" height="44" rx="8"/><text class="svg-label" x="259" y="277" text-anchor="middle">Compiler — weekly long-form</text>
+          <rect class="svg-box" x="354" y="250" width="150" height="44" rx="8"/><text class="svg-label" x="429" y="277" text-anchor="middle">Community — comment replies</text>
+        </svg>
+        <figcaption class="figcap">Solid arrows: the per-episode pipeline. Dashed arrows: the weekly/continuous learning loop. Ten agents, each with a single clear responsibility.</figcaption>
+      </figure>
+
+      <h2 id="roster"><span class="h2num">02</span>What each agent owns</h2>
+      <p>Single responsibility is enforced at the agent boundary. No agent both selects and renders; no agent both renders and judges its own output. That separation is what lets each one carry a focused prompt and a narrow toolset.</p>
+      <table class="data-table">
+        <thead><tr><th>#</th><th>Agent</th><th>Responsibility</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><strong>Finder</strong></td><td>Downloads and transcribes with word-level timestamps (faster-whisper), then AI-scores the most clip-worthy moments; long episodes are chunk-scored so nothing is missed.</td></tr>
+          <tr><td>2</td><td><strong>Editor</strong></td><td>Cuts with ffmpeg, reframes to vertical 9:16 with face tracking, burns karaoke captions, punch-zooms on emphasis words, adds b-roll, grade and a retention bar.</td></tr>
+          <tr><td>3</td><td><strong>Uploader</strong></td><td>Writes platform-specific titles, descriptions and hashtags; posts to YouTube Shorts via the official API and can schedule a whole day server-side.</td></tr>
+          <tr><td>4</td><td><strong>Manager</strong></td><td>Pulls real metrics (views, retention), works out what is winning, and writes it back for the Finder — the feedback loop.</td></tr>
+          <tr><td>5</td><td><strong>Trend Scout</strong></td><td>Free web search for what's trending in the niche right now, so selection leans toward current demand.</td></tr>
+          <tr><td>6</td><td><strong>Planner</strong></td><td>Gives each clip its creative direction: hook text, music mood, emphasis words, SFX/b-roll/transition placement.</td></tr>
+          <tr><td>7</td><td><strong>Community</strong></td><td>Drafts replies to comments so engagement doesn't die on the vine.</td></tr>
+          <tr><td>8</td><td><strong>Finishing Editor</strong></td><td>The quality gate — <em>watches</em> every render and catches captions over faces, black/frozen frames, dead air, clipped audio, wrong durations.</td></tr>
+          <tr><td>9</td><td><strong>Trainer</strong></td><td>The coach — weekly, studies top-performing Shorts in the niche and updates one craft playbook.</td></tr>
+          <tr><td>10</td><td><strong>Compiler</strong></td><td>The showrunner — stitches the week's best moments into a long-form 16:9 episode with an AI-narrator editorial spine.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="brain"><span class="h2num">03</span>A provider-agnostic brain</h2>
+      <p>Every agent calls the same two helpers — <code>call_tool()</code> for structured output against a schema, and <code>call_text()</code> for free-form text — and neither knows or cares which model answered. The provider is chosen in <code>config.yaml</code>; agent code never changes when you switch from a paid Claude endpoint to a free one.</p>
+      <p>The load-bearing feature is <strong>automatic fallback</strong>. The single worst failure mode in an unattended pipeline is silent degradation: the primary provider gets rate-limited, the call quietly returns a dumb default, and the day's clips ship broken while a perfectly good provider sits unused. So the LLM layer builds a chain — primary first, then each configured fallback that has an API key — and walks it on rate-limit or error.</p>
+      <div class="code-label">factory/llm.py — provider chain</div>
+      <pre><code>PROVIDERS = {
+  "openrouter": ("OPENROUTER_API_KEY", ".../api/v1", "llama-3.3-70b-instruct"),
+  "groq":      ("GROQ_API_KEY",       ".../openai/v1", "llama-3.3-70b-versatile"),
+  "gemini":    ("GEMINI_API_KEY",     ".../v1beta/openai/", "gemini-2.5-flash"),
+  "nvidia":    ("NVIDIA_API_KEY",     ".../v1", "llama-3.3-70b-instruct"),
+  "ollama":    (None,                 "localhost:11434/v1", "llama3.1"),
+}
+# primary provider first, then every fallback that actually has a key
+chain = [primary] + [f for f in cfg.fallbacks if has_key(f)]</code></pre>
+      <div class="callout good">
+        <i class="fas fa-shield-halved"></i>
+        <div class="ct"><strong>Design rule</strong>An unattended agent must fail <em>loudly and sideways</em>, never quietly downward. Trying the next capable provider is strictly better than shipping a degraded default — and because the interface is two helpers, that resilience lives in one file instead of ten agents.</div>
+      </div>
+
+      <h2 id="skills"><span class="h2num">04</span>Craft as prompt-injected skills</h2>
+      <p>An LLM told to "pick a good clip" produces random results. The difference between random and deliberate is <strong>24 written craft playbooks</strong> in <code>factory/skills/</code> — markdown on hooks, storytelling, pacing, sound design, captions, thumbnails, SEO, engagement and monetization — loaded directly into the relevant agent's prompt. The Finder reasons with a battle-tested selection brief (drama-first picking, the 3-second test, "start where the drama lands," loop-back endings for rewatches); the Editor reasons with editing and sound-design playbooks.</p>
+      <p>Keeping craft as editable markdown rather than baked-in code means the system's taste can be tuned without touching a line of Python — and it's what makes the output feel authored instead of arbitrary.</p>
+
+      <h2 id="loop"><span class="h2num">05</span>The loop that learns</h2>
+      <p>A pipeline that produces the same average clip forever is a tool. A pipeline that gets better is a system. Two mechanisms close the loop:</p>
+      <ul>
+        <li><strong>Per-run:</strong> the Manager reads real analytics — views, retention — decides what actually won, and writes that verdict to a learnings file the Finder consults before scoring the next episode's candidates.</li>
+        <li><strong>Weekly:</strong> the Trainer studies the top-performing Shorts in the niche (not just your own) and updates one craft playbook, so the whole team levels up instead of standing still.</li>
+      </ul>
+      <p>The feedback isn't a vague "do better" — it's a concrete artefact (an updated file) that a specific downstream agent already reads. That's what makes the improvement compound rather than evaporate.</p>
+
+      <h2 id="gate"><span class="h2num">06</span>The quality gate that watches</h2>
+      <p>Agent 8, the Finishing Editor, exists because generative pipelines fail in visually obvious but programmatically invisible ways. It reviews every finished render the way a picky human editor would and catches captions covering a speaker's face, black or frozen frames, dead-air gaps, clipped or too-quiet audio, and wrong durations. Cheap problems (a quiet mix) it auto-fixes; broken clips it <em>blocks from ever posting</em>.</p>
+      <p>Crucially, a block doesn't thin the schedule: the <code>produce</code> step renders-to-target with <strong>QA backfill</strong> — a blocked clip's slot is automatically refilled with the next-best candidate. The gate raises quality without ever leaving a hole in the day's plan.</p>
+
+      <h2 id="reliability"><span class="h2num">07</span>Never silently zero</h2>
+      <p>Unattended means the failures happen while you're asleep, so the system is built to refuse two outcomes above all: shipping something broken, and shipping nothing. Beyond the QA gate and provider fallback:</p>
+      <table class="data-table">
+        <thead><tr><th>Risk</th><th>Guard</th></tr></thead>
+        <tbody>
+          <tr><td>A strict selection brief finds no clips</td><td>Relaxed-brief fallback re-runs loosened, so an episode never silently yields zero (plus a phone alert if it does)</td></tr>
+          <tr><td>A missed 6 AM scheduled run</td><td>Startup catch-up guard retries at boot without double-booking a day already scheduled</td></tr>
+          <tr><td>Scratch files filling the OS drive</td><td>All temp/scratch routed to the project drive</td></tr>
+          <tr><td>A dependency silently breaking face-tracking</td><td>opencv pinned &lt;5 (v5 removed the API); scenedetect added for real camera-cut awareness</td></tr>
+        </tbody>
+      </table>
+      <p>And it all runs free by default: transcription is local (faster-whisper), the voiceover uses free Edge TTS, and the background-music library is pure synthesis, so the output is safe to monetize. Paid Claude is offered as the "best quality" option, not a requirement.</p>
+
+      <div class="takeaways">
+        <h4>Key takeaways</h4>
+        <ul>
+          <li><strong>Decompose by responsibility.</strong> Ten single-purpose agents with clean hand-offs beat one mega-prompt — and let each carry focused craft knowledge and a narrow toolset.</li>
+          <li><strong>Never let an agent judge its own output.</strong> A separate QA agent that <em>watches</em> renders, with automatic backfill, catches the failures the generator can't see.</li>
+          <li><strong>Fail sideways, not downward.</strong> A provider-agnostic layer with automatic fallback turns rate-limits into a non-event instead of a batch of degraded output.</li>
+          <li><strong>Make the feedback a concrete artefact</strong> that a specific agent already reads, so improvement compounds across runs.</li>
+          <li><strong>Externalise taste as editable skills.</strong> 24 markdown playbooks make the system's judgement tunable without code changes.</li>
+        </ul>
+      </div>
+
+      <div class="article-cta">
+        <a href="https://github.com/nirmitktripathii/podcast-shorts-factory" target="_blank" class="btn-article primary"><i class="fab fa-github"></i> Explore the repo</a>
+        <a href="index.html#writing" class="btn-article ghost"><i class="fas fa-newspaper"></i> More writing</a>
+      </div>
+
+      <div class="author-card">
+        <img src="images/user.png" alt="Nirmit K. Tripathii"/>
+        <div>
+          <div class="an">Nirmit K. Tripathii</div>
+          <div class="ar">AI/ML Engineer &amp; Researcher building agentic LLM systems, multimodal pipelines and production AI. Open-sourced this project under MIT after a month of nights and weekends.</div>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026 Nirmit K. Tripathii &nbsp;&middot;&nbsp; Made with <span>&#9829;</span> by Nirmit</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  (function(){
+    const bar = document.getElementById('readProgress');
+    const links = Array.from(document.querySelectorAll('#toc a'));
+    const ids = links.map(a => a.getAttribute('href').slice(1));
+    const onScroll = () => {
+      const h = document.documentElement;
+      const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      if (bar) bar.style.width = Math.max(0, Math.min(1, scrolled)) * 100 + '%';
+      let current = ids[0];
+      for (const id of ids){
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 120) current = id;
+      }
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+</body>
+</html>

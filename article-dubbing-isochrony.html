@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Teaching an LLM to Fit Its Mouth — Nirmit K. Tripathii</title>
+  <meta name="description" content="AI dubbing drifts out of sync because translations aren't the same length as the original. The industry fixes that in the audio. I fixed it in the translator — and cut length error from 49% to 10%."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/d8eaa222fe.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="read-progress" id="readProgress"></div>
+<nav>
+  <a href="index.html"><img src="images/logo.png" class="logo-img" alt="Logo"/></a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="index.html#writing">Writing</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+  <div class="nav-burger" onclick="location.href='index.html'"><i class="fas fa-home"></i></div>
+</nav>
+
+<div class="article-shell">
+  <a href="index.html#writing" class="article-back"><i class="fas fa-arrow-left"></i> ALL WRITING</a>
+
+  <header class="article-hero">
+    <div class="article-kicker"><i class="fas fa-wave-square"></i> Article · Building an Indic Dubbing Pipeline · Part 1</div>
+    <h1 class="article-title">Teaching an LLM to Fit Its Mouth</h1>
+    <p class="article-standfirst">AI dubbing drifts out of sync because translations aren't the same length as the original. The industry fixes that in the audio. I fixed it in the translator — and cut length error from 49% to 10%.</p>
+    <div class="article-meta">
+      <span class="am"><i class="fas fa-user"></i> Nirmit K. Tripathii</span>
+      <span class="am"><i class="fas fa-calendar"></i> 2026</span>
+      <span class="am"><i class="fas fa-clock"></i> 12 min read</span>
+      <span class="am"><i class="fab fa-github"></i> <a href="https://github.com/nirmitktripathii/dubbing_app" target="_blank" style="color:inherit">dubbing_app</a></span>
+    </div>
+    <div class="article-chips">
+      <span class="tag">LLM</span><span class="tag">Fine-Tuning</span><span class="tag">QLoRA</span><span class="tag">Speech Synthesis</span><span class="tag">Indic NLP</span>
+    </div>
+  </header>
+
+  <figure class="figure" style="margin-top:28px">
+    <img src="images/hero_dubbing.png" alt="Isochrony-aware dubbing" style="width:100%;border-radius:12px;display:block;border:1px solid var(--border)"/>
+    <figcaption class="figcap">Hero image generated with FLUX.</figcaption>
+  </figure>
+
+  <div class="article-layout">
+    <aside class="article-toc">
+      <h4>On this page</h4>
+      <nav id="toc">
+        <a href="#three">Three places to fix it</a>
+        <a href="#constrain">Constraining the translator</a>
+        <a href="#bought">What it bought</a>
+        <a href="#meaning">But did it still mean it?</a>
+        <a href="#plateau">The finding that changed training</a>
+        <a href="#broke">What broke</a>
+        <a href="#different">What I'd do differently</a>
+      </nav>
+    </aside>
+
+    <article class="prose">
+      <p class="lead">The Hindi dub was two seconds behind by the end of the first paragraph. By the end of the clip it was four.</p>
+      <p>Nothing was broken. The transcription was accurate, the translation was good, the text-to-speech was clean. The problem was arithmetic.</p>
+      <p>Here is a row from my own validation set. The English "Milk is rich in calcium." — five short words — becomes:</p>
+      <blockquote class="pullquote">दूध में कैल्शियम की भरपूर मात्रा मौजूद होती है.</blockquote>
+      <p>The phonemizer scores that at <strong>39 phonemes</strong>. You can see the expansion without counting anything. Do that forty times in a five-minute video and the voice track has walked off the end of the picture.</p>
+      <p>This is the central problem in automated dubbing. It has an obvious fix that everybody reaches for first — I reached for it too — and a better fix that the frontier labs have now converged on. This article is about a third place to attack it, upstream of both, that I think is being left on the table.</p>
+      <p>The short version: I moved the constraint into the <strong>translation model</strong>, which now gets told how long its output is allowed to be, in phonemes, before it writes a single word. That took length error from <strong>49% down to 10%</strong> — and, unexpectedly, made the translations <em>better</em> rather than worse.</p>
+
+      <div class="callout">
+        <i class="fas fa-circle-info"></i>
+        <div class="ct"><strong>Scope note</strong>This article is about the <em>fine-tune</em>. The deployed pipeline currently reaches isochrony a different way — Gemini with a chain-of-thought prompt targeting the same phoneme budgets, backed by a rule-based scorer — which gets its own write-up. Every number here is from the fine-tuned model.</div>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric"><div class="mv">49→10%</div><div class="ml">length error, base model → fine-tune (4.8× reduction)</div></div>
+        <div class="metric"><div class="mv">+29→−4%</div><div class="ml">signed error — from systematically long to slightly short</div></div>
+        <div class="metric"><div class="mv">22→30</div><div class="ml">chrF++ translation quality went <em>up</em>, not down</div></div>
+        <div class="metric"><div class="mv">53k</div><div class="ml">training rows, 11 Indic languages, on a free T4</div></div>
+      </div>
+
+      <h2 id="three"><span class="h2num">01</span>Three places to fix it</h2>
+      <p>Making the dub take exactly as long as the original — the literature calls this <em>isochrony</em> — can be enforced at exactly three points in a pipeline. Which one you pick determines what your output sounds like.</p>
+
+      <h3>Stage 1 — After the audio exists (time-stretching)</h3>
+      <p>If the audio is too long, shorten the audio. Every dubbing pipeline starts here, and it works well enough to demo. My v1 did exactly this: after generating each TTS chunk, it compared the chunk's actual duration against the window the original speaker had used, then squeezed — time-stretch it with Librosa (preserving pitch) if too long, pad with silence via Pydub if too short. The docstring I left on that module is blunt about what it did:</p>
+      <pre><code>OLD: Generated audio might be wrong length → FFmpeg atempo stretches it.</code></pre>
+      <p>Pitch-preserving time-stretch is genuinely clever signal processing, and for a 5% squeeze it's inaudible. The trouble is that the errors here aren't 5%. Indic translations of English run routinely 20–40% longer, and sometimes worse. Compress speech by 35% and three things happen, in increasing order of how much they ruin the output:</p>
+      <ol>
+        <li><strong>It sounds rushed.</strong> Not chipmunk-pitched — the pitch is preserved — but the cadence is wrong in a way listeners immediately read as artificial.</li>
+        <li><strong>Consonants smear.</strong> Time-stretching handles steady vowels gracefully and plosives badly. Hindi's aspirated/unaspirated distinctions (क/ख, त/थ) live exactly in the burst timing that gets destroyed.</li>
+        <li><strong>The error compounds across the segment, not within it.</strong> You can fit each chunk into its own window and still have every chunk sound wrong.</li>
+      </ol>
+      <p>The deeper objection is architectural. Time-stretching is a <strong>repair applied to the last stage of the pipeline for a decision made in the second stage.</strong> Any time you find yourself repairing a downstream artifact of an upstream free choice, the real fix is to constrain the upstream choice.</p>
+
+      <h3>Stage 2 — During speech generation (native duration control)</h3>
+      <p>This is where the state of the art now sits. In February 2026, Sarvam AI shipped <a href="https://www.sarvam.ai/blogs/sarvam-dub" target="_blank">Sarvam Dub</a>, and their write-up diagnoses the problem in almost exactly the terms I'd arrived at independently — a two-second English phrase might take three seconds in Hindi, or one and a half in Tamil. Their fix is to move the timing decision <em>inside</em> the model that produces the voice: you hand the model a target duration up front, and it generates speech that lands on that duration in the first place — nothing is stretched, because nothing needed fixing.</p>
+      <p>My own v2 moved here too. The rewritten <code>audio_sync.py</code> docstring records the shift:</p>
+      <pre><code>NEW: IndicF5 generates audio at the correct duration natively.
+     This module just places audio chunks at the right timestamps on a timeline.</code></pre>
+      <p>The audio module stopped being an audio <em>engineer</em> and became a filing clerk: drop each clip at its timestamp, fade 50 ms at the seams so the joins don't click, mix the original music and background back in underneath.</p>
+
+      <h3>Stage 3 — Before any audio exists (constrain the text)</h3>
+      <p>Here's the gap I think stage 2 leaves open. A voice model with duration control still has to absorb whatever length the <em>translator</em> handed it. If the gap in the video is two seconds and the translated sentence is a three-second sentence, the model has to come in at two seconds anyway — by talking faster, by flattening the emphasis, by giving up the pauses that make speech sound considered rather than recited. The visible artifact is gone; the underlying conflict has just been moved somewhere you can no longer see it.</p>
+      <p>And that conflict is not small. I measured it. Base Llama-3.1-8B translating English into 11 Indic languages <strong>runs 29% long on average</strong>. That is the burden a stage-2 system quietly eats on every single segment. So: don't shorten the audio, and don't make the voice model do all the squeezing either. <strong>Ask for a shorter sentence.</strong></p>
+      <p>These stages are complementary rather than competing — my pipeline runs stage 2 <em>and</em> stage 3. Constraining the text means the speech model is handed something that already roughly fits, so it's making a 5% adjustment instead of a 30% one, and 5% is an adjustment you can't hear.</p>
+
+      <h2 id="constrain"><span class="h2num">02</span>Constraining the translator instead</h2>
+      <p>The unit of duration in speech isn't characters or words or tokens. It's roughly <strong>phonemes</strong> — the actual sounds. Two sentences with the same phoneme count take approximately the same time to say, across languages, far more reliably than two sentences with the same word count. That gives a target the translator can be held to. For each segment: take the English source and the reference translation, run the reference through a grapheme-to-phoneme converter (I use <strong>espeak-ng</strong>) to get its phoneme count <code>N</code>, and train the model on a prompt that <em>includes</em> <code>N</code>.</p>
+      <p>The prompt format is deliberately plain. This is a real row from <code>val.jsonl</code>, verbatim:</p>
+      <pre><code>[Translate to Hindi] [Target Phonemes: 39] "Milk is rich in calcium."</code></pre>
+      <p>There is no special loss function here, and that's the part I find most interesting. No auxiliary length head, no differentiable length penalty, no reinforcement learning against a duration reward. The phoneme budget is just <strong>text in the prompt</strong>, and the model learns to respect it implicitly through ordinary next-token cross-entropy — because across 53,000 training examples, the completions that follow <code>[Target Phonemes: 39]</code> are consistently 39-phoneme completions. You are teaching the model a correlation it can only exploit by actually modelling length. That's it.</p>
+
+      <h3>The training setup</h3>
+      <p>Everything here ran on <strong>Kaggle's free tier</strong>: two Tesla T4 cards, which I did not pay for and cannot keep for longer than a few hours at a time. That single fact determines every choice below. An 8-billion-parameter model won't train on a T4 the normal way, so I stored the model at reduced precision to make it smaller, froze it, and trained a <em>small</em> set of extra weights alongside it — a few million instead of eight billion. That combination has a name, QLoRA, and the parameters below are the dials on it.</p>
+      <table class="data-table">
+        <thead><tr><th>Setting</th><th>Value</th><th>Why this</th></tr></thead>
+        <tbody>
+          <tr><td>Base model</td><td><code>Llama-3.1-8B-Instruct</code>, 4-bit via Unsloth</td><td>Smallest capable open model that already speaks some Indic languages; 4-bit is what makes it fit in 16 GB at all</td></tr>
+          <tr><td>Adapter size (<code>r</code>)</td><td>16</td><td>How much the adapter is allowed to learn. Too small and it can't represent the task; too large and it memorises 53k rows</td></tr>
+          <tr><td>Target modules</td><td>7 (q/k/v/o/gate/up/down_proj)</td><td>Attach to both attention and feed-forward — length control is not purely an attention behaviour</td></tr>
+          <tr><td>Data</td><td>Samanantar-derived; 53,350 train / 1,650 val; 11 languages</td><td>Largest open English↔Indic parallel corpus; val rows held out so "did it improve" isn't measured on what it memorised</td></tr>
+          <tr><td>Effective batch</td><td>16 (2 × 8 accumulation)</td><td>Only 2 examples fit in memory at once, so 8 small batches apply one combined update — same maths on hardware that can't hold 16</td></tr>
+          <tr><td>Learning rate</td><td>2e-4, 3% warmup</td><td>Standard for adapters; warmup ramps slowly so the first batches don't yank weights somewhere bad</td></tr>
+          <tr><td>Plan</td><td>2 epochs = 6,670 steps</td><td>~9.4 s/step, fp16 (T4s don't support bf16) ≈ 17.5 hours — across sessions that cap at a few hours each</td></tr>
+        </tbody>
+      </table>
+      <p>Eleven languages in one adapter, spanning two families that behave very differently: Indo-Aryan (Hindi, Bengali, Marathi…) and Dravidian (Tamil, Telugu, Kannada, Malayalam). Dravidian languages are agglutinative — they build long single words where English uses several short ones — so the relationship between tokens emitted and sounds produced is different for them. As I'll come back to, that means they don't learn this task on the same schedule.</p>
+
+      <h2 id="bought"><span class="h2num">03</span>What it bought</h2>
+      <p>Here's the headline table, comparing the un-fine-tuned base model against four checkpoints along the training trajectory. Four metrics, and it matters that they disagree.</p>
+      <table class="data-table">
+        <thead><tr><th>Checkpoint</th><th>Step</th><th>Length error</th><th>Signed error</th><th>chrF++</th><th>Length slope</th></tr></thead>
+        <tbody>
+          <tr><td>base model</td><td>—</td><td>0.495</td><td>+0.290</td><td>22.0</td><td>0.593</td></tr>
+          <tr><td>checkpoint-2558</td><td>2558</td><td>0.124</td><td>−0.013</td><td><strong>30.3</strong></td><td>0.673</td></tr>
+          <tr><td>checkpoint-3200</td><td>3200</td><td>0.104</td><td>−0.051</td><td>29.8</td><td>0.656</td></tr>
+          <tr><td>checkpoint-3400</td><td>3400</td><td>0.115</td><td>+0.000</td><td>30.1</td><td>0.684</td></tr>
+          <tr><td>checkpoint-3801</td><td>3801</td><td><strong>0.103</strong></td><td>−0.043</td><td>30.1</td><td><strong>0.687</strong></td></tr>
+        </tbody>
+      </table>
+      <p class="figcap" style="text-align:left">Source: <code>files_v3/evaluation/results/eval_out_all__eval_report.md</code></p>
+      <p><strong>Length error</strong> — <code>|N_generated − N_requested| / N_requested</code>. The base model misses the requested phoneme count by 49.5% on average: it's effectively ignoring the instruction and translating naturally. The fine-tune brings that to 10.3%, a 4.8× reduction. A 10% phoneme error on a 1.5-second line is about 150 ms of drift — comfortably inside what crossfading and natural pauses absorb, which is the entire point.</p>
+      <p><strong>Signed error</strong> tells you the <em>direction</em> of the miss, and this is the number that surprised me most. The base model sits at +0.290: it systematically over-generates. That single number explains why every dubbing pipeline needs a compressor of some kind — the translator's untrained bias is <em>always</em> toward too long. After fine-tuning the bias is roughly −0.04: slightly short. Slightly short is the far friendlier failure mode, because you fill it with silence rather than destroying consonants.</p>
+      <p><strong>chrF++</strong> is the one I expected to be the price of all this — the obvious worry is that a model told to hit a length budget hits it by throwing meaning away. It went <em>up</em>, 22.0 → 30.1. Good evidence that the length constraint isn't being paid for out of meaning — but not proof, and the gap between those two things turned out to matter.</p>
+      <p><strong>Length slope</strong> is the cleanest probe of the four. Ask for one sentence at 0.6, 0.8, 1.0, 1.2 and 1.4× its natural length and plot what you got against what you asked for. Perfect obedience is a slope of 1.0; ignoring the budget is a flat 0. The base model sits at 0.593; the fine-tune reaches 0.687 — real movement toward obedience, and the metric I'm least satisfied with. The model has learned to <em>care</em> about the budget without learning to <em>hit</em> it, and closing that gap is the open problem.</p>
+
+      <h2 id="meaning"><span class="h2num">04</span>But did it still mean the same thing?</h2>
+      <p>There is an obvious way to hit a phoneme budget that I'd been quietly hoping the model didn't discover: <strong>delete something.</strong> Drop the subordinate clause and you'll land on any target you like. The sentence will be shorter, fit the window perfectly, and be wrong. chrF++ is real evidence against this, but weaker than it looks — it rewards using the same words as the reference, and crucially it <em>requires</em> a reference translation, which exists in evaluation and never in production. So the check has to happen twice, in two places, for two reasons.</p>
+      <h3>At training time: don't let the model learn the shortcut</h3>
+      <p>To teach length elasticity, I generate paraphrases of each reference at 72% and 128% targets and add them as training rows. The hazard is that the paraphraser takes the same shortcut. So every generated paraphrase passes two gates before it becomes a training row:</p>
+      <ol>
+        <li><strong>Meaning:</strong> embed the original and the paraphrase with a multilingual sentence embedder and reject anything below <strong>0.80 cosine similarity</strong>. This is what distinguishes "rephrased more tersely" from "deleted a clause" — the deletion moves the sentence measurably away from where it started.</li>
+        <li><strong>Length:</strong> the paraphrase must actually have moved phoneme count by ≥10% in the intended direction, or it isn't teaching anything.</li>
+      </ol>
+      <h3>At inference time: the same guarantee, missing</h3>
+      <p>Building that training gate is what exposed the second problem, and it's the more interesting half. Once you've written the rule down explicitly, it becomes obvious it's scoped to the wrong place — it governs how training data gets built and says nothing about dub time, when the model generates text nobody will ever compare against a reference. I went looking for the counterpart gate on the inference path. There wasn't one.</p>
+      <p>At dub time the pipeline generates three candidate translations per segment — at 100%, 85% and 65% of the phoneme budget — then a trained duration predictor estimates each one's spoken length and the best is selected. If none fit, it tightens the budget by 25% and retries, up to three times; a tight segment can end up at ~27% of its original budget. <strong>Selection scored candidates on timing alone.</strong></p>
+      <p>The actual flaw is quiet and worse than "it prefers the shortest text" (it doesn't — it scores closeness to the target). <strong>Two candidates of identical duration score identically, whether or not one dropped a clause.</strong> Rephrasing tersely and deleting the subordinate clause produce the same phoneme count, so the same score. I built a test with two candidates of deliberately identical length, one faithful and one gutted. Under the old scoring they came out at <strong>+0.991 and +0.991</strong> — an exact tie. The pipeline picked the good one only because it happened to be generated first.</p>
+      <p>So I added the same gate at selection. Each candidate is now scored against an anchor for meaning as well as against the clock, blended so the winner is <em>the most faithful candidate that fits</em>. With the gate, that same tied pair separates to <strong>+0.951 and −0.229</strong>. Three decisions in it weren't obvious: <strong>what to compare against</strong> (the pipeline's own full-budget candidate — the least-compressed translation, already generated, free); <strong>why at selection rather than during generation</strong> (the anchor doesn't exist until generation finishes); and <strong>what to do when everything fails</strong> (not crash — ship the closest candidate and flag the segment as degraded, with the score and budget in the log).</p>
+
+      <h2 id="plateau"><span class="h2num">05</span>The finding that changed how I trained</h2>
+      <p>Around step 3200, the training loss stopped improving:</p>
+      <table class="data-table">
+        <thead><tr><th>Step</th><th>Loss (CE)</th><th>Perplexity</th></tr></thead>
+        <tbody>
+          <tr><td>3000</td><td>0.5108</td><td>1.714</td></tr>
+          <tr><td>3200</td><td><strong>0.5056</strong></td><td>1.704</td></tr>
+          <tr><td>3400</td><td>0.5079</td><td>1.707</td></tr>
+          <tr><td>3600</td><td>0.5079</td><td>1.708</td></tr>
+          <tr><td>3800</td><td>0.5075</td><td>1.707</td></tr>
+        </tbody>
+      </table>
+      <p>Flat. Global minimum at 3200, then noise. On a free GPU quota with 2,900 steps still on the plan, the textbook move is to early-stop and take checkpoint-3200. I almost did. Then I noticed that the number I was about to early-stop on <strong>is not the thing I actually want.</strong></p>
+      <p>That loss is cross-entropy — overwhelmingly a question of <em>which words, in which order</em>. Whether the sentence came out to 47 phonemes or 61 is a tiny fraction of that signal. So the loss can go quiet while length control is still improving underneath it. Between steps 3200 and 3801: CE went 0.5056 → 0.5075 (flat, marginally worse), but length slope went 0.656 → <strong>0.687</strong> (still climbing). The slope can't be a restatement of the loss — it's measured by making the model actually generate and counting the sounds, whereas the loss is measured by showing the model the correct answer. Early-stopping at 3200 would have thrown away 600 steps of improvement on the thing I cared about, while congratulating me for being disciplined about a stand-in.</p>
+      <div class="callout good">
+        <i class="fas fa-lightbulb"></i>
+        <div class="ct"><strong>The generalisable lesson</strong>If your loss function isn't your objective, your early-stopping criterion is measuring the wrong thing. Everyone knows this abstractly. It cost me a real decision to actually see it. I wrote the rule into the eval script so I couldn't talk myself out of it: <em>CE-flat + adherence still moving ⇒ keep spending quota; CE-flat + adherence-flat ⇒ genuine plateau.</em></div>
+      </div>
+      <p>There's a corollary I'm still living with: the best-loss snapshot (3200) and the best-length-control snapshot (3801) are not the same snapshot. Rather than gamble on either, you can take the adapter weights from several checkpoints around the plateau and <strong>average them together</strong> — a model soup. It costs nothing at inference (you end up with one adapter again) and usually generalises better than any single snapshot, because every checkpoint here is the same adapter at different moments in one continuous run. I'm averaging steps 2800–3400.</p>
+
+      <h2 id="broke"><span class="h2num">06</span>What broke</h2>
+      <p><strong>A silent resume bug that would have run forever.</strong> Because training was sliced across sessions, each new session had to restore the previous session's checkpoints from a mounted path. My glob was one directory level too shallow. It matched nothing, found no checkpoint, and cheerfully started training from step 0 — with a completely healthy-looking loss curve, because a fresh run's loss curve <em>looks</em> fine. Every session would have restarted forever. I caught it 10 minutes in by chance. Provenance logging catches this class of bug and loss-curve inspection categorically cannot.</p>
+      <p><strong>Trusting the aggregate.</strong> Eleven languages across two families do not plateau simultaneously — Tamil's length control was still tightening while Hindi's had flattened. Every aggregate number in the table above is hiding that. I'd built the per-language decomposition into the eval script from the start and then read the aggregate column anyway.</p>
+      <p><strong>Nearly scored with the wrong ruler.</strong> The whole approach rests on counting sounds, and the tool that converts spelling into sounds makes judgement calls. I used one tool to write the training labels and nearly used a second to score the results, which would have added a constant offset to every measurement — large enough to bury the effect. The habit to take from this: the function that creates your labels and the function that scores your outputs must be the <em>same</em> function, imported from the same module.</p>
+
+      <h2 id="different"><span class="h2num">07</span>What I'd do differently</h2>
+      <p><strong>Train the slope directly.</strong> Right now the model learns length control as a side effect. 0.687 is where a side effect gets you; the direct version rewards the model explicitly for both meaning <em>and</em> length and lets it optimise the trade-off itself.</p>
+      <p><strong>Build the length-response probe on day one.</strong> It's the only metric here that measures the actual capability, it's cheap, and I built it last. Everything I learned late, I'd have known in week one.</p>
+      <p><strong>Log per-language from the first eval, and read it.</strong> Building the decomposition isn't the same as using it.</p>
+      <p>The pipeline this feeds has since grown a duration predictor that acts as a referee: the LLM proposes three candidates at 100/85/65% of the budget, and the predictor measures each in real milliseconds and picks the one that fits. A generator that proposes and a referee that measures beats a generator that guesses.</p>
+
+      <div class="takeaways">
+        <h4>The transferable lesson</h4>
+        <ul>
+          <li>When you're repairing a downstream artifact of an upstream free choice, constrain the upstream choice instead.</li>
+          <li>A length budget can be taught as plain text in the prompt — no custom loss — and learned through ordinary cross-entropy.</li>
+          <li>If your loss isn't your objective, your early-stopping criterion is measuring the wrong thing.</li>
+          <li>A correctness gate scoped to one pipeline phase is not a guarantee; writing the rule down is what exposes where it doesn't apply.</li>
+        </ul>
+      </div>
+
+      <div class="article-cta">
+        <a href="https://github.com/nirmitktripathii/dubbing_app" target="_blank" class="btn-article primary"><i class="fab fa-github"></i> View the repo</a>
+        <a href="dubbing.html" class="btn-article ghost"><i class="fas fa-play"></i> Interactive walkthrough</a>
+      </div>
+
+      <div class="author-card">
+        <img src="images/user.png" alt="Nirmit K. Tripathii"/>
+        <div>
+          <div class="an">Nirmit K. Tripathii — AI/ML Engineer &amp; Football Data Scientist</div>
+          <div class="ar">Three years shipping NLP, agentic AI and multimodal systems. I write up real projects — including the parts that failed. Available now for part-time, consulting and research collaboration (remote), and open to full-time roles from September 2026. If you're working on speech, multilingual NLP, or sports analytics, I'd like to hear about it.</div>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026 Nirmit K. Tripathii &nbsp;&middot;&nbsp; Made with <span>&#9829;</span> by Nirmit</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  (function(){
+    const bar = document.getElementById('readProgress');
+    const links = Array.from(document.querySelectorAll('#toc a'));
+    const ids = links.map(a => a.getAttribute('href').slice(1));
+    const onScroll = () => {
+      const h = document.documentElement;
+      const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      if (bar) bar.style.width = Math.max(0, Math.min(1, scrolled)) * 100 + '%';
+      let current = ids[0];
+      for (const id of ids){
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 120) current = id;
+      }
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+</body>
+</html>
