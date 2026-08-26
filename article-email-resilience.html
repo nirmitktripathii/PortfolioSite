@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>One Dead Inbox Shouldn't Kill the Whole Query — Nirmit K. Tripathii</title>
+  <meta name="description" content="An MCP connection to a mailbox is a child process, and child processes die. Here's the self-healing reconnection — isolation, a drop-detector, and a cooldown — that turned a flaky multi-account agent into one you can leave running for a week."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/d8eaa222fe.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="read-progress" id="readProgress"></div>
+<nav>
+  <a href="index.html"><img src="images/logo.png" class="logo-img" alt="Logo"/></a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="index.html#writing">Writing</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+  <div class="nav-burger" onclick="location.href='index.html'"><i class="fas fa-home"></i></div>
+</nav>
+
+<div class="article-shell">
+  <a href="index.html#writing" class="article-back"><i class="fas fa-arrow-left"></i> ALL WRITING</a>
+
+  <header class="article-hero">
+    <div class="article-kicker"><i class="fas fa-arrows-rotate"></i> Article · The Email Orchestrator · Part 2</div>
+    <h1 class="article-title">One Dead Inbox Shouldn't Kill the Whole Query</h1>
+    <p class="article-standfirst">An MCP connection to a mailbox is a child process, and child processes die. Here's the self-healing reconnection — isolation, a drop-detector, and a cooldown — that turned a flaky multi-account agent into one you can leave running for a week.</p>
+    <div class="article-meta">
+      <span class="am"><i class="fas fa-user"></i> Nirmit K. Tripathii</span>
+      <span class="am"><i class="fas fa-calendar"></i> 2026</span>
+      <span class="am"><i class="fas fa-clock"></i> 11 min read</span>
+      <span class="am"><i class="fas fa-diagram-project"></i> MCP · Resilience</span>
+    </div>
+    <div class="article-chips">
+      <span class="tag">Distributed Systems</span><span class="tag">TypeScript</span><span class="tag">MCP</span><span class="tag">Reconnection</span><span class="tag">allSettled</span>
+    </div>
+  </header>
+
+  <div class="article-layout">
+    <aside class="article-toc">
+      <h4>On this page</h4>
+      <nav id="toc">
+        <a href="#trap">Why "connect once" is a trap</a>
+        <a href="#approach">Isolate, self-heal, give up fast</a>
+        <a href="#impl">The implementation</a>
+        <a href="#dials">The dials</a>
+        <a href="#broke">What broke</a>
+        <a href="#different">What I'd do differently</a>
+      </nav>
+    </aside>
+
+    <article class="prose">
+      <p class="lead">For about a day, one of the three inboxes was invisible. The agent would answer "what's urgent across all my mail?" cheerfully and completely — from two accounts. The third, a Yahoo mailbox reached over IMAP, had quietly dropped out.</p>
+      <p>No error surfaced to the user. The logs, if you went looking, showed the same line on repeat: <code>Unexpected close</code>. The connection to that mailbox had died hours ago, and every query since had been talking to a corpse and calling it a failed account.</p>
+      <p>This is the unglamorous half of building an agent that consolidates other services: the consolidation is a weekend; keeping it <em>alive</em> is the product. A connection to a mailbox isn't an HTTP request you fire and forget — in this design it's a long-lived MCP session to a child process, and child processes exit. IMAP servers hang up idle connections. Laptops sleep. A provider server crashes and restarts. This article is the machinery that treats all of that as normal weather instead of an outage. <span style="color:var(--muted)">(The hub design it builds on is <a href="article-email-orchestrator.html">Part 1</a>.)</span></p>
+
+      <h2 id="trap"><span class="h2num">01</span>Why "connect once and reuse" is a trap</h2>
+      <p>The natural first design is the one everybody writes: connect to each provider at startup, stash the client, reuse it. It's efficient — no per-call handshake — and it works flawlessly in every demo, because demos run for ninety seconds on a good network. It has two independent failure modes, and this project hit both.</p>
+      <p><strong>A boolean set once is a lie.</strong> The first version marked an adapter <code>connected = true</code> after the handshake and never revisited it. But "connected" isn't a fact you learn once; it's a state that changes without asking you. When the Yahoo child hung up, nothing flipped that boolean back. The adapter kept reporting itself healthy, kept routing calls into a dead pipe, and kept throwing <code>Unexpected close</code> — forever, because nothing in the code path could ever decide to reconnect.</p>
+      <p><strong>One failure taking down the whole answer.</strong> The other naive instinct is to fan out with <code>Promise.all</code>. But <code>Promise.all</code> rejects the instant <em>any</em> promise rejects. So the moment one account has an expired token, the entire cross-account query throws, and a user with three healthy inboxes and one flaky one gets nothing from any of them. The blast radius of one bad account is all accounts.</p>
+      <p>Both bugs share a root: the code assumed a connection is a thing you <em>have</em>, when it's really a thing you <em>maintain</em>.</p>
+
+      <h2 id="approach"><span class="h2num">02</span>Isolate, self-heal, and give up fast</h2>
+      <p>Three mechanisms, each targeting one way the naive version failed.</p>
+      <figure class="figure">
+        <svg viewBox="0 0 720 220" role="img" aria-label="Connection state machine">
+          <defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 z" fill="var(--accent)"/></marker></defs>
+          <rect x="40" y="90" width="120" height="46" rx="23" fill="var(--card)" stroke="#3fb950" stroke-width="1.6"/>
+          <text class="svg-title" x="100" y="118" text-anchor="middle" style="font-size:12px;fill:#3fb950">connected</text>
+          <rect class="svg-box" x="245" y="30" width="120" height="46" rx="23"/>
+          <text class="svg-label" x="305" y="58" text-anchor="middle">drop detected</text>
+          <rect class="svg-box" x="245" y="150" width="120" height="46" rx="23"/>
+          <text class="svg-label" x="305" y="178" text-anchor="middle">cooling down 60s</text>
+          <rect class="svg-box" x="470" y="90" width="130" height="46" rx="23"/>
+          <text class="svg-label" x="535" y="118" text-anchor="middle">reconnecting</text>
+          <path class="svg-flow" d="M150,100 C200,70 210,60 244,53"/>
+          <text class="svg-label" x="185" y="70">onclose/onerror</text>
+          <path class="svg-flow" d="M365,53 C420,60 440,75 472,100"/>
+          <text class="svg-label" x="415" y="60">next call</text>
+          <path class="svg-flow" d="M535,90 C560,50 380,20 165,105" opacity="0.85"/>
+          <text class="svg-label" x="470" y="30" fill="var(--accent)">success → connected</text>
+          <path class="svg-flow" d="M500,136 C440,170 400,175 366,175"/>
+          <text class="svg-label" x="410" y="150">connect fails</text>
+          <path class="svg-flow" d="M305,150 C305,120 470,120 470,113" opacity="0.6"/>
+          <text class="svg-label" x="300" y="130">cooldown ends → retry</text>
+        </svg>
+        <figcaption class="figcap">A connection is a state you maintain, not a boolean you set. A drop flips it to reconnect-on-next-use; a failed connect cools down for 60s so a dead account never stalls the fan-out.</figcaption>
+      </figure>
+      <p><strong>1. Isolation, via <code>allSettled</code>.</strong> The fan-out uses <code>Promise.allSettled</code>, which waits for every account to either succeed or fail and hands back the outcomes side by side. Fulfilled accounts contribute their emails; rejected ones get logged and skipped. Three good inboxes and one dead one returns three inboxes' worth of mail, not an exception.</p>
+      <p><strong>2. Self-healing, via drop-detection + reconnect-on-use.</strong> Instead of trusting a boolean, the adapter wires the MCP client's <code>onclose</code> and <code>onerror</code> events back to its own state: a drop flips <code>connected = false</code>, so the <em>next</em> call sees a disconnected adapter and transparently reconnects before running. And if a connection dies <em>mid-call</em>, the operation catches the specific "connection dropped" error, reconnects once, and retries. Reads are idempotent, so a single retry is safe.</p>
+      <p><strong>3. Giving up fast, via a cooldown.</strong> Self-healing has a failure mode of its own: if an account is genuinely dead — wrong password, server down — retrying it on every query would stall the whole fan-out, because even a failed connect costs a timeout. So a failed connect starts a <strong>60-second cooldown</strong>: during it, that account fails <em>instantly</em>. A dead account degrades to "temporarily absent," never "makes everything slow."</p>
+      <p>Two smaller pieces hold it together. A <strong>connection generation</strong> counter invalidates stale event handlers — when you tear down socket #3 and open socket #4, the old socket's late <code>onclose</code> must not flip the new one to disconnected. And an in-flight <strong>connect promise</strong> dedupes concurrent callers, so four tools hitting a reconnecting account share one handshake instead of racing to open four.</p>
+
+      <h2 id="impl"><span class="h2num">03</span>The implementation</h2>
+      <p><code>ensureConnected</code> is the heart of it. Read it as three guards before the actual connect: already connected (do nothing), already connecting (join that attempt), recently failed (fail fast).</p>
+      <div class="code-label">providers/provider-adapter.ts</div>
+      <pre><code>async ensureConnected(): Promise&lt;void&gt; {
+  if (this.isConnected()) return;
+  if (this.connectPromise) return this.connectPromise;   // dedupe concurrent callers
+
+  const err = this.lastConnectError;                     // fail fast during the cooldown window
+  if (err && Date.now() - err.at &lt; RECONNECT_COOLDOWN_MS) {
+    throw new ProviderConnectionError(this.provider, `Not reconnecting yet (cooling down)`);
+  }
+
+  this.connectPromise = (async () =&gt; {
+    try { await this.establishWithRetry(); await this.afterConnect(); this.lastConnectError = null; }
+    catch (e) { this.lastConnectError = { at: Date.now(), message: String(e) }; throw e; }
+  })().finally(() =&gt; { this.connectPromise = null; });
+  return this.connectPromise;
+}</code></pre>
+      <p>The drop-detector is what makes "the next call reconnects" true. On every successful connect, the handlers below get wired — and each captures the <code>generation</code> it was born under, so a handler from an old socket bails the moment it notices it's been superseded.</p>
+      <pre><code>const generation = ++this.connectionGeneration;
+const onDrop = (reason?: unknown): void =&gt; {
+  if (generation !== this.connectionGeneration) return;  // superseded by a newer connection — ignore
+  this.connected = false;
+  this.client = null;
+  this.onConnectionLost();
+};
+client.onclose = () =&gt; onDrop();
+client.onerror = (e: Error) =&gt; onDrop(e);</code></pre>
+      <p>Mid-flight recovery lives in <code>withConnection</code>, which wraps every downstream call. The subtle part is <code>isConnectionDrop</code>: a reconnect-and-retry is only safe for errors that mean <em>the pipe died</em>, not for a normal tool-level failure ("no such message"). Retrying the latter would just repeat a legitimate error.</p>
+      <pre><code>private async withConnection&lt;T&gt;(fn: () =&gt; Promise&lt;T&gt;): Promise&lt;T&gt; {
+  await this.ensureConnected();
+  try { return await fn(); }
+  catch (error) {
+    if (!isConnectionDrop(error)) throw error;           // a real tool error — don't retry
+    await this.teardown(); this.onConnectionLost(); await this.ensureConnected();
+    return await fn();                                    // reads are idempotent → one retry is safe
+  }
+}</code></pre>
+      <p><code>isConnectionDrop</code> is deliberately a broad regex, because the same "the child died" reality surfaces under a dozen different messages depending on where in the stack it's noticed — the MCP SDK's <code>Connection closed</code>, or the raw socket's <code>ECONNRESET</code> / <code>EPIPE</code> / <code>socket hang up</code> / <code>write after end</code>.</p>
+
+      <h2 id="dials"><span class="h2num">04</span>The dials, and why each is set where it is</h2>
+      <table class="data-table">
+        <thead><tr><th>Dial</th><th>Value</th><th>Why this</th></tr></thead>
+        <tbody>
+          <tr><td><code>CONNECT_TIMEOUT_MS</code></td><td>60,000</td><td>Gmail's server refreshes OAuth on startup — <strong>~30s observed</strong>. A tighter cap kills a healthy account mid-handshake</td></tr>
+          <tr><td><code>RECONNECT_COOLDOWN_MS</code></td><td>60,000</td><td>After a failed connect, one dead account must not re-stall every fan-out. Fail fast for a minute, then allow another try</td></tr>
+          <tr><td><code>CONNECT_RETRIES</code></td><td>3</td><td>Transient blips retry (0.5s, then 1s); <strong>auth failures fail fast</strong> — retrying a wrong password never helps</td></tr>
+          <tr><td>Urgent-notify dedup set</td><td>bounded 5,000</td><td>Remember which urgent emails we've alerted on, without unbounded memory growth</td></tr>
+          <tr><td>Test suite</td><td><strong>49 tests, all green</strong></td><td>Two exist only to reproduce the two production drops below</td></tr>
+        </tbody>
+      </table>
+      <p>The auth-failure carve-out matters more than it looks. Transient errors and permanent ones want opposite treatment — retry the timeout, fail fast on the <code>401</code> — so the connect loop throws immediately on anything matching <code>unauthorized/forbidden/401/403/invalid token</code>. Retrying a bad credential just burns the cooldown budget on an outcome that will never change.</p>
+
+      <h2 id="broke"><span class="h2num">05</span>What broke</h2>
+      <p>Both of the bugs this machinery exists for are pinned in a regression test, because a resilience feature you can't reproduce on demand is one you'll break next month.</p>
+      <p><strong>1. Yahoo "Unexpected close" — and the twist that made it hard.</strong> The IMAP child's connection drops mid-request; the adapter must reconnect. Fine. But the IMAP MCP server holds its mail account in <em>per-connection</em> state — each fresh child process starts with an <strong>empty account store</strong>. So reconnecting isn't enough: the adapter has to <em>re-provision</em> the account into the new child before any read will work, or it reconnects successfully and then returns zero emails from a mailbox that's full. The fix is a per-provider <code>afterConnect</code> hook, and the test asserts exactly this:</p>
+      <pre><code>adapter.dropNextGetLatest();                 // next read kills the child mid-request
+const recovered = await adapter.listEmails();
+expect(recovered).toHaveLength(1);           // read still succeeds
+expect(adapter.connectCount).toBe(2);        // reconnected to a fresh child
+expect(adapter.addCount).toBe(2);            // AND re-provisioned the account into it</code></pre>
+      <p><strong>2. The connection that stayed "connected" forever.</strong> The boolean that never flipped back. The test drops the child between calls and asserts the adapter both notices and transparently recovers on the following call.</p>
+      <div class="callout good">
+        <i class="fas fa-magnifying-glass"></i>
+        <div class="ct"><strong>My favourite bug, because it's so mundane</strong>Gmail reported zero unread, always. Its MCP server returns search results as plain text with no read/unread flag, and the normalizer's default for "no flag present" was <code>read</code>. So <code>account_status</code> proudly reported zero unread on an inbox with forty. No crash, no log — a number that was confidently wrong. The failures that hurt in a multi-service agent are the silent ones, and the only defence is a test that asserts the <em>value</em>, not just the absence of an exception.</div>
+      </div>
+
+      <h2 id="different"><span class="h2num">06</span>What I'd do differently</h2>
+      <p><strong>Surface degraded accounts to the user, not just the log.</strong> Today a cooling-down account is invisible in the answer — the digest is silently built from two inboxes instead of three, and only stderr knows. <code>inbox_summary</code> should carry a line like "Yahoo unavailable (reconnecting)." Isolation without disclosure is just a nicer way to hide a problem — the exact trap the Gmail-unread bug fell into.</p>
+      <p><strong>Add a real health check.</strong> Connection liveness is currently proven only by attempting a real operation. A cheap periodic <code>listTools</code> ping would detect a dead child <em>before</em> a user query does, so recovery happens in the background instead of on the critical path.</p>
+      <p>The through-line for the whole series is here: <strong>the moment your agent orchestrates other services, their failure modes become yours.</strong> Isolation, drop-detection, and a cooldown aren't gold-plating — they're the difference between a thing that demos and a thing you can leave running while you get on with your day.</p>
+
+      <div class="takeaways">
+        <h4>The transferable lesson</h4>
+        <ul>
+          <li>A connection is a state you <em>maintain</em>, not a boolean you set once — wire drop events back to that state.</li>
+          <li>Isolate accounts with <code>allSettled</code>; reconnect on next use; cool down a failed connect so a dead account degrades to "absent," never "slow."</li>
+          <li>Only retry errors that mean <em>the pipe died</em>; fail fast on auth errors and real tool errors.</li>
+          <li>In a multi-service agent the dangerous failures are silent — assert the value, not just the absence of an exception.</li>
+        </ul>
+      </div>
+
+      <div class="article-cta">
+        <a href="article-email-orchestrator.html" class="btn-article ghost"><i class="fas fa-arrow-left"></i> Part 1 · The hub</a>
+        <a href="article-email-thinking-budget.html" class="btn-article primary"><i class="fas fa-brain"></i> Part 3 · The token bug</a>
+      </div>
+
+      <div class="author-card">
+        <img src="images/user.png" alt="Nirmit K. Tripathii"/>
+        <div>
+          <div class="an">Nirmit K. Tripathii — AI/ML Engineer &amp; Football Data Scientist</div>
+          <div class="ar">Three years building NLP, agentic AI and multimodal systems in production. I write up real projects — the architecture, the numbers, and the parts that failed. Available for part-time, consulting and research collaboration (remote).</div>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026 Nirmit K. Tripathii &nbsp;&middot;&nbsp; Made with <span>&#9829;</span> by Nirmit</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  (function(){
+    const bar = document.getElementById('readProgress');
+    const links = Array.from(document.querySelectorAll('#toc a'));
+    const ids = links.map(a => a.getAttribute('href').slice(1));
+    const onScroll = () => {
+      const h = document.documentElement;
+      const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      if (bar) bar.style.width = Math.max(0, Math.min(1, scrolled)) * 100 + '%';
+      let current = ids[0];
+      for (const id of ids){
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 120) current = id;
+      }
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+</body>
+</html>

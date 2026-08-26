@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>A Headless GPU Lab on Kaggle's Free Tier — Nirmit K. Tripathii</title>
+  <meta name="description" content="I needed a GPU I didn't pay for, running an app I could open from my phone, that I could kill from anywhere. Here's the whole rig — a tunnel, a public message channel, and a session that dies on schedule."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/d8eaa222fe.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="read-progress" id="readProgress"></div>
+<nav>
+  <a href="index.html"><img src="images/logo.png" class="logo-img" alt="Logo"/></a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="index.html#writing">Writing</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+  <div class="nav-burger" onclick="location.href='index.html'"><i class="fas fa-home"></i></div>
+</nav>
+
+<div class="article-shell">
+  <a href="index.html#writing" class="article-back"><i class="fas fa-arrow-left"></i> ALL WRITING</a>
+
+  <header class="article-hero">
+    <div class="article-kicker"><i class="fas fa-microchip"></i> Article · MLOps · Standalone</div>
+    <h1 class="article-title">A Headless GPU Lab on Kaggle's Free Tier</h1>
+    <p class="article-standfirst">I needed a GPU I didn't pay for, running an app I could open from my phone, that I could kill from anywhere. Here's the whole rig — a tunnel, a public message channel, and a session that dies on schedule. Total cost: nothing.</p>
+    <div class="article-meta">
+      <span class="am"><i class="fas fa-user"></i> Nirmit K. Tripathii</span>
+      <span class="am"><i class="fas fa-calendar"></i> 2026</span>
+      <span class="am"><i class="fas fa-clock"></i> 9 min read</span>
+      <span class="am"><i class="fab fa-github"></i> <a href="https://github.com/nirmitktripathii/dubbing_app" target="_blank" style="color:inherit">dubbing_app</a></span>
+    </div>
+    <div class="article-chips">
+      <span class="tag">Kaggle</span><span class="tag">GPU</span><span class="tag">MLOps</span><span class="tag">Cloudflare Tunnel</span><span class="tag">ntfy.sh</span>
+    </div>
+  </header>
+
+  <figure class="figure" style="margin-top:28px">
+    <img src="images/hero_kaggle.png" alt="Headless GPU lab" style="width:100%;border-radius:12px;display:block;border:1px solid var(--border)"/>
+    <figcaption class="figcap">Hero image generated with FLUX.</figcaption>
+  </figure>
+
+  <div class="article-layout">
+    <aside class="article-toc">
+      <h4>On this page</h4>
+      <nav id="toc">
+        <a href="#three">Three problems</a>
+        <a href="#tunnel">Getting out: the tunnel</a>
+        <a href="#channel">Getting messages back</a>
+        <a href="#kill">Getting it to stop</a>
+        <a href="#bug">The bug that took longest</a>
+        <a href="#whole">What it looks like</a>
+        <a href="#change">What I'd change</a>
+      </nav>
+    </aside>
+
+    <article class="prose">
+      <p class="lead">I have a dubbing pipeline that needs about 5 GB of VRAM and forty minutes to process a five-minute video. I do not have a GPU.</p>
+      <p>What I do have is Kaggle's free tier: one Tesla T4, 16 GB of VRAM, thirty hours a week, and a hard stop when the session ends. That's genuinely generous, and it comes with an awkward shape. Kaggle is built for notebooks — you sit there, you run cells, you look at outputs. My pipeline isn't a notebook. It's a <strong>web app</strong> with an upload button, and I wanted to open it from a browser, including my phone, without babysitting a notebook tab for forty minutes.</p>
+      <p>So the machine is free and remote, the app needs a public URL, and the session will die whether or not I'm finished with it. This is the rig I ended up with: a tunnel out of Kaggle, a public message channel for talking to a machine that can't be reached, and a kill switch so a runaway session doesn't eat my weekly quota.</p>
+
+      <h2 id="three"><span class="h2num">01</span>The three problems, in the order they bite</h2>
+      <p><strong>One: nothing on Kaggle is reachable from outside.</strong> The container has internet <em>out</em>. Nothing can reach <em>in</em>. If I start a web server on port 8501 inside that container, the port exists only inside the container. There is no address to give a browser.</p>
+      <p><strong>Two: there's no interactive terminal.</strong> Kaggle will run a script headlessly, which is what I want — it means the job survives me closing the laptop. But then I have no way to ask it how it's doing. Its logs are inside a container I can't reach, which is problem one again wearing a different hat.</p>
+      <p><strong>Three: the session ends when Kaggle decides.</strong> Not when I finish. Anything I want to keep has to be pulled out before then, and anything that hangs is burning a quota I can't top up.</p>
+      <p>Each has a small, unglamorous fix. Together they make a free T4 behave like a machine I own.</p>
+
+      <h2 id="tunnel"><span class="h2num">02</span>Getting out: the tunnel</h2>
+      <p>A tunnel inverts the direction of the connection. Instead of the outside world dialling in — which the container's network won't allow — a process <em>inside</em> the container dials out to a public relay and holds that connection open. The relay is now reachable from anywhere, and it forwards whatever arrives down the pipe that's already established. You have not opened a port. You have made an outbound call and left it off the hook.</p>
+      <p>Cloudflare runs one of these that needs no account and no configuration. Download the binary, point it at your local port, and it prints a public URL:</p>
+      <pre><code>subprocess.Popen(
+    ["./cloudflared", "tunnel", "--url", "http://localhost:8501"],
+    stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+)</code></pre>
+      <p>Somewhere in its output is a line like <code>https://random-words-here.trycloudflare.com</code>. That URL is now serving the Streamlit app running on the T4, and it works from any browser, including a phone. Two things worth knowing: the URL is <strong>random and temporary</strong> (it changes every run), and it is <strong>genuinely public</strong> — anyone with the URL reaches your app, with no password. For a throwaway session dubbing my own test videos that's an acceptable trade; for anything with real data it is not, and the fix is Cloudflare's authenticated tunnels.</p>
+
+      <h2 id="channel"><span class="h2num">03</span>Getting messages back: a public channel</h2>
+      <p>Now the app is reachable, but I still can't see the machine. The tunnel URL is printed in logs I have to open Kaggle to read, which defeats the point of running headlessly. The fix is a piece of infrastructure I keep being surprised more people don't use. <a href="https://ntfy.sh" target="_blank">ntfy.sh</a> is a public message channel addressed by a name you invent. You <code>POST</code> to a URL, and anyone reading that URL gets the message. No account, no keys, no setup.</p>
+      <pre><code>def send_log(message: str):
+    """Broadcast a status message to your ntfy.sh channel."""
+    try:
+        requests.post(
+            f"https://ntfy.sh/{NTFY_CHANNEL}",
+            data=f"[DUBBING-GPU]: {message}".encode("utf-8"),
+            timeout=10,
+        )
+    except Exception:
+        pass
+    print(f"[LOG] {message}", flush=True)</code></pre>
+      <p>Note the bare <code>except</code>. This is a status broadcast, not a critical path — if ntfy is down or the network hiccups, the pipeline must carry on regardless. It also still prints locally, so nothing is lost. <strong>A logger that can take down the job it's logging is worse than no logger.</strong> Then, on my laptop or phone, in one command:</p>
+      <pre><code>curl -s ntfy.sh/YOUR_CHANNEL/raw</code></pre>
+      <p>That streams the pipeline's progress live. The tunnel URL arrives that way too — the script scrapes it from cloudflared's output and broadcasts it, so the app announces its own address the moment it's ready. I never open Kaggle.</p>
+
+      <h2 id="kill"><span class="h2num">04</span>Getting it to stop: the kill switch</h2>
+      <p>The messages so far go one way. But ntfy channels are readable <em>and</em> writable by anyone who knows the name, which means the same channel is a control channel. The script subscribes to its own channel and watches for a keyword:</p>
+      <pre><code>curl -d "SHUTDOWN_DUBBING" ntfy.sh/YOUR_CHANNEL</code></pre>
+      <p>The script sees <code>SHUTDOWN_DUBBING</code> and exits cleanly. This matters more than it sounds. Kaggle's GPU quota is thirty hours a week and a hung session keeps consuming it. Before the kill switch, "the job wedged and I noticed three hours later" was a real and recurring cost. Now it's a curl command from wherever I am.</p>
+      <div class="callout warn">
+        <i class="fas fa-key"></i>
+        <div class="ct"><strong>The channel name is the only secret</strong>Anyone who learns it can both read your logs and shut down your job. That's an acceptable design for a personal free-tier lab and completely unacceptable for anything else. Use a long random name, treat it as a credential, and don't broadcast anything sensitive through it.</div>
+      </div>
+
+      <h2 id="bug"><span class="h2num">05</span>The bug that took the longest</h2>
+      <p>None of the above is what cost me the most time. This was. <code>transformers</code> version 4.35 changed how large models get loaded. The old way allocated all the memory, then filled it with weights. The new way first builds the model as a <strong>meta tensor</strong> — a description of the model with no memory behind it, just the shape and type of every parameter — and only then allocates and loads. It's much better: you never need the memory twice, and you can inspect a model too large to instantiate.</p>
+      <p>It also breaks any code that assumes a freshly constructed model contains real numbers. Move a meta tensor to the GPU and you don't get weights, you get an error, because there was never anything there to move. The vocoder inside IndicF5 did exactly that. The fix is one line of ordering — load it onto the CPU first, where the weights are actually materialised, and only then move it:</p>
+      <pre><code># Step 1: Load Vocoder to CPU first (avoid meta-tensor error with transformers >= 4.35)</code></pre>
+      <p>The awkward part is <em>where</em> that line has to go. IndicF5 ships its own <code>model.py</code>, which Hugging Face downloads into a cache directory whose path contains the model's commit hash. So the file I need to patch doesn't exist until first load, and its location isn't known ahead of time. The script triggers the download, finds the file by pattern, and overwrites it with a patched copy:</p>
+      <pre><code>patterns = glob.glob(os.path.expanduser(
+    "~/.cache/huggingface/modules/transformers_modules/ai4bharat/IndicF5/*/model.py"
+))</code></pre>
+      <p>That <code>*</code> is the commit hash, and it's the whole reason for the glob. I'll flag this because I got it wrong in a different project and wrote about it there: <strong>a glob that matches nothing fails silently.</strong> It returns an empty list, the loop body never runs, and everything downstream looks fine until it doesn't. Log what you matched, every time, and log it loudly when the answer is nothing.</p>
+
+      <h2 id="whole"><span class="h2num">06</span>What the whole thing looks like</h2>
+      <p>Seven steps, all in one headless script pushed with the Kaggle CLI:</p>
+      <pre><code>kaggle kernels push -p . --accelerator NvidiaTeslaT4</code></pre>
+      <table class="data-table">
+        <thead><tr><th>Step</th><th>What it does</th><th>Time</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>Read API keys from Kaggle Secrets</td><td>5 s</td></tr>
+          <tr><td>1</td><td>Install system packages (ffmpeg, espeak-ng, fonts)</td><td>~1 min</td></tr>
+          <tr><td>2</td><td>Install Python packages, then f5-tts, then IndicF5</td><td>~8 min</td></tr>
+          <tr><td>3</td><td>Write all pipeline source files into <code>/kaggle/working</code></td><td>10 s</td></tr>
+          <tr><td>4</td><td>Patch IndicF5's <code>model.py</code></td><td>~2 min</td></tr>
+          <tr><td>5</td><td>Launch Streamlit on port 8501</td><td>—</td></tr>
+          <tr><td>6</td><td>Start the Cloudflare tunnel, broadcast the URL</td><td>~30 s</td></tr>
+          <tr><td>7</td><td>Stream the channel, watching for the kill signal</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <p>About twelve to fifteen minutes from push to a working public URL, most of it pip. Two details that only show up once you've run it a few times: <strong>secrets go in Kaggle's secrets store, not the script</strong> — they arrive as environment variables and never touch the source — and <strong>persistence is set to "files only"</strong>, which keeps <code>/kaggle/working</code> between runs, so the dubbed output survives long enough to download even if the session ends unexpectedly.</p>
+
+      <h2 id="change"><span class="h2num">07</span>What I'd change</h2>
+      <p><strong>The pip step is eight of the fifteen minutes</strong>, repeated every run, installing identical packages. A Kaggle Dataset containing pre-built wheels would cut it to about two. I haven't done it, and every single run pays for that.</p>
+      <p><strong>The tunnel URL should be authenticated.</strong> Right now the app's only protection is that its address is random and short-lived. That's security by nobody-guessing, which is not security. Named Cloudflare tunnels support real access control and I should move to them before this ever handles anything but my own test clips.</p>
+      <p><strong>The kill switch only stops the script</strong>, not the Kaggle session — the container keeps running until Kaggle reclaims it, which means quota keeps draining after the job is dead. Calling the Kaggle API to cancel the kernel would close that gap.</p>
+      <p>The pattern generalises past dubbing, which is why I think it's worth writing down. Any GPU workload you want to drive interactively but can't afford to host is the same three problems: get a URL out, get status back, get a way to stop it. A tunnel, a public channel, and a keyword. None of the pieces are clever. Together they turn thirty free hours a week into something that behaves like infrastructure.</p>
+
+      <div class="takeaways">
+        <h4>The transferable lesson</h4>
+        <ul>
+          <li>Any un-hostable GPU workload reduces to three problems: get a URL <em>out</em>, get status <em>back</em>, get a way to <em>stop</em> it.</li>
+          <li>An outbound tunnel beats trying to open an inbound port you're not allowed to open.</li>
+          <li>A logger that can crash the job it logs is worse than no logger — broadcast on a bare <code>except</code>.</li>
+          <li>A glob that matches nothing fails silently. Log what you matched, loudly when it's nothing.</li>
+        </ul>
+      </div>
+
+      <div class="article-cta">
+        <a href="https://github.com/nirmitktripathii/dubbing_app" target="_blank" class="btn-article primary"><i class="fab fa-github"></i> View the repo</a>
+        <a href="whitepaper-dubbing.html" class="btn-article ghost"><i class="fas fa-wave-square"></i> The pipeline this rig serves</a>
+      </div>
+
+      <div class="author-card">
+        <img src="images/user.png" alt="Nirmit K. Tripathii"/>
+        <div>
+          <div class="an">Nirmit K. Tripathii — AI/ML Engineer &amp; Football Data Scientist</div>
+          <div class="ar">Most of my projects run on hardware I don't pay for — Kaggle T4s, Colab, free-tier inference APIs. That constraint turns out to be a good teacher. I write one article a week taking a real project apart, including the parts that failed. Available for part-time, consulting and research collaboration (remote).</div>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026 Nirmit K. Tripathii &nbsp;&middot;&nbsp; Made with <span>&#9829;</span> by Nirmit</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  (function(){
+    const bar = document.getElementById('readProgress');
+    const links = Array.from(document.querySelectorAll('#toc a'));
+    const ids = links.map(a => a.getAttribute('href').slice(1));
+    const onScroll = () => {
+      const h = document.documentElement;
+      const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      if (bar) bar.style.width = Math.max(0, Math.min(1, scrolled)) * 100 + '%';
+      let current = ids[0];
+      for (const id of ids){
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 120) current = id;
+      }
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+</body>
+</html>

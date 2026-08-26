@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Deployed Dubbing Pipeline (v2) — Nirmit K. Tripathii</title>
+  <meta name="description" content="A deep dive on the deployed v2 Indic dubbing pipeline: constraining Gemini translation to a phoneme budget, preserving the soundstage with source separation, and duration-controlled zero-shot voice cloning with IndicF5 — running SoTA models on a free Kaggle T4."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/d8eaa222fe.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="read-progress" id="readProgress"></div>
+<nav>
+  <a href="index.html"><img src="images/logo.png" class="logo-img" alt="Logo"/></a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="index.html#writing">Writing</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+  <div class="nav-burger" onclick="location.href='index.html'"><i class="fas fa-home"></i></div>
+</nav>
+
+<div class="article-shell">
+  <a href="index.html#writing" class="article-back"><i class="fas fa-arrow-left"></i> ALL WRITING</a>
+
+  <header class="article-hero">
+    <div class="article-kicker"><i class="fas fa-wave-square"></i> White Paper · Speech &amp; Audio ML · Deployed v2</div>
+    <h1 class="article-title">Making Translated Speech Fit the Frame: The Deployed Dubbing Pipeline</h1>
+    <p class="article-standfirst">Machine dubbing usually fails on timing. A faithful translation is longer or shorter than the line it replaces, so the audio is stretched, sped up, or left drifting against the picture. The fix isn't a better time-stretch — it's refusing to create the mismatch in the first place. This is how the deployed <strong>v2</strong> pipeline constrains Gemini translation to a phoneme budget, preserves the original soundstage, and clones voices at a controlled duration — across 11 Indic languages, on a free GPU.</p>
+    <div class="article-meta">
+      <span class="am"><i class="fas fa-user"></i> Nirmit K. Tripathii</span>
+      <span class="am"><i class="fas fa-calendar"></i> 2026</span>
+      <span class="am"><i class="fas fa-clock"></i> 11 min read</span>
+      <span class="am"><i class="fas fa-play"></i> <a href="dubbing.html" style="color:inherit">Interactive walkthrough</a></span>
+    </div>
+    <div class="article-chips">
+      <span class="tag">Isochrony</span>
+      <span class="tag">Gemini CoT</span>
+      <span class="tag">IndicF5 TTS</span>
+      <span class="tag">Faster-Whisper</span>
+      <span class="tag">Demucs</span>
+      <span class="tag">11 Indic languages</span>
+    </div>
+  </header>
+
+  <div class="article-layout">
+    <aside class="article-toc">
+      <h4>On this page</h4>
+      <nav id="toc">
+        <a href="#problem">Translation breaks timing</a>
+        <a href="#upstream">Constrain upstream</a>
+        <a href="#budget">The phoneme budget</a>
+        <a href="#room">Preserve the room</a>
+        <a href="#clone">Duration-controlled cloning</a>
+        <a href="#assemble">Assemble without stretching</a>
+        <a href="#gpu">SoTA on a free T4</a>
+        <a href="#takeaways">Key takeaways</a>
+      </nav>
+    </aside>
+
+    <article class="prose">
+      <p class="lead">Isochrony is the property that dubbed speech occupies the same time as the speech it replaces. Humans dubbing for film obsess over it, because the eye is unforgiving: audio that runs past a closed mouth, or ends while the lips keep moving, reads as broken even to a viewer who can't say why. Most automated dubbing treats isochrony as a post-processing problem to be patched with a time-stretch. This pipeline treats it as a <em>constraint to design around</em>.</p>
+
+      <div class="callout">
+        <i class="fas fa-layer-group"></i>
+        <div class="ct"><strong>Two systems, one problem</strong>This white paper covers the <strong>deployed v2</strong> pipeline, which reaches isochrony by <em>prompting</em> Gemini against a phoneme budget. There is also a more advanced <strong>v3 research track</strong> that reaches it by <em>fine-tuning</em> Llama-3.1-8B — with full training telemetry and eval numbers — written up separately in <a href="article-dubbing-isochrony.html">Teaching an LLM to Fit Its Mouth</a>. Same problem, two architectures.</div>
+      </div>
+
+      <h2 id="problem"><span class="h2num">01</span>Why translation breaks timing</h2>
+      <p>The naive dubbing pipeline is: transcribe → translate → synthesise → paste. It fails at the seam between translate and synthesise. "There are plants in the soil" is six English syllables; a faithful Hindi rendering might be eleven or fifteen. Synthesise that honestly and it overruns the 6.5-second slot the original occupied. The usual rescue is FFmpeg's <code>atempo</code> — speed the audio up to fit — which makes the speaker sound rushed, or slow it to fill, which makes them sound drugged. Either way the artefact is audible, and it compounds over a 400-segment episode.</p>
+      <div class="callout warn">
+        <i class="fas fa-triangle-exclamation"></i>
+        <div class="ct"><strong>The core insight</strong>You cannot fix a timing mismatch downstream without damaging the audio. So don't produce one. Move the timing constraint <em>upstream</em>, into the translation step, and generate speech that already fits.</div>
+      </div>
+
+      <h2 id="upstream"><span class="h2num">02</span>Constrain upstream, not downstream</h2>
+      <p>The pipeline (v2) runs seven stages, but the whole architecture pivots on stage 3, where translation is made timing-aware before a single sample of audio exists.</p>
+      <figure class="figure">
+        <svg viewBox="0 0 720 210" role="img" aria-label="Isochrony-aware translation flow">
+          <defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 z" fill="var(--accent)"/></marker></defs>
+          <rect class="svg-box" x="14" y="70" width="150" height="70" rx="10"/>
+          <text class="svg-title" x="89" y="98" text-anchor="middle" style="font-size:12px">English segment</text>
+          <text class="svg-label" x="89" y="118" text-anchor="middle">6.50s → syllable count</text>
+          <rect x="196" y="55" width="180" height="100" rx="12" fill="var(--card)" stroke="var(--accent)" stroke-width="1.5"/>
+          <text class="svg-title" x="286" y="82" text-anchor="middle" style="font-size:12px">Gemini + CoT</text>
+          <text class="svg-label" x="286" y="102" text-anchor="middle">3 candidates:</text>
+          <text class="svg-label" x="286" y="118" text-anchor="middle">direct · paraphrase · minimal</text>
+          <text class="svg-label" x="286" y="138" text-anchor="middle" style="fill:var(--accent)">phoneme-budget score</text>
+          <rect class="svg-box" x="408" y="70" width="150" height="70" rx="10"/>
+          <text class="svg-title" x="483" y="98" text-anchor="middle" style="font-size:12px">Best-fit line</text>
+          <text class="svg-label" x="483" y="118" text-anchor="middle">isochrony 92.4%</text>
+          <rect class="svg-box" x="586" y="70" width="120" height="70" rx="10"/>
+          <text class="svg-title" x="646" y="98" text-anchor="middle" style="font-size:12px">Duration TTS</text>
+          <text class="svg-label" x="646" y="118" text-anchor="middle">target = 6.50s</text>
+          <line class="svg-flow" x1="164" y1="105" x2="194" y2="105"/>
+          <line class="svg-flow" x1="376" y1="105" x2="406" y2="105"/>
+          <line class="svg-flow" x1="558" y1="105" x2="584" y2="105"/>
+        </svg>
+        <figcaption class="figcap">Timing enters at translation, not after it. The LLM produces several candidates; a phoneme-budget evaluator picks the one that will fit the slot before any audio is generated.</figcaption>
+      </figure>
+      <p>Upstream of that: <strong>Faster-Whisper large-v3 in INT8</strong> transcribes the source into timestamped segments, giving each line a hard duration target. The translation step then treats that target as a budget, not an afterthought.</p>
+
+      <h2 id="budget"><span class="h2num">03</span>The phoneme budget</h2>
+      <p>For each segment the system computes the English syllable count and derives a phoneme target for the slot. It then prompts <strong>Gemini</strong> with chain-of-thought instructions to produce exactly three translation candidates at different compressions — a <em>direct</em> rendering, a <em>paraphrased</em> one, and a <em>minimal</em> one — and scores each against the phoneme budget, selecting the closest fit.</p>
+      <div class="metric-grid">
+        <div class="metric"><div class="mv">6.50s</div><div class="ml">source slot — "There are plants in the soil."</div></div>
+        <div class="metric"><div class="mv">10–14</div><div class="ml">phoneme/syllable target derived for the slot</div></div>
+        <div class="metric"><div class="mv">92.4%</div><div class="ml">isochrony score of the selected Hindi candidate</div></div>
+        <div class="metric"><div class="mv">3</div><div class="ml">candidates scored per segment before synthesis</div></div>
+      </div>
+      <p>The result is a translation chosen partly for meaning and partly for <em>length</em> — the point on the fidelity/brevity trade-off that will actually fit the mouth on screen. This is the step that lets everything downstream avoid time-stretching.</p>
+      <div class="callout good">
+        <i class="fas fa-flask"></i>
+        <div class="ct"><strong>The crack the v3 track closes</strong>The chain-of-thought prompt asks the model to "mentally count the syllables" of each candidate — and language models can't count syllables, because they see tokens, not sounds. Every other piece of v2 (three candidates, an external scorer, a refinement loop) exists to compensate for that one limitation. The <a href="article-dubbing-isochrony.html">v3 fine-tune</a> attacks the limitation directly, teaching the model the phoneme budget through training rather than working around it at inference.</div>
+      </div>
+
+      <h2 id="room"><span class="h2num">04</span>Preserve the room, not just the voice</h2>
+      <p>A dub that replaces the entire audio track throws away the music, ambience and sound effects that carry half the scene. Stage 1 avoids this with <strong>Demucs (htdemucs)</strong> source separation, splitting the original into a <code>vocals</code> stem and a <code>background</code> stem. Only the vocals are replaced; the background — the room tone, the score, the traffic — is preserved and remixed under the new dialogue. The vocals stem does double duty: it's what gets transcribed, and it's the reference from which the speaker's voice is cloned. Separating first means the clone hears clean dialogue instead of dialogue-over-music.</p>
+
+      <h2 id="clone"><span class="h2num">05</span>Duration-controlled voice cloning</h2>
+      <p>Synthesis uses <strong>IndicF5 (AI4Bharat)</strong>, a diffusion-transformer TTS built for Indic languages. Two things make it the right choice. First, zero-shot voice cloning: fed a ~12-second clean vocal reference of the original speaker, it generates the translated line in <em>that speaker's voice</em>. Second, and critically, the synthesis is <strong>conditioned on the target duration</strong> — the TTS is asked to produce ~6.50 seconds of speech, not "whatever length this text wants to be."</p>
+      <div class="callout good">
+        <i class="fas fa-microphone-lines"></i>
+        <div class="ct"><strong>Two constraints, one fit</strong>The phoneme budget got the <em>text</em> close to the right length; duration-conditioned TTS lands it exactly. Because both the words and the synthesis respect the slot, the output needs no speed correction — the single biggest source of robotic dubbing is designed out.</div>
+      </div>
+
+      <h2 id="assemble"><span class="h2num">06</span>Assemble without stretching</h2>
+      <p>Stage 6 lays each synthesised segment onto its original timeline position by <strong>direct overlay — no FFmpeg <code>atempo</code> stretching</strong> — with 50 ms crossfades between segments, and mixes the preserved background stem underneath, LUFS-normalised. Stage 7 (FFmpeg) composes the final video and burns in subtitles. Because timing was solved upstream, assembly is a placement problem, not a correction problem.</p>
+      <div class="code-label">v1 → v2, the decisions that mattered</div>
+      <table class="data-table">
+        <thead><tr><th>Concern</th><th>v1</th><th>v2 (deployed)</th></tr></thead>
+        <tbody>
+          <tr><td>Transcription</td><td>openai-whisper base</td><td><strong>Faster-Whisper large-v3 (INT8)</strong></td></tr>
+          <tr><td>Translation</td><td>generic prompt</td><td><strong>isochrony-aware CoT + phoneme scoring</strong></td></tr>
+          <tr><td>TTS</td><td>Edge-TTS</td><td><strong>IndicF5 — duration-controlled</strong></td></tr>
+          <tr><td>Audio sync</td><td>atempo stretch</td><td><strong>direct overlay (no stretch)</strong></td></tr>
+          <tr><td>Voice</td><td>generic</td><td><strong>zero-shot cloning of the speaker</strong></td></tr>
+          <tr><td>Background</td><td>overwritten</td><td><strong>preserved &amp; remixed (Demucs)</strong></td></tr>
+          <tr><td>Languages</td><td>Hindi only</td><td><strong>all 11 Indic languages</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="gpu"><span class="h2num">07</span>SoTA models on a free T4</h2>
+      <p>Running large-v3 Whisper, Demucs and a diffusion-transformer TTS sounds like a cloud-GPU bill. It isn't. The pipeline is designed to run on <strong>Kaggle's free dual-T4 accelerator</strong> (2×16 GB VRAM, 30 GPU-hours/week), exposed to a local machine via a Cloudflare Tunnel — a "borrowed GPU" pattern that turns a free notebook into a private inference server behind a Streamlit UI. That whole rig is its own write-up: <a href="article-kaggle-gpu-lab.html">A Headless GPU Lab on Kaggle's Free Tier</a>.</p>
+      <p>That constraint drove real engineering: INT8 quantisation on the transcription model, careful VRAM staging between stages, and a self-hosted cost of roughly <strong>$0.004/minute of processed video</strong> on a T4 — the difference between a demo and something you could actually offer as a service.</p>
+
+      <div class="takeaways">
+        <h4>Key takeaways</h4>
+        <ul>
+          <li><strong>Move constraints upstream.</strong> Isochrony is unfixable downstream without audible damage, so the translation step is made timing-aware and the mismatch is never created.</li>
+          <li><strong>Let the LLM optimise for length, not just meaning.</strong> Three CoT candidates scored on a phoneme budget pick the fidelity/brevity point that fits the slot.</li>
+          <li><strong>Separate before you replace.</strong> Demucs keeps the original soundstage and gives the voice-clone a clean reference in one move.</li>
+          <li><strong>Condition synthesis on duration.</strong> Duration-controlled IndicF5 lands the exact slot length, eliminating time-stretch artefacts.</li>
+          <li><strong>Design for the free tier.</strong> INT8 + dual-T4 + a tunnel turns SoTA models into a ~$0.004/min service with no cloud bill.</li>
+        </ul>
+      </div>
+
+      <div class="article-cta">
+        <a href="dubbing.html" class="btn-article primary"><i class="fas fa-play"></i> See the interactive walkthrough</a>
+        <a href="article-dubbing-isochrony.html" class="btn-article ghost"><i class="fas fa-flask"></i> Read the v3 fine-tune deep-dive</a>
+      </div>
+
+      <div class="author-card">
+        <img src="images/user.png" alt="Nirmit K. Tripathii"/>
+        <div>
+          <div class="an">Nirmit K. Tripathii</div>
+          <div class="ar">AI/ML Engineer &amp; Researcher working across speech, LLMs and multimodal systems, with a focus on Indic languages and shipping SoTA models under real-world resource constraints.</div>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026 Nirmit K. Tripathii &nbsp;&middot;&nbsp; Made with <span>&#9829;</span> by Nirmit</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  (function(){
+    const bar = document.getElementById('readProgress');
+    const links = Array.from(document.querySelectorAll('#toc a'));
+    const ids = links.map(a => a.getAttribute('href').slice(1));
+    const onScroll = () => {
+      const h = document.documentElement;
+      const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      if (bar) bar.style.width = Math.max(0, Math.min(1, scrolled)) * 100 + '%';
+      let current = ids[0];
+      for (const id of ids){
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 120) current = id;
+      }
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+</body>
+</html>

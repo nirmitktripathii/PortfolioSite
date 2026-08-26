@@ -14,10 +14,11 @@
   <img src="images/logo.png" class="logo-img" alt="Logo"/>
   <ul class="nav-links">
     <li><a href="#hero">Home</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#writing">Writing</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#skills">Skills</a></li>
     <li><a href="#experience">Experience</a></li>
-    <li><a href="#projects">Projects</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
   <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme">
@@ -27,10 +28,11 @@
 </nav>
 <div class="mobile-menu" id="mobileMenu">
   <a href="#hero" onclick="toggleMenu()">Home</a>
+  <a href="#projects" onclick="toggleMenu()">Projects</a>
+  <a href="#writing" onclick="toggleMenu()">Writing</a>
   <a href="#about" onclick="toggleMenu()">About</a>
   <a href="#skills" onclick="toggleMenu()">Skills</a>
   <a href="#experience" onclick="toggleMenu()">Experience</a>
-  <a href="#projects" onclick="toggleMenu()">Projects</a>
   <a href="#contact" onclick="toggleMenu()">Contact</a>
 </div>
 
@@ -43,122 +45,17 @@
       Hi, I'm <span class="name">Nirmit K. Tripathii</span>
       <span class="line2">AI / ML Engineer &amp; Researcher</span>
     </h1>
-    <p class="hero-desc">Building production-grade AI systems — agentic LLM pipelines, multimodal RAG, sports video analytics, and legal AI. 3+ years of hands-on ML engineering.</p>
+    <p class="hero-desc">Building production-grade AI systems — multi-agent LLM orchestration, multimodal RAG, speech &amp; video ML, legal AI, and civic technology. 3+ years of hands-on ML engineering, plus open-source and applied research.</p>
     <div class="hero-cta">
       <a href="#projects" class="btn-primary"><i class="fas fa-code"></i> View Projects</a>
       <a href="#contact" class="btn-outline"><i class="fas fa-paper-plane"></i> Get in Touch</a>
-      <a href="images/Nirmitk_Tripathii_Resume_2026.pdf" class="btn-outline" download><i class="fas fa-file-download"></i> Download CV</a>
+      <a href="images/Nirmit_Tripathii_Resume_2026.pdf" class="btn-outline" download><i class="fas fa-file-download"></i> Download CV</a>
     </div>
     <div class="hero-stats">
       <div class="stat-item"><div class="stat-num">3+</div><div class="stat-label">Years Experience</div></div>
-      <div class="stat-item"><div class="stat-num">10+</div><div class="stat-label">AI Projects Shipped</div></div>
+      <div class="stat-item"><div class="stat-num">13+</div><div class="stat-label">AI Projects Shipped</div></div>
       <div class="stat-item"><div class="stat-num">22</div><div class="stat-label">Indic Languages</div></div>
-      <div class="stat-item"><div class="stat-num">SoccerNet</div><div class="stat-label">2026 Challenge</div></div>
-    </div>
-  </div>
-</section>
-
-<section id="about">
-  <div class="reveal">
-    <div class="section-tag">Who I am</div>
-    <h2 class="section-title">About Me</h2>
-  </div>
-  <div class="about-grid reveal">
-    <div class="about-img-wrap">
-      <img src="images/user.png" class="about-img" alt="Nirmit K. Tripathii"/>
-      <div class="about-img-frame"></div>
-    </div>
-    <div class="about-body">
-      <p>I'm a certified AI/ML Engineer with a M.Tech in Modeling &amp; Simulation and 3+ years of industry experience building intelligent systems across NLP, LLMs, multimodal ML, and agentic AI.</p>
-      <p>My work spans production deployments at Chetu India and BLU PARROT — including an agentic event-commerce chatbot, a Video-to-SOP multimodal pipeline, legal AI for Indian law, sports action anticipation research, and a participant in the SoccerNet 2026 Challenge.</p>
-      <p>Currently at <strong style="color:var(--accent)">Chetu India</strong> as AI/ML Software Engineer.</p>
-      <div class="tabs">
-        <button class="tab-btn active" onclick="openTab(event,'tab-skills')">Skills</button>
-        <button class="tab-btn" onclick="openTab(event,'tab-experience')">Experience</button>
-        <button class="tab-btn" onclick="openTab(event,'tab-education')">Education</button>
-      </div>
-      <div class="tab-panel active" id="tab-skills">
-        <ul>
-          <li><strong>Machine Learning</strong><span>Random Forests, XGBoost, SVM, Clustering, Regression, Classification</span></li>
-          <li><strong>NLP &amp; LLMs</strong><span>RAG variants, LangChain, LangGraph, Fine-tuning, ASR, NMT, Summarization</span></li>
-          <li><strong>Deep Learning &amp; Vision</strong><span>CNNs, Transformers, Video Understanding, ImageBind, FUTR, T-DEED</span></li>
-          <li><strong>Agentic AI</strong><span>LangGraph StateGraph, Multi-node agents, Tool use, LangSmith observability</span></li>
-        </ul>
-      </div>
-      <div class="tab-panel" id="tab-experience">
-        <ul>
-          <li><strong>AI/ML Software Engineer</strong><span>Chetu India &middot; Apr 2025 &ndash; Present</span></li>
-          <li><strong>AI/ML Engineer</strong><span>BLU PARROT &middot; Jan 2024 &ndash; Apr 2025</span></li>
-          <li><strong>Subject Matter Expert: AI/ML</strong><span>House of Coutons &middot; Nov 2023 &ndash; Jan 2024</span></li>
-          <li><strong>AI/ML Programmer</strong><span>HRBOTICS &middot; Apr 2022 &ndash; Mar 2023</span></li>
-          <li><strong>Football Data Analyst</strong><span>Boomer 11 &middot; Nov 2021 &ndash; Mar 2022</span></li>
-        </ul>
-      </div>
-      <div class="tab-panel" id="tab-education">
-        <ul>
-          <li><strong>M.Tech &mdash; Modeling &amp; Simulation</strong><span>Savitribai Phule Pune University &middot; 2019&ndash;2022</span></li>
-          <li><strong>B.Tech &mdash; Electrical Engineering</strong><span>Pandit Deendayal Petroleum University &middot; 2014&ndash;2018</span></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="skills">
-  <div class="reveal">
-    <div class="section-tag">What I do</div>
-    <h2 class="section-title">Core Competencies</h2>
-    <p class="section-sub">From classical ML to cutting-edge multimodal AI &mdash; built and shipped in production.</p>
-  </div>
-  <div class="skills-grid">
-    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-robot"></i></div><h3>Agentic AI &amp; LLMs</h3><p>LangGraph multi-node agents, RAG variants (Naive/LightRAG/CRAG/VideoRAG), LangSmith tracing, OpenAI &amp; Gemini APIs, FastAPI.</p></div>
-    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-brain"></i></div><h3>Deep Learning &amp; Vision</h3><p>CNNs, Transformers, VideoRAG, ImageBind multimodal embeddings, OpenCV, FUTR anticipation models, T-DEED temporal spotting.</p></div>
-    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-language"></i></div><h3>NLP &amp; Speech</h3><p>BERT variants (InLegalBERT, XLM-RoBERTa, IndicBERT), FasterWhisper ASR, multilingual NMT, text classification, summarization.</p></div>
-    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-database"></i></div><h3>Data &amp; MLOps</h3><p>FAISS, HNSWLib, Neo4j, NetworkX, HuggingFace, W&amp;B, Python scraping, Azure OCR, data engineering pipelines.</p></div>
-    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-futbol"></i></div><h3>Sports AI</h3><p>Expected Goals (xG) modelling (89.77% accuracy), FAANTRA ball action anticipation, SoccerNet 2026 Challenge participant, pass network analysis.</p></div>
-    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-scale-balanced"></i></div><h3>Legal AI</h3><p>LegalGPT: case summarization, 150+ contract types classification, compliance AI, Opennyai, InCaseLawBERT fine-tuning.</p></div>
-  </div>
-</section>
-
-<section id="experience">
-  <div class="reveal">
-    <div class="section-tag">Where I've worked</div>
-    <h2 class="section-title">Experience</h2>
-    <p class="section-sub">Building AI that ships &mdash; from startup chaos to enterprise scale.</p>
-  </div>
-  <div class="timeline">
-    <div class="timeline-item reveal">
-      <div class="timeline-dot"></div>
-      <div class="tl-meta"><span class="tl-company">Chetu India</span><span class="tl-date">Apr 2025 &ndash; Present</span></div>
-      <div class="tl-title">AI/ML Software Engineer</div>
-      <div class="tl-items">
-        <div class="tl-item">Built DIGEST &mdash; agentic LangGraph chatbot for event discovery &amp; ticket commerce with full Automatiq B2B transaction lifecycle.</div>
-        <div class="tl-item">Architected SOP CHATBOT &mdash; multimodal VideoRAG pipeline converting screen-recorded workflows to structured SOPs via ImageBind, Gemini &amp; LangSmith.</div>
-        <div class="tl-item">Built IKS Oracle (Gyanstrot) &mdash; RAG-powered AI system for Indian Knowledge Systems, enabling semantic querying of Vedic &amp; ancient Indian texts.</div>
-      </div>
-    </div>
-    <div class="timeline-item reveal">
-      <div class="timeline-dot" style="background:var(--accent3);box-shadow:0 0 12px rgba(123,97,255,0.5)"></div>
-      <div class="tl-meta"><span class="tl-company" style="color:var(--accent3)">BLU PARROT</span><span class="tl-date">Jan 2024 &ndash; Apr 2025</span></div>
-      <div class="tl-title">AI/ML Engineer</div>
-      <div class="tl-items">
-        <div class="tl-item">LegalGPT &mdash; full RAG pipeline for Indian legal research, contract analysis (150+ types), and compliance checking.</div>
-        <div class="tl-item">Hindi ASR portal with SoTA Conformer-CTC + Gemini NLP call summarization.</div>
-        <div class="tl-item">22-language Indic translation portal (IndicBERT + Indic-TransV2).</div>
-        <div class="tl-item">Promoted to Project Lead for UK real-estate multimodal regression model.</div>
-      </div>
-    </div>
-    <div class="timeline-item reveal">
-      <div class="timeline-dot" style="background:var(--accent2);box-shadow:0 0 12px rgba(255,45,107,0.5)"></div>
-      <div class="tl-meta"><span class="tl-company" style="color:var(--accent2)">HRBOTICS</span><span class="tl-date">Apr 2022 &ndash; Mar 2023</span></div>
-      <div class="tl-title">AI/ML Programmer</div>
-      <div class="tl-items"><div class="tl-item">Multi-threaded Python scrapers for NCR commercial data and automated LinkedIn hiring workflows via Selenium + BeautifulSoup.</div></div>
-    </div>
-    <div class="timeline-item reveal">
-      <div class="timeline-dot" style="background:#ffd700;box-shadow:0 0 12px rgba(255,215,0,0.5)"></div>
-      <div class="tl-meta"><span class="tl-company" style="color:#ffd700">BOOMER 11</span><span class="tl-date">Nov 2021 &ndash; Mar 2022</span></div>
-      <div class="tl-title">Football Data Analyst</div>
-      <div class="tl-items"><div class="tl-item">Expected Goals (xG) model with 89.77% accuracy using RF Classifier &mdash; published research paper.</div></div>
+      <div class="stat-item"><div class="stat-num">11</div><div class="stat-label">Deep-Dive Write-ups</div></div>
     </div>
   </div>
 </section>
@@ -170,6 +67,53 @@
     <p class="section-sub">Production systems, research implementations, and ML experiments.</p>
   </div>
   <div class="projects-grid">
+    <div class="project-card reveal">
+      <div class="project-emoji" style="background:linear-gradient(135deg,#0a1420,#1a0a20);font-size:52px">📬</div>
+      <div class="project-body">
+        <div class="project-tags"><span class="tag">MCP</span><span class="tag">AI Agents</span><span class="tag">TypeScript</span><span class="tag">Multi-Account</span></div>
+        <h3>Email Orchestrator — MCP Agent</h3>
+        <p>A multi-account email agent consolidating Gmail, Zoho, Yahoo &amp; Outlook into one AI-enriched inbox — a single MCP server that is itself an MCP client, fanning out to each provider and re-exposing 17 unified tools. 49 passing tests.</p>
+        <div class="project-links">
+          <a href="article-email-orchestrator.html">Build log →</a>
+          <a href="article-email-thinking-budget.html" class="btn-demo"><i class="fas fa-diagram-project"></i> Deep dives</a>
+        </div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-emoji" style="background:linear-gradient(135deg,#0a2012,#0a1a20);font-size:52px">🗺️</div>
+      <div class="project-body">
+        <div class="project-tags"><span class="tag">Full-Stack</span><span class="tag">Node/Postgres</span><span class="tag">Civic Tech</span><span class="tag">SSR</span></div>
+        <h3>India आसपास — Civic Reporting</h3>
+        <p>Production civic-issue reporting platform: residents map potholes, garbage and drainage, with server-rendered social share cards, a two-tier trust model, and a hardened upload pipeline — all running for about $3/month.</p>
+        <div class="project-links">
+          <a href="https://github.com/nirmitktripathii/india-aaspaas" target="_blank">View Repo →</a>
+          <a href="whitepaper-india-aaspaas.html" class="btn-demo"><i class="fas fa-file-lines"></i> White Paper</a>
+        </div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-emoji" style="background:linear-gradient(135deg,#200a18,#160a20);font-size:52px">🎬</div>
+      <div class="project-body">
+        <div class="project-tags"><span class="tag">Agentic AI</span><span class="tag">Multi-Agent</span><span class="tag">Open Source</span><span class="tag">Orchestration</span></div>
+        <h3>Podcast Shorts Factory</h3>
+        <p>Ten cooperating AI agents that turn long podcasts into scheduled short-form videos — a provider-agnostic LLM layer with automatic fallback, a learning feedback loop, and a QA gate. Runs unattended on free providers. MIT-licensed.</p>
+        <div class="project-links">
+          <a href="https://github.com/nirmitktripathii/podcast-shorts-factory" target="_blank">View Repo →</a>
+          <a href="whitepaper-podcast-factory.html" class="btn-demo"><i class="fas fa-file-lines"></i> White Paper</a>
+        </div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-emoji" style="background:linear-gradient(135deg,#12002a,#001a2a);font-size:52px">🎥</div>
+      <div class="project-body">
+        <div class="project-tags"><span class="tag">Streamlit</span><span class="tag">LLM Failover</span><span class="tag">Self-Healing</span><span class="tag">Zero-Cost</span></div>
+        <h3>AI Video Style Cloner</h3>
+        <p>Paste a YouTube channel URL and it reverse-engineers the style, writes an original script in that voice, narrates and illustrates it, and compiles a finished MP4 &mdash; for $0. A three-tier LLM failover, self-healing JSON validators, and a zero-network procedural generator guarantee output even when every API is down.</p>
+        <div class="project-links">
+          <a href="whitepaper-video-cloner.html">White Paper &rarr;</a>
+        </div>
+      </div>
+    </div>
     <div class="project-card reveal">
       <div class="project-emoji" style="background:linear-gradient(135deg,#200a18,#0a0a20)">
         <img src="images/dubbing_architecture.png" alt="Indic AI Dubbing Platform" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
@@ -273,6 +217,276 @@
 
 
 
+<section id="writing">
+  <div class="reveal">
+    <div class="section-tag">What I write</div>
+    <h2 class="section-title">White Papers &amp; Blogs</h2>
+    <p class="section-sub">Deep-dives on the engineering and research behind my projects — written to be read, not skimmed. From production systems to primary-source history.</p>
+  </div>
+  <div class="reveal"><div class="section-tag" style="margin:6px 0 26px">Field notes — straight from the repo</div></div>
+  <div class="writing-grid">
+
+    <a href="article-dubbing-isochrony.html" class="paper-card reveal">
+      <div class="paper-top pt-audio">
+        <span class="paper-kind">Field Note · Dubbing v3</span>
+        <i class="fas fa-microphone-lines paper-glyph"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">Fine-Tuning</span><span class="tag">QLoRA</span><span class="tag">Isochrony</span></div>
+        <h3>Teaching an LLM to Fit Its Mouth</h3>
+        <p>AI dubbing drifts because translations aren't the same length as the original. The industry fixes it in the audio; I fixed it in the translator — cutting length error from 49% to 10% on a fine-tuned Llama-3.1-8B, with the full training telemetry left in.</p>
+        <div class="paper-foot"><span>2026</span><span class="read">12 min read &rarr;</span></div>
+      </div>
+    </a>
+
+    <a href="article-kaggle-gpu-lab.html" class="paper-card reveal">
+      <div class="paper-top pt-agents">
+        <span class="paper-kind">Field Note · MLOps</span>
+        <i class="fas fa-microchip paper-glyph"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">Kaggle</span><span class="tag">GPU</span><span class="tag">Tunnel</span></div>
+        <h3>A Headless GPU Lab on Kaggle's Free Tier</h3>
+        <p>A GPU I didn't pay for, running an app I could open from my phone, that I could kill from anywhere — a tunnel out, a public message channel back, and a kill switch. Plus the meta-tensor bug that cost the most time.</p>
+        <div class="paper-foot"><span>2026</span><span class="read">9 min read &rarr;</span></div>
+      </div>
+    </a>
+
+    <a href="article-football-anticipation.html" class="paper-card reveal">
+      <div class="paper-top pt-vision">
+        <span class="paper-kind">Field Note · Computer Vision</span>
+        <i class="fas fa-futbol paper-glyph"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">Anticipation</span><span class="tag">SoccerNet</span><span class="tag">Transformers</span></div>
+        <h3>Predicting What Happens Next in Football Video</h3>
+        <p>Detection asks what just happened; anticipation asks what's about to. My SoccerNet 2026 scores say the model knows <em>what</em> is coming far better than <em>when</em> — and the decomposed metric shows exactly which half broke.</p>
+        <div class="paper-foot"><span>2026</span><span class="read">10 min read &rarr;</span></div>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="reveal"><div class="section-tag" style="margin:64px 0 26px">The Email Orchestrator &middot; a 3-part build log</div></div>
+  <div class="writing-grid">
+
+    <a href="article-email-orchestrator.html" class="paper-card reveal">
+      <div class="paper-top pt-agents">
+        <span class="paper-kind">Part 1 · MCP</span>
+        <i class="fas fa-inbox paper-glyph"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">Fan-out</span><span class="tag">17 tools</span></div>
+        <h3>One Inbox, Three Mailboxes, Zero New APIs</h3>
+        <p>The architecture: one MCP server that is also an MCP client, consolidating four mail providers behind a single 17-tool surface — with exactly one custom component.</p>
+        <div class="paper-foot"><span>2026</span><span class="read">12 min read &rarr;</span></div>
+      </div>
+    </a>
+
+    <a href="article-email-resilience.html" class="paper-card reveal">
+      <div class="paper-top pt-civic">
+        <span class="paper-kind">Part 2 · Resilience</span>
+        <i class="fas fa-arrows-rotate paper-glyph"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">Reconnection</span><span class="tag">allSettled</span></div>
+        <h3>One Dead Inbox Shouldn't Kill the Whole Query</h3>
+        <p>An MCP connection is a child process, and child processes die. The self-healing reconnection — isolation, drop-detection, and a cooldown — that makes it survivable, with two production bugs pinned in tests.</p>
+        <div class="paper-foot"><span>2026</span><span class="read">11 min read &rarr;</span></div>
+      </div>
+    </a>
+
+    <a href="article-email-thinking-budget.html" class="paper-card reveal">
+      <div class="paper-top pt-audio">
+        <span class="paper-kind">Part 3 · LLM</span>
+        <i class="fas fa-brain paper-glyph"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">Thinking Models</span><span class="tag">Token Budget</span></div>
+        <h3>The Model Spent Its Whole Budget Thinking</h3>
+        <p>Empty JSON from an 80-token task with a 512 budget. On a thinking model the fix for a truncated answer is a <em>bigger</em> budget — and it fails completely silently. Floor it, double on retry.</p>
+        <div class="paper-foot"><span>2026</span><span class="read">11 min read &rarr;</span></div>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="reveal"><div class="section-tag" style="margin:64px 0 26px">White papers &amp; deep-dives</div></div>
+  <div class="writing-grid">
+
+    <a href="whitepaper-podcast-factory.html" class="paper-card reveal">
+      <div class="paper-top pt-agents">
+        <span class="paper-kind">White Paper · Agentic AI</span>
+        <i class="fas fa-robot paper-glyph"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">Multi-Agent</span><span class="tag">LLM Orchestration</span><span class="tag">Fallback</span></div>
+        <h3>Ten Agents, One Newsroom: Orchestrating an Autonomous Video Factory</h3>
+        <p>How ten specialised AI agents hand off work like a production company — a provider-agnostic brain with automatic fallback, prompt-injected craft playbooks, a learning loop, and a QA gate that blocks broken output.</p>
+        <div class="paper-foot"><span>Aug 2026</span><span class="read">13 min read &rarr;</span></div>
+      </div>
+    </a>
+
+    <a href="whitepaper-video-cloner.html" class="paper-card reveal">
+      <div class="paper-top pt-agents">
+        <span class="paper-kind">White Paper &middot; Resilience</span>
+        <i class="fas fa-shield-halved paper-glyph"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">LLM Failover</span><span class="tag">Self-Healing</span><span class="tag">Zero-Cost</span></div>
+        <h3>Never Return Empty: A Zero-Cost AI Video Pipeline Engineered to Always Ship</h3>
+        <p>One channel URL in, a finished narrated video out &mdash; for $0. The engineering that matters isn't any single model but the resilience layer: a three-tier failover cascade, self-healing validators, and a procedural generator that guarantees output when every API fails.</p>
+        <div class="paper-foot"><span>Aug 2026</span><span class="read">12 min read &rarr;</span></div>
+      </div>
+    </a>
+
+    <a href="whitepaper-farm-mech.html" class="paper-card reveal">
+      <div class="paper-top pt-vision">
+        <span class="paper-kind">Research · Agri &amp; Policy</span>
+        <i class="fas fa-wheat-awn paper-glyph"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">History</span><span class="tag">Draft Power</span><span class="tag">Groundwater</span></div>
+        <h3>The 230-Year Constraint: Why India's Mechanization Problem Was Never About Machines</h3>
+        <p>A history-to-policy argument from 18th-century primary sources: India's mechanization bottleneck has always been access to divisible draft power — not tools, cost, or awareness — and it still is.</p>
+        <div class="paper-foot"><span>Aug 2026</span><span class="read">16 min read &rarr;</span></div>
+      </div>
+    </a>
+
+    <a href="whitepaper-india-aaspaas.html" class="paper-card reveal">
+      <div class="paper-top pt-civic">
+        <span class="paper-kind">White Paper · Systems</span>
+        <i class="fas fa-city paper-glyph"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">Full-Stack</span><span class="tag">SSR</span><span class="tag">Security</span></div>
+        <h3>Single Origin: A Production Civic-Reporting Platform on a Free-Tier Budget</h3>
+        <p>Making a JavaScript map describe itself to WhatsApp crawlers, trusting strangers just enough to let them post, and hardening an upload path that assumes every phone photo carries home GPS — for ~$3/month.</p>
+        <div class="paper-foot"><span>Aug 2026</span><span class="read">12 min read &rarr;</span></div>
+      </div>
+    </a>
+
+    <a href="whitepaper-dubbing.html" class="paper-card reveal">
+      <div class="paper-top pt-audio">
+        <span class="paper-kind">White Paper · Speech ML · v2</span>
+        <i class="fas fa-wave-square paper-glyph"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">Isochrony</span><span class="tag">Gemini CoT</span><span class="tag">IndicF5</span></div>
+        <h3>The Deployed Dubbing Pipeline: Fitting Translated Speech to the Frame</h3>
+        <p>The production v2 system — how it constrains Gemini translation to a phoneme budget, preserves the soundstage with source separation, and clones voices at a controlled duration, all on a free Kaggle T4.</p>
+        <div class="paper-foot"><span>2026</span><span class="read">11 min read &rarr;</span></div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<section id="about">
+  <div class="reveal">
+    <div class="section-tag">Who I am</div>
+    <h2 class="section-title">About Me</h2>
+  </div>
+  <div class="about-grid reveal">
+    <div class="about-img-wrap">
+      <img src="images/user.png" class="about-img" alt="Nirmit K. Tripathii"/>
+      <div class="about-img-frame"></div>
+    </div>
+    <div class="about-body">
+      <p>I'm a certified AI/ML Engineer with a M.Tech in Modeling &amp; Simulation and 3+ years of industry experience building intelligent systems across NLP, LLMs, multimodal ML, and agentic AI.</p>
+      <p>My work spans production deployments at Chetu India and BLU PARROT — including an agentic event-commerce chatbot, a Video-to-SOP multimodal pipeline, legal AI for Indian law, sports action anticipation research, and a participant in the SoccerNet 2026 Challenge.</p>
+      <p>Most recently AI/ML Software Engineer at <strong style="color:var(--accent)">Chetu India</strong> (through mid-2026). Now available for freelance, consulting, and research collaboration &mdash; remote &mdash; and open to full-time roles from September 2026.</p>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="openTab(event,'tab-skills')">Skills</button>
+        <button class="tab-btn" onclick="openTab(event,'tab-experience')">Experience</button>
+        <button class="tab-btn" onclick="openTab(event,'tab-education')">Education</button>
+      </div>
+      <div class="tab-panel active" id="tab-skills">
+        <ul>
+          <li><strong>Machine Learning</strong><span>Random Forests, XGBoost, SVM, Clustering, Regression, Classification</span></li>
+          <li><strong>NLP &amp; LLMs</strong><span>RAG variants, LangChain, LangGraph, Fine-tuning, ASR, NMT, Summarization</span></li>
+          <li><strong>Deep Learning &amp; Vision</strong><span>CNNs, Transformers, Video Understanding, ImageBind, FUTR, T-DEED</span></li>
+          <li><strong>Agentic AI</strong><span>LangGraph StateGraph, Multi-node agents, Tool use, LangSmith observability</span></li>
+        </ul>
+      </div>
+      <div class="tab-panel" id="tab-experience">
+        <ul>
+          <li><strong>AI/ML Software Engineer</strong><span>Chetu India &middot; Apr 2025 &ndash; Jun 2026</span></li>
+          <li><strong>AI/ML Engineer</strong><span>BLU PARROT &middot; Jan 2024 &ndash; Apr 2025</span></li>
+          <li><strong>Subject Matter Expert: AI/ML</strong><span>House of Coutons &middot; Nov 2023 &ndash; Jan 2024</span></li>
+          <li><strong>AI/ML Programmer</strong><span>HRBOTICS &middot; Apr 2022 &ndash; Mar 2023</span></li>
+          <li><strong>Football Data Analyst</strong><span>Boomer 11 &middot; Nov 2021 &ndash; Mar 2022</span></li>
+        </ul>
+      </div>
+      <div class="tab-panel" id="tab-education">
+        <ul>
+          <li><strong>M.Tech &mdash; Modeling &amp; Simulation</strong><span>Savitribai Phule Pune University &middot; 2019&ndash;2022</span></li>
+          <li><strong>B.Tech &mdash; Electrical Engineering</strong><span>Pandit Deendayal Petroleum University &middot; 2014&ndash;2018</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="reveal">
+    <div class="section-tag">What I do</div>
+    <h2 class="section-title">Core Competencies</h2>
+    <p class="section-sub">From classical ML to cutting-edge multimodal AI &mdash; built and shipped in production.</p>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-robot"></i></div><h3>Agentic AI &amp; LLMs</h3><p>LangGraph multi-node agents, RAG variants (Naive/LightRAG/CRAG/VideoRAG), LangSmith tracing, OpenAI &amp; Gemini APIs, FastAPI.</p></div>
+    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-brain"></i></div><h3>Deep Learning &amp; Vision</h3><p>CNNs, Transformers, VideoRAG, ImageBind multimodal embeddings, OpenCV, FUTR anticipation models, T-DEED temporal spotting.</p></div>
+    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-language"></i></div><h3>NLP &amp; Speech</h3><p>BERT variants (InLegalBERT, XLM-RoBERTa, IndicBERT), FasterWhisper ASR, multilingual NMT, text classification, summarization.</p></div>
+    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-database"></i></div><h3>Data &amp; MLOps</h3><p>FAISS, HNSWLib, Neo4j, NetworkX, HuggingFace, W&amp;B, Python scraping, Azure OCR, data engineering pipelines.</p></div>
+    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-futbol"></i></div><h3>Sports AI</h3><p>Expected Goals (xG) modelling (89.77% accuracy), FAANTRA ball action anticipation, SoccerNet 2026 Challenge participant, pass network analysis.</p></div>
+    <div class="skill-card reveal"><div class="skill-icon"><i class="fas fa-scale-balanced"></i></div><h3>Legal AI</h3><p>LegalGPT: case summarization, 150+ contract types classification, compliance AI, Opennyai, InCaseLawBERT fine-tuning.</p></div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="reveal">
+    <div class="section-tag">Where I've worked</div>
+    <h2 class="section-title">Experience</h2>
+    <p class="section-sub">Building AI that ships &mdash; from startup chaos to enterprise scale.</p>
+  </div>
+  <div class="timeline">
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="tl-meta"><span class="tl-company">Chetu India</span><span class="tl-date">Apr 2025 &ndash; Jun 2026</span></div>
+      <div class="tl-title">AI/ML Software Engineer</div>
+      <div class="tl-items">
+        <div class="tl-item">Built DIGEST &mdash; agentic LangGraph chatbot for event discovery &amp; ticket commerce with full Automatiq B2B transaction lifecycle.</div>
+        <div class="tl-item">Architected SOP CHATBOT &mdash; multimodal VideoRAG pipeline converting screen-recorded workflows to structured SOPs via ImageBind, Gemini &amp; LangSmith.</div>
+        <div class="tl-item">Built IKS Oracle (Gyanstrot) &mdash; RAG-powered AI system for Indian Knowledge Systems, enabling semantic querying of Vedic &amp; ancient Indian texts.</div>
+      </div>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot" style="background:var(--accent3);box-shadow:0 0 12px rgba(123,97,255,0.5)"></div>
+      <div class="tl-meta"><span class="tl-company" style="color:var(--accent3)">BLU PARROT</span><span class="tl-date">Jan 2024 &ndash; Apr 2025</span></div>
+      <div class="tl-title">AI/ML Engineer</div>
+      <div class="tl-items">
+        <div class="tl-item">LegalGPT &mdash; full RAG pipeline for Indian legal research, contract analysis (150+ types), and compliance checking.</div>
+        <div class="tl-item">Hindi ASR portal with SoTA Conformer-CTC + Gemini NLP call summarization.</div>
+        <div class="tl-item">22-language Indic translation portal (IndicBERT + Indic-TransV2).</div>
+        <div class="tl-item">Promoted to Project Lead for UK real-estate multimodal regression model.</div>
+      </div>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot" style="background:var(--accent2);box-shadow:0 0 12px rgba(255,45,107,0.5)"></div>
+      <div class="tl-meta"><span class="tl-company" style="color:var(--accent2)">HRBOTICS</span><span class="tl-date">Apr 2022 &ndash; Mar 2023</span></div>
+      <div class="tl-title">AI/ML Programmer</div>
+      <div class="tl-items"><div class="tl-item">Multi-threaded Python scrapers for NCR commercial data and automated LinkedIn hiring workflows via Selenium + BeautifulSoup.</div></div>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot" style="background:#ffd700;box-shadow:0 0 12px rgba(255,215,0,0.5)"></div>
+      <div class="tl-meta"><span class="tl-company" style="color:#ffd700">BOOMER 11</span><span class="tl-date">Nov 2021 &ndash; Mar 2022</span></div>
+      <div class="tl-title">Football Data Analyst</div>
+      <div class="tl-items"><div class="tl-item">Expected Goals (xG) model with 89.77% accuracy using RF Classifier &mdash; published research paper.</div></div>
+    </div>
+  </div>
+</section>
+
 <section id="contact">
   <div class="reveal">
     <div class="section-tag">Let's talk</div>
@@ -282,14 +496,12 @@
     <div class="contact-info">
       <h3>Open to new opportunities</h3>
       <div class="contact-item"><i class="fas fa-paper-plane"></i>nirmitktripathii@yahoo.com</div>
-      <div class="contact-item"><i class="fas fa-phone"></i>9528006968</div>
-      <div class="contact-item"><i class="fas fa-map-marker-alt"></i>Delhi NCR, India</div>
-      <div class="contact-item"><i class="fas fa-briefcase"></i>CTC: 8 LPA &rarr; Expected: 15 LPA</div>
-      <div class="contact-item"><i class="fas fa-clock"></i>Notice: 90 Days (Negotiable)</div>
+      <div class="contact-item"><i class="fas fa-map-marker-alt"></i>Delhi NCR, India &middot; Remote</div>
+      <div class="contact-item"><i class="fas fa-circle-check"></i>Open to freelance, consulting &amp; research collaboration</div>
       <div class="social-row">
         <a href="https://www.linkedin.com/in/nirmitk-tripathii-553a92158/" class="social-btn" target="_blank"><i class="fab fa-linkedin-in"></i></a>
         <a href="https://github.com/nirmitktripathii" class="social-btn" target="_blank"><i class="fab fa-github"></i></a>
-        <a href="images/Nirmitk_Tripathii_Resume_2026.pdf" class="social-btn" download title="Download Resume"><i class="fas fa-file-pdf"></i></a>
+        <a href="images/Nirmit_Tripathii_Resume_2026.pdf" class="social-btn" download title="Download Resume"><i class="fas fa-file-pdf"></i></a>
       </div>
     </div>
     <form class="contact-form" name="submit-to-google-sheet">
@@ -303,7 +515,7 @@
 </section>
 
 <footer>
-  <p>Copyright &copy; 2025 Nirmit K. Tripathii &nbsp;&middot;&nbsp; Made with <span>&#9829;</span> by Nirmit</p>
+  <p>Copyright &copy; 2026 Nirmit K. Tripathii &nbsp;&middot;&nbsp; Made with <span>&#9829;</span> by Nirmit</p>
 </footer>
 
 <script src="script.js"></script>

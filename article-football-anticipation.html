@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Predicting What Happens Next in Football Video — Nirmit K. Tripathii</title>
+  <meta name="description" content="Detection asks what just happened. Anticipation asks what is about to. I entered the SoccerNet 2026 challenge to find out how much harder that second question is — and the scores say the model knows what is coming far better than when."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/d8eaa222fe.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="read-progress" id="readProgress"></div>
+<nav>
+  <a href="index.html"><img src="images/logo.png" class="logo-img" alt="Logo"/></a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="index.html#writing">Writing</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+  <div class="nav-burger" onclick="location.href='index.html'"><i class="fas fa-home"></i></div>
+</nav>
+
+<div class="article-shell">
+  <a href="index.html#writing" class="article-back"><i class="fas fa-arrow-left"></i> ALL WRITING</a>
+
+  <header class="article-hero">
+    <div class="article-kicker"><i class="fas fa-futbol"></i> Article · SoccerNet 2026 · Part 1</div>
+    <h1 class="article-title">Predicting What Happens Next in Football Video</h1>
+    <p class="article-standfirst">Detection asks what just happened. Anticipation asks what is about to. I entered the SoccerNet 2026 challenge to find out how much harder that second question is — and the scores say the model knows <em>what</em> is coming far better than <em>when</em>.</p>
+    <div class="article-meta">
+      <span class="am"><i class="fas fa-user"></i> Nirmit K. Tripathii</span>
+      <span class="am"><i class="fas fa-calendar"></i> 2026</span>
+      <span class="am"><i class="fas fa-clock"></i> 10 min read</span>
+      <span class="am"><i class="fas fa-trophy"></i> SoccerNet 2026 Challenge</span>
+    </div>
+    <div class="article-chips">
+      <span class="tag">Computer Vision</span><span class="tag">Anticipation</span><span class="tag">Transformers</span><span class="tag">Football Analytics</span><span class="tag">FAANTRA</span>
+    </div>
+  </header>
+
+  <figure class="figure" style="margin-top:28px">
+    <img src="images/hero_football.png" alt="Ball action anticipation" style="width:100%;border-radius:12px;display:block;border:1px solid var(--border)"/>
+    <figcaption class="figcap">Hero image generated with FLUX.</figcaption>
+  </figure>
+
+  <div class="article-layout">
+    <aside class="article-toc">
+      <h4>On this page</h4>
+      <nav id="toc">
+        <a href="#different">A different problem</a>
+        <a href="#setup">The setup</a>
+        <a href="#metric">A metric with six numbers</a>
+        <a href="#backwards">The submission that went backwards</a>
+        <a href="#broke">What broke</a>
+      </nav>
+    </aside>
+
+    <article class="prose">
+      <p class="lead">A commentator starts raising their voice before the shot is taken.</p>
+      <p>They aren't reacting. They're anticipating — reading the shape of the play, the striker's body angle, the defender who is a half-step out of position, and concluding that something is about to happen. By the time the ball is actually struck they are already at full volume.</p>
+      <p>Almost every piece of football video AI I'd worked with does the opposite. It watches a clip and reports what occurred: that was a pass, that was a shot, that was a throw-in at the 47th minute. Useful, and fundamentally retrospective. The model is the person who says "oh, a goal" after the net moves.</p>
+      <p>The SoccerNet 2026 challenge has a track that asks for the commentator's version instead. Given broadcast footage up to now, name the ball action that is <strong>about to</strong> happen, and say when. I spent March on it. The final numbers say something I didn't expect and find more interesting than the score itself: the model is <strong>much better at knowing what is coming than at knowing when.</strong></p>
+
+      <h2 id="different"><span class="h2num">01</span>Why anticipation is a different problem, not a harder version of the same one</h2>
+      <p>The instinct is that anticipation is detection with the labels shifted a few seconds earlier. Train on "the two seconds before a pass" instead of "the pass" and you're done. That instinct is wrong in a way that matters, and it took me a while to see it.</p>
+      <p><strong>Detection has a ground truth that is visible in the frame.</strong> Somewhere in the clip, the boot makes contact with the ball. The evidence for "this is a pass" is <em>in the pixels</em>. A model that can't find it is a model that isn't looking properly.</p>
+      <p><strong>Anticipation has no such thing.</strong> In the frames before a pass there is no pass. There is a player in possession, some teammates moving, some opponents closing. That configuration is genuinely consistent with a pass, a dribble, a shot, or losing the ball. The evidence for the label is not present in the input, because the thing being labelled has not happened yet.</p>
+      <p>Which means the ceiling isn't set by the model. It's set by the sport. Football is played by people specifically trying to be unpredictable — the whole point of a feint is to make the next action unguessable. Some fraction of these predictions are <em>unknowable</em>, not merely hard, and no architecture fixes that. That reframes what a good score means. You are not measuring how well the model sees. You are measuring how much of football is legible in advance.</p>
+
+      <h2 id="setup"><span class="h2num">02</span>The setup</h2>
+      <p>I built on <strong>FAANTRA</strong>, the anticipation framework released with a CVPRW 2025 paper by Dalal and colleagues, which is the reference implementation for this task. The model I trained ended up as <code>faantra_decoupled_rny008_BAS_448p_SoccerNetBall_transformer</code>. Reading that filename is most of the architecture, and each piece is a decision:</p>
+      <table class="data-table">
+        <thead><tr><th>Component</th><th>Choice</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Backbone</td><td><code>rny008</code> (RegNetY-008)</td><td>A deliberately small image encoder. Every frame passes through it, so its cost is multiplied by the frame count — this is where a free-tier budget actually binds</td></tr>
+          <tr><td>Resolution</td><td><code>448p</code></td><td>Enough to resolve a player's body orientation, the signal that matters. Higher costs quadratically and adds detail about grass</td></tr>
+          <tr><td>Temporal head</td><td><code>transformer</code></td><td>Attention over the frame sequence, so the model can weight the moment the defender committed rather than treating all frames equally</td></tr>
+          <tr><td>Structure</td><td><code>decoupled</code></td><td>Predicting <em>what</em> and <em>when</em> through separate paths rather than one joint output</td></tr>
+          <tr><td>Data</td><td><code>SoccerNetBall</code> + <code>BAS</code></td><td>The ball-action set, plus the broader action-spotting set for extra supervision</td></tr>
+        </tbody>
+      </table>
+      <p>That <code>decoupled</code> choice is the one that turned out to be load-bearing, and I'll come back to it — the results make an argument about it that I didn't anticipate when I picked it.</p>
+
+      <h2 id="metric"><span class="h2num">03</span>Reading a metric that has six numbers</h2>
+      <p>Here is the official challenge server's scoring of my first submission — not my own validation, the organisers' evaluation of a held-out split I never see.</p>
+
+      <figure class="figure">
+        <svg viewBox="0 0 720 400" role="img" aria-label="mAP against tolerance window for two submissions">
+          <!-- y gridlines + labels -->
+          <text class="svg-title" x="20" y="28">mAP vs. tolerance window δ (seconds)</text>
+          <g stroke="var(--border)" stroke-width="1">
+            <line x1="70" y1="300" x2="660" y2="300"/>
+            <line x1="70" y1="248" x2="660" y2="248"/>
+            <line x1="70" y1="196" x2="660" y2="196"/>
+            <line x1="70" y1="144" x2="660" y2="144"/>
+            <line x1="70" y1="92" x2="660" y2="92"/>
+            <line x1="70" y1="40" x2="660" y2="40"/>
+          </g>
+          <g class="svg-label" text-anchor="end">
+            <text x="60" y="304">0</text><text x="60" y="252">5</text><text x="60" y="200">10</text>
+            <text x="60" y="148">15</text><text x="60" y="96">20</text><text x="60" y="44">25</text>
+          </g>
+          <!-- x labels -->
+          <g class="svg-label" text-anchor="middle">
+            <text x="70" y="320">δ=1</text><text x="186" y="320">δ=2</text><text x="302" y="320">δ=3</text>
+            <text x="418" y="320">δ=4</text><text x="534" y="320">δ=5</text><text x="650" y="320">δ=∞</text>
+          </g>
+          <!-- Submission 1 -->
+          <polyline fill="none" stroke="var(--accent)" stroke-width="2.5" points="70,229.5 186,167.5 302,121.8 418,82.6 534,66.3 650,54.7"/>
+          <g fill="var(--accent)">
+            <circle cx="70" cy="229.5" r="4"/><circle cx="186" cy="167.5" r="4"/><circle cx="302" cy="121.8" r="4"/>
+            <circle cx="418" cy="82.6" r="4"/><circle cx="534" cy="66.3" r="4"/><circle cx="650" cy="54.7" r="4"/>
+          </g>
+          <!-- Submission 2 -->
+          <polyline fill="none" stroke="var(--accent2)" stroke-width="2.5" stroke-dasharray="6 4" points="70,267.3 186,215.8 302,165.2 418,115.9 534,90.2 650,81.2"/>
+          <g fill="var(--accent2)">
+            <circle cx="70" cy="267.3" r="4"/><circle cx="186" cy="215.8" r="4"/><circle cx="302" cy="165.2" r="4"/>
+            <circle cx="418" cy="115.9" r="4"/><circle cx="534" cy="90.2" r="4"/><circle cx="650" cy="81.2" r="4"/>
+          </g>
+          <!-- annotations -->
+          <text class="svg-label" x="78" y="222" fill="var(--accent)">6.78</text>
+          <text class="svg-label" x="628" y="50" fill="var(--accent)">23.59</text>
+          <text class="svg-label" x="78" y="284" fill="var(--accent2)">3.14</text>
+          <!-- legend -->
+          <line x1="430" y1="360" x2="460" y2="360" stroke="var(--accent)" stroke-width="2.5"/>
+          <text class="svg-label" x="466" y="364">Submission 1 (20 Mar) — avg 17.69</text>
+          <line x1="430" y1="380" x2="460" y2="380" stroke="var(--accent2)" stroke-width="2.5" stroke-dasharray="6 4"/>
+          <text class="svg-label" x="466" y="384">Submission 2 (25 Mar) — avg 14.20</text>
+        </svg>
+        <figcaption class="figcap">The gap between the curves and the slope of each <em>is</em> the argument. Loosen the timing tolerance and both climb steeply — almost all the difficulty is in the "when." Source: <code>scoring_result (1)/(2).zip → scores.json</code>.</figcaption>
+      </figure>
+
+      <table class="data-table">
+        <thead><tr><th>Metric</th><th>Submission 1</th><th>Submission 2</th><th>Δ</th></tr></thead>
+        <tbody>
+          <tr><td>mAP@1</td><td>6.78</td><td>3.14</td><td><strong>−3.64</strong></td></tr>
+          <tr><td>mAP@2</td><td>12.74</td><td>8.10</td><td>−4.64</td></tr>
+          <tr><td>mAP@3</td><td>17.13</td><td>12.96</td><td>−4.17</td></tr>
+          <tr><td>mAP@4</td><td>20.90</td><td>17.70</td><td>−3.20</td></tr>
+          <tr><td>mAP@5</td><td>22.47</td><td>20.17</td><td>−2.30</td></tr>
+          <tr><td>mAP@∞</td><td>23.59</td><td>21.04</td><td>−2.55</td></tr>
+          <tr><td><strong>mAP_Average</strong></td><td><strong>17.69</strong></td><td><strong>14.20</strong></td><td><strong>−3.49</strong></td></tr>
+        </tbody>
+      </table>
+      <p>The <strong>δ</strong> is a tolerance window, in seconds. A prediction counts as correct if it names the right action <em>and</em> lands within δ seconds of when that action actually occurred. So mAP@1 demands the model be right about what, and within one second about when. mAP@5 allows five seconds of slack. And <strong>mAP@∞ removes the timing requirement entirely</strong> — get the action right and you score, whenever you said it would happen. That last one is the diagnostic, because it separates the two halves of the task:</p>
+      <ul>
+        <li><strong>mAP@∞ = 23.59</strong> — how good the model is at <em>what</em>.</li>
+        <li><strong>mAP@1 = 6.78</strong> — how good it is at <em>what and when together</em>.</li>
+      </ul>
+      <p>The model retains only <strong>29%</strong> of its performance when you demand one-second precision. It identifies the right upcoming action roughly three and a half times more often than it can place that action within a second of its actual moment. Almost all of the difficulty is in the timing.</p>
+      <p>In hindsight this is obvious. "A shot is coming" is legible from the shape of the play — that's exactly what the commentator reads. "A shot is coming in 1.4 seconds" depends on whether the striker takes one more touch, whether the defender lunges, whether the pass is slightly behind them. Those are decisions made in the moment by people, not properties of the configuration on screen. Which is why I'd argue <strong>mAP@∞ is the more honest number</strong> for this task, and mAP@1 is close to measuring the sport's inherent randomness rather than the model. The average of all six — 17.69 — hides the interesting structure entirely.</p>
+      <p>That's also the argument for the <code>decoupled</code> architecture. When <em>what</em> and <em>when</em> have error profiles this different, forcing them through a shared output head means one signal's difficulty degrades the other's. The results suggest the separation is worth keeping and, if anything, should go further.</p>
+
+      <h2 id="backwards"><span class="h2num">04</span>The second submission was worse</h2>
+      <p>Five days later I submitted again, and it was worse across every tolerance window — and worst at the tight ones. Whatever changed hurt timing precision roughly twice as much as it hurt classification: mAP@1 lost 54% of its value, mAP@∞ only 11%.</p>
+      <p>That shape is informative on its own. A change that damaged the model's general understanding would have pulled mAP@∞ down hard. This one mostly left <em>what</em> intact and degraded <em>when</em> — the signature of something that blurred the temporal resolution rather than the semantics. Averaging predictions across models with slightly different timing biases would do exactly that: the classifications reinforce, the timings smear.</p>
+      <p>I'm being careful with the word "would." I have both scored submissions and I have ensemble outputs sitting in the same directory, but the ensemble files are timestamped two hours <em>after</em> the second submission was scored — so I can't honestly claim from the artifacts alone that submission 2 <em>was</em> the ensemble. Reconstructing exactly what changed, and testing the smearing hypothesis properly, is Part 2. The general lesson is already clear enough to state: <strong>an aggregate metric that moves 3.5 points tells you almost nothing; the same metric decomposed across six tolerance windows tells you which half of the model you broke.</strong></p>
+
+      <h2 id="broke"><span class="h2num">05</span>What broke, and what I'd do differently</h2>
+      <p><strong>I optimised for the average.</strong> The headline mAP_Average weights all six windows equally, so improving mAP@5 and improving mAP@1 look identical on the scoreboard while being completely different engineering problems. If I'd been tracking the ∞-to-1 ratio from the start, I'd have known within the first week that timing was the whole game and spent March on the temporal head instead of spreading effort evenly.</p>
+      <p><strong>I treated the submission budget as free.</strong> It isn't. Each scored submission is a measurement of a held-out set you otherwise never observe, and I spent one of them on a change I hadn't validated well enough locally to predict the direction of. That's a wasted observation of the only ground truth that counts.</p>
+      <p><strong>Next time I'd predict the score before submitting.</strong> Writing down "I expect mAP@1 to go up about a point, mAP@∞ to stay flat" costs thirty seconds and converts every submission into a test of your understanding rather than a lottery ticket. When submission 2 came back down 3.5 points, I had no prior to be surprised against — which means I learned much less from it than I should have.</p>
+      <p>The next part reconstructs what actually changed between those two runs. The third looks at whether mAP@∞ deserves to be the headline number for anticipation tasks generally, because I now suspect the averaged metric is quietly steering the whole field toward optimising the half of the problem that isn't the hard one.</p>
+
+      <div class="takeaways">
+        <h4>The transferable lesson</h4>
+        <ul>
+          <li>Anticipation isn't detection with shifted labels — the label isn't in the pixels, so the ceiling is set by the sport, not the model.</li>
+          <li>A metric decomposed across tolerance windows tells you <em>which half</em> of the model you broke; the aggregate tells you nothing.</li>
+          <li>When two sub-tasks have different error profiles, a decoupled head stops one from dragging the other down.</li>
+          <li>A scored submission is a scarce measurement of ground truth. Predict the result before you spend one.</li>
+        </ul>
+      </div>
+
+      <div class="article-cta">
+        <a href="index.html#writing" class="btn-article primary"><i class="fas fa-newspaper"></i> More writing</a>
+        <a href="index.html#contact" class="btn-article ghost"><i class="fas fa-paper-plane"></i> Get in touch</a>
+      </div>
+
+      <div class="author-card">
+        <img src="images/user.png" alt="Nirmit K. Tripathii"/>
+        <div>
+          <div class="an">Nirmit K. Tripathii — AI/ML Engineer &amp; Football Data Scientist</div>
+          <div class="ar">Three years across NLP, agentic AI and sports video systems, including ball-action anticipation for the SoccerNet 2026 Challenge and a published Expected Goals model. I write up real projects, failures included. Available for part-time, consulting and research collaboration (remote); if you work on sports analytics or multilingual NLP, I'd like to hear about it.</div>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026 Nirmit K. Tripathii &nbsp;&middot;&nbsp; Made with <span>&#9829;</span> by Nirmit</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  (function(){
+    const bar = document.getElementById('readProgress');
+    const links = Array.from(document.querySelectorAll('#toc a'));
+    const ids = links.map(a => a.getAttribute('href').slice(1));
+    const onScroll = () => {
+      const h = document.documentElement;
+      const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      if (bar) bar.style.width = Math.max(0, Math.min(1, scrolled)) * 100 + '%';
+      let current = ids[0];
+      for (const id of ids){
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 120) current = id;
+      }
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+</body>
+</html>
