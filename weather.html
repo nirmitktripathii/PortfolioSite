@@ -97,6 +97,7 @@
         </div>
 
         <div class="loader" id="loader"></div>
+        <p id="statusMsg" style="color: #4ecca3; font-size: 0.9rem; margin-top: 10px; display: none;"></p>
 
         <div class="weather-card" id="weatherCard">
             <div class="city-name" id="city">London</div>
@@ -137,15 +138,24 @@
             if (!city) return;
 
             const loader = document.getElementById('loader');
+            const statusMsg = document.getElementById('statusMsg');
             const card = document.getElementById('weatherCard');
             const errorMsg = document.getElementById('errorMsg');
 
             loader.style.display = 'block';
+            statusMsg.style.display = 'none';
+            statusMsg.innerText = '';
             card.style.display = 'none';
             errorMsg.style.display = 'none';
 
+            let wakeTimer = setTimeout(() => {
+                statusMsg.innerText = "Waking up Hugging Face proxy space (15-20s)...";
+                statusMsg.style.display = 'block';
+            }, 2500);
+
             try {
                 const response = await fetch(`${API_URL}?city=${city}`);
+                clearTimeout(wakeTimer);
                 const data = await response.json();
 
                 if (data.error) {
@@ -163,10 +173,13 @@
                 updateBackground(data.weather[0].main);
 
             } catch (err) {
-                errorMsg.innerText = err.message || 'Connection failed';
+                clearTimeout(wakeTimer);
+                errorMsg.innerText = "Note: The Hugging Face proxy space may be waking up from idle. Please retry in a few moments.";
                 errorMsg.style.display = 'block';
             } finally {
+                clearTimeout(wakeTimer);
                 loader.style.display = 'none';
+                statusMsg.style.display = 'none';
             }
         }
 
