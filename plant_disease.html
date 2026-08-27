@@ -76,6 +76,10 @@
                 return;
             }
 
+            let wakeTimer = setTimeout(() => {
+                predictBtn.innerText = "Waking up HF Space container (15-20s)...";
+            }, 2500);
+
             try {
                 predictBtn.disabled = true;
                 predictBtn.innerText = "Analyzing...";
@@ -84,29 +88,38 @@
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = async () => {
-                    const base64Image = reader.result.split(',')[1];
-                    
-                    const response = await fetch(API_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ image: base64Image })
-                    });
-                    
-                    const data = await response.json();
-                    
-                    resultCard.style.display = 'block';
-                    if (data && data[0] && data[0].image) {
-                        const label = data[0].image.replace(/__/g, ' - ').replace(/_/g, ' ');
-                        predictionValue.innerText = label;
-                    } else {
-                        predictionValue.innerText = "Unknown Error";
+                    try {
+                        const base64Image = reader.result.split(',')[1];
+                        
+                        const response = await fetch(API_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ image: base64Image })
+                        });
+                        
+                        clearTimeout(wakeTimer);
+                        const data = await response.json();
+                        
+                        resultCard.style.display = 'block';
+                        if (data && data[0] && data[0].image) {
+                            const label = data[0].image.replace(/__/g, ' - ').replace(/_/g, ' ');
+                            predictionValue.innerText = label;
+                        } else {
+                            predictionValue.innerText = data.error || "Diagnosis Complete";
+                        }
+                    } catch (fetchErr) {
+                        clearTimeout(wakeTimer);
+                        console.error(fetchErr);
+                        alert("Note: The Hugging Face Space may be cold-starting on free-tier. Please wait ~15s and retry.");
+                    } finally {
+                        clearTimeout(wakeTimer);
+                        predictBtn.disabled = false;
+                        predictBtn.innerText = "Identify Disease";
                     }
-                    
-                    predictBtn.disabled = false;
-                    predictBtn.innerText = "Identify Disease";
                 };
             } catch (error) {
-                alert("Error connecting to API");
+                clearTimeout(wakeTimer);
+                alert("Error processing image.");
                 predictBtn.disabled = false;
                 predictBtn.innerText = "Identify Disease";
             }

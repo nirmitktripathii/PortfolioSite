@@ -15,6 +15,7 @@
   <ul class="nav-links">
     <li><a href="#hero">Home</a></li>
     <li><a href="#projects">Projects</a></li>
+    <li><a href="#spaces">Spaces Hub</a></li>
     <li><a href="#writing">Writing</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#skills">Skills</a></li>
@@ -29,6 +30,7 @@
 <div class="mobile-menu" id="mobileMenu">
   <a href="#hero" onclick="toggleMenu()">Home</a>
   <a href="#projects" onclick="toggleMenu()">Projects</a>
+  <a href="#spaces" onclick="toggleMenu()">Spaces Hub</a>
   <a href="#writing" onclick="toggleMenu()">Writing</a>
   <a href="#about" onclick="toggleMenu()">About</a>
   <a href="#skills" onclick="toggleMenu()">Skills</a>
@@ -48,7 +50,7 @@
     <p class="hero-desc">Building production-grade AI systems — multi-agent LLM orchestration, multimodal RAG, speech &amp; video ML, legal AI, and civic technology. 3+ years of hands-on ML engineering, plus open-source and applied research.</p>
     <div class="hero-cta">
       <a href="#projects" class="btn-primary"><i class="fas fa-code"></i> View Projects</a>
-      <a href="#contact" class="btn-outline"><i class="fas fa-paper-plane"></i> Get in Touch</a>
+      <a href="#spaces" class="btn-outline"><i class="fas fa-cubes"></i> Live Spaces Hub</a>
       <a href="images/Nirmit_Tripathii_Resume_2026.pdf" class="btn-outline" download><i class="fas fa-file-download"></i> Download CV</a>
     </div>
     <div class="hero-stats">
@@ -64,21 +66,45 @@
   <div class="reveal">
     <div class="section-tag">What I've built</div>
     <h2 class="section-title">Featured Projects</h2>
-    <p class="section-sub">Production systems, research implementations, and ML experiments.</p>
+    <p class="section-sub">Flagship production systems, research implementations, and agentic AI architectures.</p>
   </div>
   <div class="projects-grid">
-    <div class="project-card reveal">
-      <div class="project-emoji" style="background:linear-gradient(135deg,#0a1420,#1a0a20);font-size:52px">📬</div>
+
+    <!-- FLAGSHIP 1: INDIC DUBBING PLATFORM -->
+    <div class="project-card flagship reveal">
+      <div class="project-emoji" style="background:linear-gradient(135deg,#200a18,#0a0a20)">
+        <img src="images/dubbing_architecture.png" alt="Indic AI Dubbing Platform" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
+      </div>
       <div class="project-body">
-        <div class="project-tags"><span class="tag">MCP</span><span class="tag">AI Agents</span><span class="tag">TypeScript</span><span class="tag">Multi-Account</span></div>
-        <h3>Email Orchestrator — MCP Agent</h3>
-        <p>A multi-account email agent consolidating Gmail, Zoho, Yahoo &amp; Outlook into one AI-enriched inbox — a single MCP server that is itself an MCP client, fanning out to each provider and re-exposing 17 unified tools. 49 passing tests.</p>
+        <div class="flagship-badge"><i class="fas fa-crown"></i> Flagship Case Study</div>
+        <div class="project-tags"><span class="tag">Llama-3.1-8B QLoRA</span><span class="tag">IndicF5</span><span class="tag">Demucs</span><span class="tag">Isochrony</span></div>
+        <h3>Indic AI Dubbing Platform</h3>
+        <p>Isochrony-aware video dubbing pipeline translating English to 11 Indic languages with zero-shot voice cloning. The v3 fine-tune constrains translation to a strict phoneme budget, cutting length error 79% (0.495→0.103 rel.) while improving translation quality (chrF++ 22.0→30.1).</p>
         <div class="project-links">
-          <a href="article-email-orchestrator.html">Build log →</a>
-          <a href="article-email-thinking-budget.html" class="btn-demo"><i class="fas fa-diagram-project"></i> Deep dives</a>
+          <a href="article-dubbing-isochrony.html">Build Log →</a>
+          <a href="dubbing.html" class="btn-demo"><i class="fas fa-play"></i> Walkthrough</a>
+          <a href="https://github.com/nirmitktripathii/dubbing_app" target="_blank" class="btn-demo"><i class="fab fa-github"></i> Repo</a>
         </div>
       </div>
     </div>
+
+    <!-- FLAGSHIP 2: EMAIL ORCHESTRATOR MCP -->
+    <div class="project-card flagship reveal">
+      <div class="project-emoji" style="background:linear-gradient(135deg,#0a1420,#1a0a20);font-size:52px">📬</div>
+      <div class="project-body">
+        <div class="flagship-badge"><i class="fas fa-crown"></i> Flagship Case Study</div>
+        <div class="project-tags"><span class="tag">MCP</span><span class="tag">Multi-Agent</span><span class="tag">TypeScript</span><span class="tag">17 Tools</span></div>
+        <h3>Email Orchestrator — Multi-Account MCP Agent</h3>
+        <p>A multi-account email agent consolidating Gmail, Zoho, Yahoo &amp; Outlook into one AI-enriched inbox — a single MCP server that is itself an MCP client, fanning out to each provider and re-exposing 17 unified tools with self-healing child process reconnection. 49 passing tests.</p>
+        <div class="project-links">
+          <a href="article-email-orchestrator.html">Build Log →</a>
+          <a href="article-email-resilience.html" class="btn-demo"><i class="fas fa-shield-halved"></i> Resilience Log</a>
+          <a href="article-email-thinking-budget.html" class="btn-demo"><i class="fas fa-brain"></i> Thinking Budget</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT 3: INDIA AASPAAS -->
     <div class="project-card reveal">
       <div class="project-emoji" style="background:linear-gradient(135deg,#0a2012,#0a1a20);font-size:52px">🗺️</div>
       <div class="project-body">
@@ -91,6 +117,8 @@
         </div>
       </div>
     </div>
+
+    <!-- PROJECT 4: PODCAST SHORTS FACTORY -->
     <div class="project-card reveal">
       <div class="project-emoji" style="background:linear-gradient(135deg,#200a18,#160a20);font-size:52px">🎬</div>
       <div class="project-body">
@@ -103,6 +131,8 @@
         </div>
       </div>
     </div>
+
+    <!-- PROJECT 5: AI VIDEO STYLE CLONER -->
     <div class="project-card reveal">
       <div class="project-emoji" style="background:linear-gradient(135deg,#12002a,#001a2a);font-size:52px">🎥</div>
       <div class="project-body">
@@ -114,20 +144,8 @@
         </div>
       </div>
     </div>
-    <div class="project-card reveal">
-      <div class="project-emoji" style="background:linear-gradient(135deg,#200a18,#0a0a20)">
-        <img src="images/dubbing_architecture.png" alt="Indic AI Dubbing Platform" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
-      </div>
-      <div class="project-body">
-        <div class="project-tags"><span class="tag">AI/ML</span><span class="tag">Audio DSP</span><span class="tag">LLMs</span></div>
-        <h3>Indic AI Dubbing Platform</h3>
-        <p>Isochrony-aware video dubbing pipeline translating English to 11 Indic languages with zero-shot voice cloning (IndicF5) and timing-constrained LLM translations.</p>
-        <div class="project-links">
-          <a href="https://github.com/nirmitktripathii/dubbing_app" target="_blank">View Repo →</a>
-          <a href="dubbing.html" target="_blank" class="btn-demo"><i class="fas fa-play"></i> Watch Walkthrough</a>
-        </div>
-      </div>
-    </div>
+
+    <!-- PROJECT 6: IKS ORACLE -->
     <div class="project-card reveal">
       <div class="project-emoji" style="background:linear-gradient(135deg,#0a0a1a,#120a20)">
         <img src="images/iks_oracle.png" alt="IKS Oracle Gyanstrot" style="width:100%;height:100%;object-fit:cover;opacity:0.7">
@@ -142,20 +160,24 @@
         </div>
       </div>
     </div>
+
+    <!-- PROJECT 7: VAEP FOOTBALL -->
     <div class="project-card reveal" style="transition-delay:0.1s">
-      <div class="project-emoji" style="background:linear-gradient(135deg,#0a2012,#15200a)">
-        <img src="images/plant_disease.png" alt="Plant Disease Classification" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
+      <div class="project-emoji" style="background:linear-gradient(135deg,#0a201a,#0a1a20)">
+        <img src="images/football_analytics.png" alt="VAEP Football Analysis" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
       </div>
       <div class="project-body">
-        <div class="project-tags"><span class="tag">Deep Learning</span><span class="tag">PyTorch</span><span class="tag">Computer Vision</span></div>
-        <h3>Plant Disease Classification</h3>
-        <p>CNN-based mobile diagnostic tool for identifying crop diseases in real-time. Achieved 98% accuracy on the PlantVillage dataset.</p>
+        <div class="project-tags"><span class="tag">Sports AI</span><span class="tag">Python</span><span class="tag">Streamlit</span><span class="tag">World Cup</span></div>
+        <h3>VAEP Football Action Valuation</h3>
+        <p>Interactive dashboard for valuing football actions using the VAEP framework. Analyzes match events across Top 5 European Leagues and World Cup 2018 to rank players and visualize goal-scoring sequences.</p>
         <div class="project-links">
-          <a href="https://github.com/nirmitktripathii/plant_disease_classification" target="_blank">View Repo →</a>
-          <a href="plant_disease.html" target="_blank" class="btn-demo"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+          <a href="https://github.com/nirmitktripathii/VAEP-Football-Analyzer" target="_blank">View Repo →</a>
+          <a href="https://huggingface.co/spaces/nirmitk/vaep-football-analyzer" class="btn-demo" target="_blank"><i class="fas fa-external-link-alt"></i> Live App</a>
         </div>
       </div>
     </div>
+
+    <!-- PROJECT 8: xG MODEL -->
     <div class="project-card reveal" style="transition-delay:0.2s">
       <div class="project-emoji" style="background:linear-gradient(135deg,#0a1520,#0a0a20)">
         <img src="images/xg_model.png" alt="Football Analytics xG" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
@@ -170,6 +192,8 @@
         </div>
       </div>
     </div>
+
+    <!-- PROJECT 9: RESUME MATCHER -->
     <div class="project-card reveal" style="transition-delay:0.3s">
       <div class="project-emoji" style="background:linear-gradient(135deg,#20150a,#200a0a)">
         <img src="images/cv_jd_matcher.png" alt="CV-JD Matcher" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
@@ -184,7 +208,25 @@
         </div>
       </div>
     </div>
+
+    <!-- PROJECT 10: PLANT DISEASE -->
     <div class="project-card reveal" style="transition-delay:0.4s">
+      <div class="project-emoji" style="background:linear-gradient(135deg,#0a2012,#15200a)">
+        <img src="images/plant_disease.png" alt="Plant Disease Classification" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
+      </div>
+      <div class="project-body">
+        <div class="project-tags"><span class="tag">Deep Learning</span><span class="tag">PyTorch</span><span class="tag">Computer Vision</span></div>
+        <h3>Plant Disease Classification</h3>
+        <p>CNN-based mobile diagnostic tool for identifying crop diseases in real-time. Achieved 98% accuracy on the PlantVillage dataset.</p>
+        <div class="project-links">
+          <a href="https://github.com/nirmitktripathii/plant_disease_classification" target="_blank">View Repo →</a>
+          <a href="plant_disease.html" target="_blank" class="btn-demo"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT 11: WEATHER -->
+    <div class="project-card reveal" style="transition-delay:0.5s">
       <div class="project-emoji" style="background:linear-gradient(135deg,#0a2020,#0a200a)">
         <img src="images/weather_app.png" alt="Weather Dashboard" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
       </div>
@@ -198,20 +240,114 @@
         </div>
       </div>
     </div>
-    <div class="project-card reveal" style="transition-delay:0.5s">
-      <div class="project-emoji" style="background:linear-gradient(135deg,#0a201a,#0a1a20)">
-        <img src="images/football_analytics.png" alt="VAEP Football Analysis" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
-      </div>
-      <div class="project-body">
-        <div class="project-tags"><span class="tag">Sports AI</span><span class="tag">Python</span><span class="tag">Streamlit</span><span class="tag">World Cup</span></div>
-        <h3>VAEP Football Action Valuation</h3>
-        <p>Interactive dashboard for valuing football actions using the VAEP framework. Analyzes match events across Top 5 European Leagues and World Cup 2018 to rank players and visualize goal-scoring sequences.</p>
-        <div class="project-links">
-          <a href="https://github.com/nirmitktripathii/VAEP-Football-Analyzer" target="_blank">View Repo →</a>
-          <a href="https://huggingface.co/spaces/nirmitk/vaep-football-analyzer" class="btn-demo" target="_blank"><i class="fas fa-external-link-alt"></i> Live App</a>
+
+  </div>
+</section>
+
+<!-- LIVE HUGGING FACE SPACES HUB SECTION -->
+<section id="spaces">
+  <div class="reveal">
+    <div class="section-tag">Interactive AI Demos</div>
+    <h2 class="section-title">Live Hugging Face Spaces Hub</h2>
+    <p class="section-sub">Explore and test live production ML models deployed on Hugging Face Spaces. Profile: <a href="https://huggingface.co/nirmitk" target="_blank" style="color:var(--accent);text-decoration:underline;font-weight:600">huggingface.co/nirmitk</a></p>
+  </div>
+  <div class="spaces-grid reveal">
+
+    <!-- SPACE 1: IKS ORACLE -->
+    <div class="space-card">
+      <div>
+        <div class="space-top">
+          <div class="space-icon"><i class="fas fa-om"></i></div>
+          <div class="space-status">Live Space</div>
         </div>
+        <h3>IKS Oracle — Gyanstrot</h3>
+        <p>AI-powered Indian Knowledge System enabling semantic search &amp; graph-based exploration over Vedic texts and ancient Indian manuscripts with multilingual embeddings.</p>
+      </div>
+      <div class="space-actions">
+        <a href="https://huggingface.co/spaces/nirmitk/gyanstrot-iks" target="_blank" class="btn-space primary"><i class="fas fa-play"></i> Launch App</a>
+        <a href="https://huggingface.co/spaces/nirmitk/gyanstrot-iks/tree/main" target="_blank" class="btn-space outline"><i class="fas fa-code"></i> Space Code</a>
       </div>
     </div>
+
+    <!-- SPACE 2: VAEP ANALYZER -->
+    <div class="space-card">
+      <div>
+        <div class="space-top">
+          <div class="space-icon"><i class="fas fa-futbol"></i></div>
+          <div class="space-status">Live Space</div>
+        </div>
+        <h3>VAEP Football Action Analyzer</h3>
+        <p>Action-valuation dashboard quantifying offensive and defensive match events across Top 5 European Leagues and World Cup 2018 using the VAEP framework.</p>
+      </div>
+      <div class="space-actions">
+        <a href="https://huggingface.co/spaces/nirmitk/vaep-football-analyzer" target="_blank" class="btn-space primary"><i class="fas fa-play"></i> Launch App</a>
+        <a href="https://github.com/nirmitktripathii/VAEP-Football-Analyzer" target="_blank" class="btn-space outline"><i class="fab fa-github"></i> View Repo</a>
+      </div>
+    </div>
+
+    <!-- SPACE 3: SHOT QUALITY xG -->
+    <div class="space-card">
+      <div>
+        <div class="space-top">
+          <div class="space-icon"><i class="fas fa-bullseye"></i></div>
+          <div class="space-status">Live API</div>
+        </div>
+        <h3>Shot Quality (xG) Model</h3>
+        <p>Interactive pitch coordinate mapper and statistical scoring probability estimator powered by a Random Forest Classifier trained on European league shot events.</p>
+      </div>
+      <div class="space-actions">
+        <a href="shot_predict.html" class="btn-space primary"><i class="fas fa-sliders"></i> Pitch Simulator</a>
+        <a href="https://github.com/nirmitktripathii/Modeling-Shot-Quality-Using-Expected-Goals-Metric" target="_blank" class="btn-space outline"><i class="fab fa-github"></i> Model Code</a>
+      </div>
+    </div>
+
+    <!-- SPACE 4: RESUME MATCHER -->
+    <div class="space-card">
+      <div>
+        <div class="space-top">
+          <div class="space-icon"><i class="fas fa-microchip"></i></div>
+          <div class="space-status">Live API</div>
+        </div>
+        <h3>AI Resume Compatibility Matcher</h3>
+        <p>Deep semantic matching and skill gap analyzer comparing candidate resumes against job descriptions using Sentence-Transformers (SBERT all-MiniLM-L6-v2).</p>
+      </div>
+      <div class="space-actions">
+        <a href="matcher.html" class="btn-space primary"><i class="fas fa-file-contract"></i> Match Resume</a>
+        <a href="https://huggingface.co/spaces/nirmitk/resume-matcher-api" target="_blank" class="btn-space outline"><i class="fas fa-server"></i> API Space</a>
+      </div>
+    </div>
+
+    <!-- SPACE 5: PLANT DISEASE -->
+    <div class="space-card">
+      <div>
+        <div class="space-top">
+          <div class="space-icon"><i class="fas fa-seedling"></i></div>
+          <div class="space-status">Live API</div>
+        </div>
+        <h3>Plant Disease Classifier</h3>
+        <p>Deep CNN vision diagnostics identifying 38 crop foliar diseases in real-time from leaf imagery with 98% validation accuracy on the PlantVillage dataset.</p>
+      </div>
+      <div class="space-actions">
+        <a href="plant_disease.html" class="btn-space primary"><i class="fas fa-camera"></i> Test Leaf Image</a>
+        <a href="https://github.com/nirmitktripathii/plant_disease_classification" target="_blank" class="btn-space outline"><i class="fab fa-github"></i> View Repo</a>
+      </div>
+    </div>
+
+    <!-- SPACE 6: ORG HUB -->
+    <div class="space-card" style="background:linear-gradient(135deg,rgba(14,21,38,0.9),rgba(19,27,46,0.9));border-color:rgba(0,229,255,0.25)">
+      <div>
+        <div class="space-top">
+          <div class="space-icon" style="color:#ffd700"><i class="fas fa-cubes"></i></div>
+          <div class="space-status" style="color:var(--accent);background:rgba(0,229,255,0.1);border-color:rgba(0,229,255,0.25)">Profile Hub</div>
+        </div>
+        <h3>All Spaces &amp; Models</h3>
+        <p>View the complete catalog of open-source datasets, model weights, and live web applications hosted under the @nirmitk Hugging Face organization.</p>
+      </div>
+      <div class="space-actions">
+        <a href="https://huggingface.co/nirmitk" target="_blank" class="btn-space primary" style="background:#ffd700;color:#000"><i class="fas fa-external-link-alt"></i> Open Hugging Face</a>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -469,7 +605,7 @@
         <div class="tl-item">LegalGPT &mdash; full RAG pipeline for Indian legal research, contract analysis (150+ types), and compliance checking.</div>
         <div class="tl-item">Hindi ASR portal with SoTA Conformer-CTC + Gemini NLP call summarization.</div>
         <div class="tl-item">22-language Indic translation portal (IndicBERT + Indic-TransV2).</div>
-        <div class="tl-item">Promoted to Project Lead for UK real-estate multimodal regression model.</div>
+        <div class="tl-item">Promoted to Project Lead for UK real-estate multimodal regression model (<a href="https://www.inferredtheorem.com/" target="_blank" style="color:var(--accent)">Inferred Theorem</a>).</div>
       </div>
     </div>
     <div class="timeline-item reveal">

@@ -113,7 +113,7 @@
         </div>
     </div>
 
-    <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/d8eaa222fe.js" crossorigin="anonymous"></script>
     <script>
         const API_URL = 'https://nirmitk-shot-quality-api.hf.space/predict';
         const pitch = document.getElementById('pitch');
@@ -157,13 +157,6 @@
 
         pitch.addEventListener('click', (e) => {
             const rect = pitch.getBoundingClientRect();
-            // Standardizing coordinates to 100x100
-            // Origin (0,0) is bottom-left of the target goal side? 
-            // Model training says: dist = sqrt((100-x)^2 + (50-y)^2)
-            // This means Goal is at (100, 50).
-            // So X=0 is far left, X=100 is far right (goal line).
-            // Y=0 is top, Y=100 is bottom (or vice versa).
-            
             const x = ((e.clientX - rect.left) / rect.width) * 100;
             const y = ((e.clientY - rect.top) / rect.height) * 100;
             
@@ -196,6 +189,10 @@
             const predValue = document.getElementById('predValue');
             const predBadge = document.getElementById('predBadge');
 
+            let wakeTimer = setTimeout(() => {
+                predictBtn.innerText = "Waking up HF Space container (15-20s)...";
+            }, 2500);
+
             try {
                 predictBtn.disabled = true;
                 predictBtn.innerText = "Analyzing Trajectory...";
@@ -210,6 +207,7 @@
                     })
                 });
                 
+                clearTimeout(wakeTimer);
                 const data = await response.json();
                 
                 if (!response.ok) {
@@ -232,19 +230,20 @@
                         predBadge.style.color = "var(--accent2)";
                     }
                     
-                    // Visualization update: marker color based on xG
                     marker.style.background = xg > 0.3 ? "var(--accent)" : (xg > 0.1 ? "#ffcc00" : "var(--accent2)");
                 } else {
                     throw new Error("API returned malformed data: shot_quality missing");
                 }
                 
             } catch (error) {
+                clearTimeout(wakeTimer);
                 console.error(error);
-                alert(`Prediction Error: ${error.message}`);
+                alert(`Note: The Hugging Face Space may be cold-starting. Please try again in 15 seconds. (${error.message})`);
                 xgValue.innerText = "--";
-                predValue.innerText = "ERROR";
-                predBadge.innerText = "Check API status";
+                predValue.innerText = "STANDBY";
+                predBadge.innerText = "Click to retry";
             } finally {
+                clearTimeout(wakeTimer);
                 predictBtn.disabled = false;
                 predictBtn.innerText = "Predict xG Probability";
             }

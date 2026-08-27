@@ -128,6 +128,10 @@
                 return;
             }
 
+            let wakeTimer = setTimeout(() => {
+                matchBtn.innerText = "Waking up HF Space container (15-20s)...";
+            }, 2500);
+
             try {
                 matchBtn.disabled = true;
                 matchBtn.innerText = "Processing Semantic Embeddings...";
@@ -142,6 +146,7 @@
                     body: formData
                 });
                 
+                clearTimeout(wakeTimer);
                 const data = await response.json();
 
                 if (!response.ok) {
@@ -174,9 +179,11 @@
                     alert(data.error || "Processing failed.");
                 }
             } catch (error) {
+                clearTimeout(wakeTimer);
                 console.error(error);
-                alert("API Error. Make sure the Hugging Face Space is active.");
+                alert("Note: The Hugging Face Space may be cold-starting on free-tier. Please wait ~15 seconds and try again.");
             } finally {
+                clearTimeout(wakeTimer);
                 matchBtn.disabled = false;
                 matchBtn.innerText = "Analyze Compatibility";
             }

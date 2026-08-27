@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(data => {
                     console.log('Server Response:', data); // Diagnostic log
                     if (data.result === 'success') {
-                        msg.innerHTML = `Message sent! (Recorded in ${data.sheetUsed || 'Sheet'})`;
+                        msg.innerHTML = "Thank you! Your message has been sent successfully.";
                         msg.style.color = "#4ade80"; 
                         form.reset();
                     } else {
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch(error => {
                     console.error('Error!', error.message);
-                    msg.innerHTML = "Something went wrong. Check the console for details.";
+                    msg.innerHTML = "Unable to send message directly. Please email me at nirmitktripathii@yahoo.com";
                     msg.style.color = "#f87171";
                 })
                 .finally(() => {
