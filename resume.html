@@ -5,171 +5,434 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Nirmit K. Tripathii — Résumé</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#151823; --sub:#4b5566; --muted:#6b7280; --accent:#0e7c86; --accent2:#c2410c;
-    --line:#e4e7ec; --chipbg:#f1f5f6; --sidebg:#f7f9fa;
+    --ink:#151823; --sub:#4b5566; --muted:#6b7280; --accent:#0e7c86; --accent2:#c2410c; --accent3:#4f46e5;
+    --line:#e4e7ec; --chipbg:#f1f5f6; --sidebg:#f7f9fa; --link:#0369a1;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-  body{ font-family:'DM Sans',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif; color:var(--ink); background:#fff; font-size:10.2px; line-height:1.42; }
-  .page{ width:210mm; min-height:294mm; margin:0 auto; background:#fff; }
+  body{ font-family:'DM Sans',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif; color:var(--ink); background:#e2e8f0; font-size:9.8px; line-height:1.42; }
+  
+  .page{ width:210mm; height:296.5mm; margin:10px auto; background:#fff; box-shadow:0 4px 15px rgba(0,0,0,0.1); position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; page-break-after:always; break-after:page; }
+  .page:last-of-type{ page-break-after:avoid; break-after:avoid; }
   .mono{ font-family:'Space Mono',ui-monospace,monospace; }
 
   /* Header */
-  header{ padding:22px 26px 16px; border-bottom:3px solid var(--accent); }
-  h1{ font-size:30px; font-weight:700; letter-spacing:-.01em; line-height:1; }
-  .role{ margin-top:6px; font-size:12px; font-weight:500; color:var(--accent); letter-spacing:.03em; text-transform:uppercase; }
-  .tagline{ margin-top:9px; color:var(--sub); font-size:10.6px; max-width:640px; line-height:1.5; }
-  .contacts{ margin-top:11px; display:flex; flex-wrap:wrap; gap:5px 18px; font-size:9.6px; color:var(--sub); }
-  .contacts span{ display:inline-flex; align-items:center; gap:5px; }
+  header{ padding:20px 24px 14px; border-bottom:3px solid var(--accent); }
+  h1{ font-size:27px; font-weight:700; letter-spacing:-.01em; line-height:1; }
+  .role{ margin-top:5px; font-size:11.5px; font-weight:600; color:var(--accent); letter-spacing:.03em; text-transform:uppercase; }
+  .tagline{ margin-top:7px; color:var(--sub); font-size:10.2px; max-width:650px; line-height:1.45; }
+  .contacts{ margin-top:9px; display:flex; flex-wrap:wrap; gap:5px 16px; font-size:9.2px; color:var(--sub); }
+  .contacts span{ display:inline-flex; align-items:center; gap:4px; }
   .contacts b{ color:var(--accent); font-weight:700; }
+  .contacts a{ color:var(--link); text-decoration:none; font-weight:500; }
+  .contacts a:hover{ text-decoration:underline; }
 
   /* Body grid */
-  .grid{ display:grid; grid-template-columns:63mm 1fr; }
-  aside{ background:var(--sidebg); padding:16px 18px 24px; border-right:1px solid var(--line); }
-  main{ padding:16px 22px 6px; }
+  .grid{ display:grid; grid-template-columns:60mm 1fr; flex:1; }
+  aside{ background:var(--sidebg); padding:13px 16px 16px; border-right:1px solid var(--line); }
+  main{ padding:13px 18px 10px; }
 
-  h2{ font-family:'Space Mono',monospace; font-size:9.4px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin:0 0 8px; padding-bottom:4px; border-bottom:1px solid var(--line); }
-  aside .sec + .sec{ margin-top:16px; }
-  main .sec + .sec{ margin-top:14px; }
+  h2{ font-family:'Space Mono',monospace; font-size:9px; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin:0 0 7px; padding-bottom:3px; border-bottom:1px solid var(--line); }
+  aside .sec + .sec{ margin-top:12px; }
+  main .sec + .sec{ margin-top:11px; }
 
   /* Sidebar */
-  .kv{ margin-bottom:9px; }
-  .kv .k{ font-weight:700; font-size:9.8px; }
-  .kv .v{ color:var(--sub); font-size:9.6px; }
-  .skillgrp{ margin-bottom:9px; }
-  .skillgrp .t{ font-weight:700; font-size:9.6px; margin-bottom:3px; }
-  .chips{ display:flex; flex-wrap:wrap; gap:4px; }
-  .chip{ background:var(--chipbg); border:1px solid var(--line); border-radius:4px; padding:1.5px 6px; font-size:8.7px; color:var(--sub); }
-  .edu .d{ font-weight:700; font-size:9.8px; }
-  .edu .s{ color:var(--muted); font-size:9.2px; }
-  .edu .y{ color:var(--muted); font-size:8.8px; }
-  .edu-item{ margin-bottom:9px; }
+  .kv{ margin-bottom:6px; }
+  .kv .k{ font-weight:700; font-size:9.4px; }
+  .kv .v{ color:var(--sub); font-size:9.1px; line-height:1.38; }
+  .skillgrp{ margin-bottom:7px; }
+  .skillgrp .t{ font-weight:700; font-size:9.1px; margin-bottom:2px; color:var(--ink); }
+  .chips{ display:flex; flex-wrap:wrap; gap:3px; }
+  .chip{ background:var(--chipbg); border:1px solid var(--line); border-radius:3px; padding:1px 5px; font-size:8.3px; color:var(--sub); }
+  .edu .d{ font-weight:700; font-size:9.3px; }
+  .edu .s{ color:var(--muted); font-size:8.7px; }
+  .edu .y{ color:var(--muted); font-size:8.3px; }
+  .edu-item{ margin-bottom:6px; }
 
   /* Experience */
-  .job{ margin-bottom:11px; }
-  .job-h{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
-  .job-title{ font-weight:700; font-size:11px; }
-  .job-org{ color:var(--accent); font-weight:500; }
-  .job-date{ color:var(--muted); font-size:8.8px; white-space:nowrap; }
-  ul.pts{ list-style:none; margin-top:4px; }
-  ul.pts li{ position:relative; padding-left:11px; margin:2px 0; color:var(--sub); line-height:1.45; }
-  ul.pts li::before{ content:''; position:absolute; left:0; top:6px; width:4px; height:4px; border-radius:50%; background:var(--accent); }
+  .job{ margin-bottom:8.5px; }
+  .job-h{ display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+  .job-title{ font-weight:700; font-size:10.4px; }
+  .job-org{ color:var(--accent); font-weight:600; }
+  .job-date{ color:var(--muted); font-size:8.5px; white-space:nowrap; }
+  ul.pts{ list-style:none; margin-top:3px; }
+  ul.pts li{ position:relative; padding-left:10px; margin:2px 0; color:var(--sub); line-height:1.4; }
+  ul.pts li::before{ content:''; position:absolute; left:0; top:5.5px; width:3.5px; height:3.5px; border-radius:50%; background:var(--accent); }
   ul.pts li b{ color:var(--ink); }
   .metric{ color:var(--accent2); font-weight:700; }
 
   /* Projects */
-  .proj{ margin-bottom:6px; }
-  .proj .p-t{ font-weight:700; font-size:10px; }
-  .proj .p-t .tech{ color:var(--muted); font-weight:400; font-size:8.8px; }
-  .proj .p-d{ color:var(--sub); margin-top:1px; }
+  .proj{ margin-bottom:6.5px; }
+  .proj .p-t{ font-weight:700; font-size:9.7px; }
+  .proj .p-t .tech{ color:var(--muted); font-weight:400; font-size:8.4px; }
+  .proj .p-d{ color:var(--sub); margin-top:1px; line-height:1.38; }
+  .p-links{ display:inline-flex; gap:5px; margin-left:4px; font-weight:600; font-size:8.3px; }
+  .p-links a{ color:var(--link); text-decoration:none; }
+  .p-links a:hover{ text-decoration:underline; }
 
-  a{ color:inherit; text-decoration:none; }
+  a{ color:var(--link); text-decoration:none; }
+  a:hover{ text-decoration:underline; }
+
+  /* Page 2 - Publications & White Papers */
+  .p2-header{ padding:18px 24px 12px; border-bottom:3px solid var(--accent); background:#fff; }
+  .p2-title-row{ display:flex; justify-content:space-between; align-items:baseline; }
+  .p2-title-row h1{ font-size:22px; font-weight:700; }
+  .p2-badge{ font-family:'Space Mono',monospace; font-size:9.5px; color:var(--accent); font-weight:700; text-transform:uppercase; letter-spacing:1px; }
+  .p2-tagline{ margin-top:5px; color:var(--sub); font-size:9.6px; line-height:1.45; }
+  
+  .p2-content{ padding:12px 20px 10px; flex:1; display:flex; flex-direction:column; justify-content:space-between; }
+  .pub-group{ margin-bottom:8px; }
+  .pub-group-title{ font-family:'Space Mono',monospace; font-size:9.2px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:6px; padding-bottom:3px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; }
+  .pub-group-title span{ font-size:8.3px; color:var(--muted); font-family:'DM Sans',sans-serif; text-transform:none; letter-spacing:normal; }
+  
+  .pub-grid{ display:grid; grid-template-columns:1fr 1fr; gap:7px 12px; }
+  .pub-card{ background:var(--sidebg); border:1px solid var(--line); border-radius:4px; padding:6px 8px; position:relative; }
+  .pub-card:hover{ border-color:var(--accent); background:#fff; }
+  .pub-header{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1px; }
+  .pub-title{ font-weight:700; font-size:9.3px; color:var(--ink); }
+  .pub-title a{ color:var(--ink); text-decoration:none; }
+  .pub-title a:hover{ color:var(--link); text-decoration:underline; }
+  .pub-meta{ font-size:7.8px; color:var(--muted); font-family:'Space Mono',monospace; white-space:nowrap; }
+  .pub-tags{ display:flex; gap:3px; margin:2px 0 2px; }
+  .pub-tag{ font-size:7.4px; padding:0.5px 4px; border-radius:2px; background:var(--chipbg); color:var(--accent); border:1px solid var(--line); font-weight:600; }
+  .pub-tag.spec{ color:var(--accent2); }
+  .pub-desc{ font-size:8.5px; color:var(--sub); line-height:1.32; }
+  .pub-link-btn{ display:inline-flex; align-items:center; gap:2px; font-size:7.8px; font-weight:700; color:var(--link); margin-top:2px; text-decoration:none; }
+  .pub-link-btn:hover{ text-decoration:underline; }
+
+  .page-num{ padding:4px 24px 8px; text-align:right; font-family:'Space Mono',monospace; font-size:8px; color:var(--muted); }
+
   @page{ size:A4; margin:0; }
-  @media print{ .page{ margin:0; } }
+  @media print{ 
+    html, body{ background:#fff; margin:0; padding:0; }
+    .page{ width:210mm; height:297mm; min-height:297mm; max-height:297mm; margin:0; box-shadow:none; page-break-after:always; break-after:page; }
+    .page:last-of-type{ page-break-after:avoid; break-after:avoid; }
+  }
 </style>
 </head>
 <body>
+
+<!-- PAGE 1: CORE RESUME -->
 <div class="page">
-  <header>
-    <h1>Nirmit K. Tripathii</h1>
-    <div class="role">AI / ML Engineer &amp; Researcher</div>
-    <div class="tagline">Production-grade AI systems — multi-agent LLM orchestration, multimodal RAG, speech &amp; video ML, legal AI, and civic tech. M.Tech in Modeling &amp; Simulation with 3+ years shipping from ideation to deployment on real-world (often free-tier) hardware.</div>
-    <div class="contacts">
-      <span><b>Email</b> nirmitktripathii@yahoo.com</span>
-      <span><b>Location</b> Delhi NCR, India · Remote</span>
-      <span><b>Portfolio</b> nirmitktripathii.github.io/PortfolioSite</span>
-      <span><b>GitHub</b> github.com/nirmitktripathii</span>
-      <span><b>LinkedIn</b> in/nirmitk-tripathii</span>
+  <div>
+    <header>
+      <h1>Nirmit K. Tripathii</h1>
+      <div class="role">AI / ML Engineer &amp; Researcher</div>
+      <div class="tagline">Production-grade AI systems — multi-agent LLM orchestration, multimodal RAG, speech &amp; video ML, legal AI, and civic tech. M.Tech in Modeling &amp; Simulation with 3+ years shipping from ideation to deployment on real-world (often free-tier) hardware.</div>
+      <div class="contacts">
+        <span><b>Email</b> <a href="mailto:nirmitktripathii@yahoo.com">nirmitktripathii@yahoo.com</a></span>
+        <span><b>Location</b> Delhi NCR, India · Remote</span>
+        <span><b>Portfolio</b> <a href="https://nirmitktripathii.github.io/PortfolioSite/" target="_blank">nirmitktripathii.github.io/PortfolioSite</a></span>
+        <span><b>GitHub</b> <a href="https://github.com/nirmitktripathii" target="_blank">github.com/nirmitktripathii</a></span>
+        <span><b>LinkedIn</b> <a href="https://www.linkedin.com/in/nirmitk-tripathii-553a92158" target="_blank">in/nirmitk-tripathii-553a92158</a></span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <aside>
+        <div class="sec">
+          <h2>Availability</h2>
+          <div class="kv"><div class="v">Open to freelance, consulting &amp; research collaboration — remote. Open to full-time from Sept 2026.</div></div>
+        </div>
+
+        <div class="sec">
+          <h2>Core Skills</h2>
+          <div class="skillgrp"><div class="t">Agentic AI &amp; LLMs</div><div class="chips"><span class="chip">LangGraph</span><span class="chip">LangChain</span><span class="chip">LangSmith</span><span class="chip">MCP</span><span class="chip">RAG · LightRAG · CRAG</span><span class="chip">VideoRAG</span><span class="chip">FAISS</span></div></div>
+          <div class="skillgrp"><div class="t">Languages &amp; Frameworks</div><div class="chips"><span class="chip">Python</span><span class="chip">TypeScript / Node</span><span class="chip">PyTorch</span><span class="chip">FastAPI</span><span class="chip">Flask</span><span class="chip">SQL</span></div></div>
+          <div class="skillgrp"><div class="t">Models &amp; APIs</div><div class="chips"><span class="chip">Gemini</span><span class="chip">OpenAI</span><span class="chip">Llama 3.1</span><span class="chip">HuggingFace</span><span class="chip">IndicF5</span><span class="chip">XLM-RoBERTa</span><span class="chip">IndicBERT</span><span class="chip">InLegalBERT</span><span class="chip">ImageBind</span><span class="chip">Whisper</span></div></div>
+          <div class="skillgrp"><div class="t">Data &amp; MLOps</div><div class="chips"><span class="chip">PostgreSQL</span><span class="chip">Neo4j</span><span class="chip">NetworkX</span><span class="chip">HNSWLib</span><span class="chip">Docker</span><span class="chip">W&amp;B</span><span class="chip">OpenCV</span><span class="chip">Azure OCR</span><span class="chip">Pandas · NumPy</span></div></div>
+          <div class="skillgrp"><div class="t">Sports AI</div><div class="chips"><span class="chip">xG Modelling</span><span class="chip">VAEP</span><span class="chip">FUTR</span><span class="chip">T-DEED</span><span class="chip">SoccerNet</span></div></div>
+        </div>
+
+        <div class="sec edu">
+          <h2>Education</h2>
+          <div class="edu-item"><div class="d">M.Tech — Modeling &amp; Simulation</div><div class="s">Savitribai Phule Pune University</div><div class="y">Sep 2019 – Feb 2022</div></div>
+          <div class="edu-item"><div class="d">B.Tech — Electrical Engineering</div><div class="s">Pandit Deendayal Petroleum University</div><div class="y">Jul 2014 – Jun 2018</div></div>
+        </div>
+
+        <div class="sec edu">
+          <h2>Certifications</h2>
+          <div class="edu-item"><div class="d">Masters Program — Data Scientist</div><div class="s">Simplilearn</div></div>
+          <div class="edu-item"><div class="d">Football Data Analytics</div><div class="s">MAS About Sports</div></div>
+        </div>
+
+        <div class="sec">
+          <h2>Publications &amp; Writing</h2>
+          <div class="kv"><div class="v">11 engineering deep-dives, white papers &amp; field notes across dubbing fine-tuning, multi-agent MCP, SoccerNet CV &amp; civic systems. <b>See Page 2 for full catalog.</b></div></div>
+        </div>
+      </aside>
+
+      <main>
+        <div class="sec">
+          <h2>Experience</h2>
+
+          <div class="job">
+            <div class="job-h"><div class="job-title">AI/ML Software Engineer · <span class="job-org">Chetu India</span></div><div class="job-date">Apr 2025 – Jun 2026 · Noida</div></div>
+            <ul class="pts">
+              <li>Built <b>DIGEST</b> — an agentic LangGraph (StateGraph) chatbot for event discovery &amp; ticket commerce, orchestrating multi-step workflows across 7 intents with the full Automatiq B2B transaction lifecycle.</li>
+              <li>Architected a <b>Video-to-SOP</b> multimodal pipeline: ImageBind embeddings + a Neo4j/NetworkX VideoRAG knowledge graph, a LangGraph refinement loop, and LangSmith observability.</li>
+              <li>Built <b><a href="https://huggingface.co/spaces/nirmitk/gyanstrot-iks" target="_blank">IKS Oracle (Gyanstrot)</a></b> — a RAG system over Indian Knowledge Systems, deployed live on HuggingFace Spaces [<a href="https://huggingface.co/spaces/nirmitk/gyanstrot-iks/tree/main" target="_blank">Repo</a>].</li>
+            </ul>
+          </div>
+
+          <div class="job">
+            <div class="job-h"><div class="job-title">AI/ML Engineer · <span class="job-org">Blu Parrot</span></div><div class="job-date">Jan 2024 – Apr 2025 · Gurgaon</div></div>
+            <ul class="pts">
+              <li><b>LegalGPT</b> — full RAG pipeline for Indian legal research &amp; compliance; fine-tuned InLegalBERT/InCaseLawBERT across 150+ contract types; compared Naive/Light/CRAG retrieval.</li>
+              <li><b><a href="https://nirmitktripathii.github.io/PortfolioSite/article-email-orchestrator.html" target="_blank">Email Orchestrator</a></b> — a multi-account MCP email agent consolidating 4 providers behind one MCP server that is itself an MCP client; 17 unified tools, per-account fan-out resilience, 49 passing tests [<a href="https://nirmitktripathii.github.io/PortfolioSite/article-email-orchestrator.html" target="_blank">Build Log</a>].</li>
+              <li>Hindi ASR portal on NeMo Conformer-CTC (<span class="metric">92%+</span> zero-shot) with Gemini summarisation; a 22-language Indic translation portal (IndicBERT + IndicTrans2, <span class="metric">94%</span> zero-shot).</li>
+              <li>Promoted to <b>Project Lead</b> for a UK real-estate multimodal appraisal regression model.</li>
+            </ul>
+          </div>
+
+          <div class="job">
+            <div class="job-h"><div class="job-title">Subject Matter Expert, AI/ML · <span class="job-org">House of Coutons</span></div><div class="job-date">Nov 2023 – Jan 2024</div></div>
+            <ul class="pts"><li>Delivered 3 research papers and a dissertation across literature review, EDA, model building and inference.</li></ul>
+          </div>
+
+          <div class="job">
+            <div class="job-h"><div class="job-title">AI/ML Programmer · <span class="job-org">HRBOTICS (Credence Maven)</span></div><div class="job-date">Apr 2022 – Mar 2023</div></div>
+            <ul class="pts"><li>Multi-threaded Python scrapers for NCR commercial data; automated LinkedIn hiring workflows (Selenium + BeautifulSoup) with a reusable ATS prototype.</li></ul>
+          </div>
+
+          <div class="job">
+            <div class="job-h"><div class="job-title">Football Data Analyst · <span class="job-org">Boomer 11</span></div><div class="job-date">Nov 2021 – Mar 2022</div></div>
+            <ul class="pts"><li>Built an <b><a href="https://github.com/nirmitktripathii/Modeling-Shot-Quality-Using-Expected-Goals-Metric" target="_blank">Expected Goals (xG) model</a></b> (RF Classifier) at <span class="metric">89.77%</span> accuracy — published research [<a href="https://nirmitktripathii.github.io/PortfolioSite/shot_predict.html" target="_blank">Live Simulator</a>]; delivered player-rating and real-time performance analysis.</li></ul>
+          </div>
+        </div>
+
+        <div class="sec">
+          <h2>Selected Projects</h2>
+          
+          <div class="proj">
+            <div class="p-t"><b><a href="https://github.com/nirmitktripathii/dubbing_app" target="_blank">Indic AI Dubbing Platform</a></b> <span class="tech">· Llama-3.1-8B QLoRA · IndicF5 · Gemini · Faster-Whisper · Demucs</span>
+              <span class="p-links">[<a href="https://github.com/nirmitktripathii/dubbing_app" target="_blank">Repo</a> · <a href="https://nirmitktripathii.github.io/PortfolioSite/dubbing.html" target="_blank">Walkthrough</a> · <a href="https://nirmitktripathii.github.io/PortfolioSite/article-dubbing-isochrony.html" target="_blank">Build Log</a>]</span>
+            </div>
+            <div class="p-d">Isochrony-aware dubbing across 11 Indic languages. The v3 fine-tune constrains translation to a phoneme budget, cutting length error <span class="metric">79%</span> (0.495→0.103 rel.) while <em>improving</em> quality (chrF++ 22.0→30.1); deployed v2 uses Gemini CoT + IndicF5 zero-shot cloning on free Kaggle T4.</div>
+          </div>
+
+          <div class="proj">
+            <div class="p-t"><b><a href="https://nirmitktripathii.github.io/PortfolioSite/article-football-anticipation.html" target="_blank">FAANTRA — SoccerNet 2026 Ball Action Anticipation</a></b> <span class="tech">· PyTorch · FUTR · T-DEED · RegNetY-008</span>
+              <span class="p-links">[<a href="https://nirmitktripathii.github.io/PortfolioSite/article-football-anticipation.html" target="_blank">Research Note</a>]</span>
+            </div>
+            <div class="p-d">Predicts ball actions seconds ahead from broadcast video with decoupled what/when heads. Official challenge-server <span class="metric">mAP_Average 17.69</span> (mAP@∞ 23.59, mAP@5 22.47) — decomposed metric identifies temporal boundary limits.</div>
+          </div>
+
+          <div class="proj">
+            <div class="p-t"><b><a href="https://github.com/nirmitktripathii/india-aaspaas" target="_blank">India Aaspaas — Civic Reporting Platform</a></b> <span class="tech">· Node/Express · PostgreSQL · React · Cloudflare R2</span>
+              <span class="p-links">[<a href="https://github.com/nirmitktripathii/india-aaspaas" target="_blank">Repo</a> · <a href="https://nirmitktripathii.github.io/PortfolioSite/whitepaper-india-aaspaas.html" target="_blank">White Paper</a>]</span>
+            </div>
+            <div class="p-d">Production map-based civic-issue platform with server-rendered social share cards, two-tier trust model, and hardened upload path — 67 tests against real Postgres engine, ~$3/month to run.</div>
+          </div>
+
+          <div class="proj">
+            <div class="p-t"><b><a href="https://github.com/nirmitktripathii/podcast-shorts-factory" target="_blank">Podcast Shorts Factory</a></b> <span class="tech">· Multi-agent · Python · open source (MIT)</span>
+              <span class="p-links">[<a href="https://github.com/nirmitktripathii/podcast-shorts-factory" target="_blank">Repo</a> · <a href="https://nirmitktripathii.github.io/PortfolioSite/whitepaper-podcast-factory.html" target="_blank">White Paper</a>]</span>
+            </div>
+            <div class="p-d">Ten cooperating AI agents turning long podcasts into scheduled short-form videos — provider-agnostic LLM layer with automatic fallback, learning feedback loop, and QA gate; runs unattended on free providers.</div>
+          </div>
+
+          <div class="proj">
+            <div class="p-t"><b><a href="https://nirmitktripathii.github.io/PortfolioSite/whitepaper-video-cloner.html" target="_blank">AI Video Style Cloner</a></b> <span class="tech">· Streamlit · Multi-provider LLM failover · Edge-TTS · MoviePy</span>
+              <span class="p-links">[<a href="https://nirmitktripathii.github.io/PortfolioSite/whitepaper-video-cloner.html" target="_blank">White Paper</a>]</span>
+            </div>
+            <div class="p-d">Channel URL → reverse-engineers house style, writes original script in that voice, narrates &amp; compiles finished MP4 for <span class="metric">$0</span>. 3-tier LLM failover, self-healing JSON validators, and zero-network procedural fallback.</div>
+          </div>
+
+          <div class="proj">
+            <div class="p-t"><b><a href="https://huggingface.co/spaces/nirmitk/vaep-football-analyzer" target="_blank">Football Analytics — VAEP &amp; Expected Goals</a></b> <span class="tech">· RF · SVR · Streamlit</span>
+              <span class="p-links">[<a href="https://huggingface.co/spaces/nirmitk/vaep-football-analyzer" target="_blank">Live Space</a> · <a href="https://github.com/nirmitktripathii/VAEP-Football-Analyzer" target="_blank">Repo</a> · <a href="https://nirmitktripathii.github.io/PortfolioSite/shot_predict.html" target="_blank">Simulator</a>]</span>
+            </div>
+            <div class="p-d">VAEP action-valuation dashboard across Top-5 leagues &amp; World Cup 2018; published xG thesis (RF Classifier, 89.77% / 90.55% post-HPO).</div>
+          </div>
+        </div>
+      </main>
     </div>
-  </header>
-
-  <div class="grid">
-    <aside>
-      <div class="sec">
-        <h2>Availability</h2>
-        <div class="kv"><div class="v">Open to freelance, consulting &amp; research collaboration — remote. Open to full-time from Sept 2026.</div></div>
-      </div>
-
-      <div class="sec">
-        <h2>Core Skills</h2>
-        <div class="skillgrp"><div class="t">Agentic AI &amp; LLMs</div><div class="chips"><span class="chip">LangGraph</span><span class="chip">LangChain</span><span class="chip">LangSmith</span><span class="chip">MCP</span><span class="chip">RAG · LightRAG · CRAG</span><span class="chip">VideoRAG</span><span class="chip">FAISS</span></div></div>
-        <div class="skillgrp"><div class="t">Languages &amp; Frameworks</div><div class="chips"><span class="chip">Python</span><span class="chip">TypeScript / Node</span><span class="chip">PyTorch</span><span class="chip">FastAPI</span><span class="chip">Flask</span><span class="chip">SQL</span></div></div>
-        <div class="skillgrp"><div class="t">Models &amp; APIs</div><div class="chips"><span class="chip">Gemini</span><span class="chip">OpenAI</span><span class="chip">Llama 3.1</span><span class="chip">HuggingFace</span><span class="chip">IndicF5</span><span class="chip">XLM-RoBERTa</span><span class="chip">IndicBERT</span><span class="chip">InLegalBERT</span><span class="chip">ImageBind</span><span class="chip">Whisper</span></div></div>
-        <div class="skillgrp"><div class="t">Data &amp; MLOps</div><div class="chips"><span class="chip">PostgreSQL</span><span class="chip">Neo4j</span><span class="chip">NetworkX</span><span class="chip">HNSWLib</span><span class="chip">Docker</span><span class="chip">W&amp;B</span><span class="chip">OpenCV</span><span class="chip">Azure OCR</span><span class="chip">Pandas · NumPy</span></div></div>
-        <div class="skillgrp"><div class="t">Sports AI</div><div class="chips"><span class="chip">xG Modelling</span><span class="chip">VAEP</span><span class="chip">FUTR</span><span class="chip">T-DEED</span><span class="chip">SoccerNet</span></div></div>
-      </div>
-
-      <div class="sec edu">
-        <h2>Education</h2>
-        <div class="edu-item"><div class="d">M.Tech — Modeling &amp; Simulation</div><div class="s">Savitribai Phule Pune University</div><div class="y">Sep 2019 – Feb 2022</div></div>
-        <div class="edu-item"><div class="d">B.Tech — Electrical Engineering</div><div class="s">Pandit Deendayal Petroleum University</div><div class="y">Jul 2014 – Jun 2018</div></div>
-      </div>
-
-      <div class="sec edu">
-        <h2>Certifications</h2>
-        <div class="edu-item"><div class="d">Masters Program — Data Scientist</div><div class="s">Simplilearn</div></div>
-        <div class="edu-item"><div class="d">Football Data Analytics</div><div class="s">MAS About Sports</div></div>
-      </div>
-
-      <div class="sec">
-        <h2>Writing</h2>
-        <div class="kv"><div class="v">11 engineering deep-dives — dubbing fine-tuning, multi-agent MCP infrastructure, resilient zero-cost video generation, SoccerNet anticipation, civic-tech systems &amp; agri-policy research. On the portfolio.</div></div>
-      </div>
-    </aside>
-
-    <main>
-      <div class="sec">
-        <h2>Experience</h2>
-
-        <div class="job">
-          <div class="job-h"><div class="job-title">AI/ML Software Engineer · <span class="job-org">Chetu India</span></div><div class="job-date">Apr 2025 – Jun 2026 · Noida</div></div>
-          <ul class="pts">
-            <li>Built <b>DIGEST</b> — an agentic LangGraph (StateGraph) chatbot for event discovery &amp; ticket commerce, orchestrating multi-step workflows across 7 intents with the full Automatiq B2B transaction lifecycle.</li>
-            <li>Architected a <b>Video-to-SOP</b> multimodal pipeline: ImageBind embeddings + a Neo4j/NetworkX VideoRAG knowledge graph, a LangGraph refinement loop, and LangSmith observability.</li>
-            <li>Built <b>IKS Oracle (Gyanstrot)</b> — a RAG system over Indian Knowledge Systems, deployed live on HuggingFace Spaces.</li>
-          </ul>
-        </div>
-
-        <div class="job">
-          <div class="job-h"><div class="job-title">AI/ML Engineer · <span class="job-org">Blu Parrot</span></div><div class="job-date">Jan 2024 – Apr 2025 · Gurgaon</div></div>
-          <ul class="pts">
-            <li><b>LegalGPT</b> — full RAG pipeline for Indian legal research &amp; compliance; fine-tuned InLegalBERT/InCaseLawBERT across 150+ contract types; compared Naive/Light/CRAG retrieval.</li>
-            <li><b>Email Orchestrator</b> — a multi-account MCP email agent consolidating four providers behind one MCP server that is itself an MCP client; 17 unified tools, per-account fan-out resilience, 49 passing tests.</li>
-            <li>Hindi ASR portal on NeMo Conformer-CTC (<span class="metric">92%+</span> zero-shot) with Gemini summarisation; a 22-language Indic translation portal (IndicBERT + IndicTrans2, <span class="metric">94%</span> zero-shot).</li>
-            <li>Promoted to <b>Project Lead</b> for a UK real-estate multimodal appraisal regression model.</li>
-          </ul>
-        </div>
-
-        <div class="job">
-          <div class="job-h"><div class="job-title">Subject Matter Expert, AI/ML · <span class="job-org">House of Coutons</span></div><div class="job-date">Nov 2023 – Jan 2024</div></div>
-          <ul class="pts"><li>Delivered 3 research papers and a dissertation across literature review, EDA, model building and inference.</li></ul>
-        </div>
-
-        <div class="job">
-          <div class="job-h"><div class="job-title">AI/ML Programmer · <span class="job-org">HRBOTICS (Credence Maven)</span></div><div class="job-date">Apr 2022 – Mar 2023</div></div>
-          <ul class="pts"><li>Multi-threaded Python scrapers for NCR commercial data; automated LinkedIn hiring workflows (Selenium + BeautifulSoup) with a reusable ATS prototype.</li></ul>
-        </div>
-
-        <div class="job">
-          <div class="job-h"><div class="job-title">Football Data Analyst · <span class="job-org">Boomer 11</span></div><div class="job-date">Nov 2021 – Mar 2022</div></div>
-          <ul class="pts"><li>Built an Expected Goals (xG) model (RF Classifier) at <span class="metric">89.77%</span> accuracy — published research; delivered player-rating and real-time performance analysis.</li></ul>
-        </div>
-      </div>
-
-      <div class="sec">
-        <h2>Selected Projects</h2>
-        <div class="proj"><div class="p-t">Indic AI Dubbing Platform <span class="tech">· Llama-3.1-8B QLoRA · IndicF5 · Gemini · Faster-Whisper · Demucs</span></div><div class="p-d">Isochrony-aware dubbing across 11 Indic languages. The v3 fine-tune constrains translation to a phoneme budget, cutting length error <span class="metric">79%</span> (0.495→0.103 rel.) while <em>improving</em> quality (chrF++ 22.0→30.1); deployed v2 uses Gemini CoT + IndicF5 zero-shot cloning, running on a free Kaggle T4.</div></div>
-        <div class="proj"><div class="p-t">FAANTRA — SoccerNet 2026 Ball Action Anticipation <span class="tech">· PyTorch · FUTR · T-DEED · RegNetY-008</span></div><div class="p-d">Predicts ball actions seconds ahead from broadcast video with decoupled what/when heads. Official challenge-server <span class="metric">mAP_Average 17.69</span> (mAP@∞ 23.59, mAP@5 22.47) — the ∞-vs-1 gap shows the model reads <em>what</em> far better than <em>when</em>.</div></div>
-        <div class="proj"><div class="p-t">India Aaspaas — Civic Reporting Platform <span class="tech">· Node/Express · PostgreSQL · React · Cloudflare R2</span></div><div class="p-d">Production map-based civic-issue platform with server-rendered social share cards, a two-tier trust model, and a hardened upload path — 67 tests against a real Postgres engine, ~$3/month to run.</div></div>
-        <div class="proj"><div class="p-t">Podcast Shorts Factory <span class="tech">· Multi-agent · Python · open source (MIT)</span></div><div class="p-d">Ten cooperating AI agents that turn long podcasts into scheduled short-form videos — provider-agnostic LLM layer with automatic fallback, a learning feedback loop, and a QA gate; runs unattended on free providers.</div></div>
-        <div class="proj"><div class="p-t">AI Video Style Cloner <span class="tech">· Streamlit · Multi-provider LLM failover · Edge-TTS · MoviePy</span></div><div class="p-d">Paste a YouTube channel URL → it reverse-engineers the house style, writes an original script in that voice, then narrates, illustrates &amp; compiles a finished MP4 for <span class="metric">$0</span>. A three-tier LLM failover, self-healing JSON validators, and a zero-network procedural fallback guarantee output even when every API is down.</div></div>
-        <div class="proj"><div class="p-t">Football Analytics — VAEP &amp; Expected Goals <span class="tech">· RF · SVR · Streamlit</span></div><div class="p-d">VAEP action-valuation dashboard across Top-5 leagues &amp; World Cup 2018; published xG thesis (RF Classifier, 89.77% / 90.55% post-HPO).</div></div>
-      </div>
-    </main>
   </div>
+  <div class="page-num">Page 1 of 2</div>
 </div>
+
+<!-- PAGE 2: PUBLICATIONS, WHITE PAPERS & ENGINEERING DEEP-DIVES -->
+<div class="page">
+  <div>
+    <div class="p2-header">
+      <div class="p2-title-row">
+        <h1>Nirmit K. Tripathii</h1>
+        <span class="p2-badge">Publications &amp; Technical Deep-Dives</span>
+      </div>
+      <div class="p2-tagline">11 full-length technical papers, architecture build logs, and empirical field notes from production deployments. Available online at <a href="https://nirmitktripathii.github.io/PortfolioSite/#writing" target="_blank">nirmitktripathii.github.io/PortfolioSite/#writing</a></div>
+      <div class="contacts" style="margin-top:6px">
+        <span><b>Portfolio</b> <a href="https://nirmitktripathii.github.io/PortfolioSite/" target="_blank">nirmitktripathii.github.io/PortfolioSite</a></span>
+        <span><b>GitHub</b> <a href="https://github.com/nirmitktripathii" target="_blank">github.com/nirmitktripathii</a></span>
+        <span><b>LinkedIn</b> <a href="https://www.linkedin.com/in/nirmitk-tripathii-553a92158" target="_blank">in/nirmitk-tripathii-553a92158</a></span>
+        <span><b>Email</b> <a href="mailto:nirmitktripathii@yahoo.com">nirmitktripathii@yahoo.com</a></span>
+      </div>
+    </div>
+
+    <div class="p2-content">
+      
+      <!-- SECTION 1: FIELD NOTES -->
+      <div class="pub-group">
+        <div class="pub-group-title">
+          <span>Field Notes &amp; Empirical MLOps (Straight from the Repo)</span>
+          <span>3 Articles</span>
+        </div>
+        <div class="pub-grid">
+          
+          <div class="pub-card">
+            <div class="pub-header">
+              <span class="pub-title"><a href="https://nirmitktripathii.github.io/PortfolioSite/article-dubbing-isochrony.html" target="_blank">Teaching an LLM to Fit Its Mouth</a></span>
+              <span class="pub-meta">12 min · 2026</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag">Fine-Tuning</span><span class="pub-tag">QLoRA</span><span class="pub-tag spec">Isochrony</span><span class="pub-tag">Llama 3.1</span>
+            </div>
+            <div class="pub-desc">AI dubbing drifts because translations differ in syllable count. Solved in the translator layer via fine-tuned Llama-3.1-8B QLoRA with phoneme budgeting — cut length error from 49% to 10% with full training telemetry.</div>
+            <a href="https://nirmitktripathii.github.io/PortfolioSite/article-dubbing-isochrony.html" target="_blank" class="pub-link-btn">Read Deep-Dive →</a>
+          </div>
+
+          <div class="pub-card">
+            <div class="pub-header">
+              <span class="pub-title"><a href="https://nirmitktripathii.github.io/PortfolioSite/article-kaggle-gpu-lab.html" target="_blank">A Headless GPU Lab on Kaggle's Free Tier</a></span>
+              <span class="pub-meta">9 min · 2026</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag">MLOps</span><span class="pub-tag">GPU Tunneling</span><span class="pub-tag">Automation</span>
+            </div>
+            <div class="pub-desc">Zero-cost remote GPU lab: secure reverse tunnel, mobile webhook trigger, public message feedback, and emergency kill switches. Details the PyTorch meta-tensor loading bug that caused silent failures.</div>
+            <a href="https://nirmitktripathii.github.io/PortfolioSite/article-kaggle-gpu-lab.html" target="_blank" class="pub-link-btn">Read Deep-Dive →</a>
+          </div>
+
+          <div class="pub-card" style="grid-column: span 2;">
+            <div class="pub-header">
+              <span class="pub-title"><a href="https://nirmitktripathii.github.io/PortfolioSite/article-football-anticipation.html" target="_blank">Predicting What Happens Next in Football Video: Action Anticipation</a></span>
+              <span class="pub-meta">10 min · 2026</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag">Computer Vision</span><span class="pub-tag">SoccerNet 2026</span><span class="pub-tag">FUTR / T-DEED</span><span class="pub-tag spec">Action Anticipation</span>
+            </div>
+            <div class="pub-desc">Anticipating events seconds before they occur using video transformers. Analysis of official challenge-server mAP metrics (mAP@∞ 23.59 vs mAP@5 22.47) demonstrating decoupled what/when temporal classification failure modes.</div>
+            <a href="https://nirmitktripathii.github.io/PortfolioSite/article-football-anticipation.html" target="_blank" class="pub-link-btn">Read Deep-Dive →</a>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SECTION 2: EMAIL ORCHESTRATOR 3-PART BUILD LOG -->
+      <div class="pub-group">
+        <div class="pub-group-title">
+          <span>The Email Orchestrator · Multi-Account MCP Agent Build Log</span>
+          <span>3-Part Series</span>
+        </div>
+        <div class="pub-grid">
+          
+          <div class="pub-card">
+            <div class="pub-header">
+              <span class="pub-title"><a href="https://nirmitktripathii.github.io/PortfolioSite/article-email-orchestrator.html" target="_blank">Part 1 · One Inbox, Three Mailboxes, Zero New APIs</a></span>
+              <span class="pub-meta">12 min · 2026</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag">MCP Architecture</span><span class="pub-tag">Fan-out</span><span class="pub-tag spec">17 Unified Tools</span>
+            </div>
+            <div class="pub-desc">Consolidating Gmail, Zoho, Yahoo &amp; Outlook behind a single MCP server that acts as an MCP client. Architecture, unified schema routing, and multi-tenant tool registry.</div>
+            <a href="https://nirmitktripathii.github.io/PortfolioSite/article-email-orchestrator.html" target="_blank" class="pub-link-btn">Read Part 1 →</a>
+          </div>
+
+          <div class="pub-card">
+            <div class="pub-header">
+              <span class="pub-title"><a href="https://nirmitktripathii.github.io/PortfolioSite/article-email-resilience.html" target="_blank">Part 2 · One Dead Inbox Shouldn't Kill the Query</a></span>
+              <span class="pub-meta">11 min · 2026</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag">Resilience</span><span class="pub-tag">Process Isolation</span><span class="pub-tag">Promise.allSettled</span>
+            </div>
+            <div class="pub-desc">Handling child process crashes in MCP stdio connections: graceful partial degradation, self-healing reconnection pools, drop detection, and 49 passing unit/integration tests.</div>
+            <a href="https://nirmitktripathii.github.io/PortfolioSite/article-email-resilience.html" target="_blank" class="pub-link-btn">Read Part 2 →</a>
+          </div>
+
+          <div class="pub-card" style="grid-column: span 2;">
+            <div class="pub-header">
+              <span class="pub-title"><a href="https://nirmitktripathii.github.io/PortfolioSite/article-email-thinking-budget.html" target="_blank">Part 3 · The Model Spent Its Whole Budget Thinking</a></span>
+              <span class="pub-meta">11 min · 2026</span>
+            </div>
+            <div class="pub-tags">
+              <span class="pub-tag">LLM Reasoning</span><span class="pub-tag spec">Thinking Models</span><span class="pub-tag">Token Budget Scaling</span>
+            </div>
+            <div class="pub-desc">Debugging silent JSON truncation in reasoning models: why small tasks fail with standard token limits when internal chain-of-thought consumes the full budget, and the dynamic token floor formula to fix it.</div>
+            <a href="https://nirmitktripathii.github.io/PortfolioSite/article-email-thinking-budget.html" target="_blank" class="pub-link-btn">Read Part 3 →</a>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SECTION 3: WHITE PAPERS & SYSTEMS ARCHITECTURE -->
+      <div class="pub-group" style="margin-bottom:0">
+        <div class="pub-group-title">
+          <span>White Papers &amp; Production Systems Architecture</span>
+          <span>5 White Papers</span>
+        </div>
+        <div class="pub-grid">
+          
+          <div class="pub-card">
+            <div class="pub-header">
+              <span class="pub-title"><a href="https://nirmitktripathii.github.io/PortfolioSite/whitepaper-podcast-factory.html" target="_blank">Ten Agents, One Newsroom: Video Factory</a></span>
+              <span class="pub-meta">13 min · Aug 2026</span>
+            </div>
+            <div class="pub-tags"><span class="pub-tag">Multi-Agent</span><span class="pub-tag spec">LLM Orchestration</span><span class="pub-tag">QA Gate</span></div>
+            <div class="pub-desc">Ten cooperating agents turning long audio into scheduled short-form video: provider-agnostic fallback layer, craft playbooks, learning loop, and strict QA output gates.</div>
+            <a href="https://nirmitktripathii.github.io/PortfolioSite/whitepaper-podcast-factory.html" target="_blank" class="pub-link-btn">Read White Paper →</a>
+          </div>
+
+          <div class="pub-card">
+            <div class="pub-header">
+              <span class="pub-title"><a href="https://nirmitktripathii.github.io/PortfolioSite/whitepaper-video-cloner.html" target="_blank">Never Return Empty: Zero-Cost Video Pipeline</a></span>
+              <span class="pub-meta">12 min · Aug 2026</span>
+            </div>
+            <div class="pub-tags"><span class="pub-tag">LLM Failover</span><span class="pub-tag">Self-Healing</span><span class="pub-tag spec">$0 Stack</span></div>
+            <div class="pub-desc">Zero-cost video generator: 3-tier multi-provider failover cascade, self-healing JSON schema repair, and zero-network procedural fallbacks ensuring guaranteed video delivery.</div>
+            <a href="https://nirmitktripathii.github.io/PortfolioSite/whitepaper-video-cloner.html" target="_blank" class="pub-link-btn">Read White Paper →</a>
+          </div>
+
+          <div class="pub-card">
+            <div class="pub-header">
+              <span class="pub-title"><a href="https://nirmitktripathii.github.io/PortfolioSite/whitepaper-india-aaspaas.html" target="_blank">Single Origin: Production Civic-Reporting</a></span>
+              <span class="pub-meta">12 min · Aug 2026</span>
+            </div>
+            <div class="pub-tags"><span class="pub-tag">Full-Stack SSR</span><span class="pub-tag spec">~$3/mo Budget</span><span class="pub-tag">Security</span></div>
+            <div class="pub-desc">Production civic-issue mapper: server-rendered dynamic social cards for WhatsApp crawlers, two-tier anonymous trust model, and hardened image sanitization against GPS leakage.</div>
+            <a href="https://nirmitktripathii.github.io/PortfolioSite/whitepaper-india-aaspaas.html" target="_blank" class="pub-link-btn">Read White Paper →</a>
+          </div>
+
+          <div class="pub-card">
+            <div class="pub-header">
+              <span class="pub-title"><a href="https://nirmitktripathii.github.io/PortfolioSite/whitepaper-dubbing.html" target="_blank">The Deployed Dubbing Pipeline (v2 System)</a></span>
+              <span class="pub-meta">11 min · 2026</span>
+            </div>
+            <div class="pub-tags"><span class="pub-tag">Speech ML</span><span class="pub-tag">Demucs DSP</span><span class="pub-tag spec">IndicF5 Cloning</span></div>
+            <div class="pub-desc">Production v2 dubbing system: phoneme-budgeted translation with Gemini CoT, Demucs 4-stem soundstage preservation, and duration-controlled voice cloning on a free Kaggle T4.</div>
+            <a href="https://nirmitktripathii.github.io/PortfolioSite/whitepaper-dubbing.html" target="_blank" class="pub-link-btn">Read White Paper →</a>
+          </div>
+
+          <div class="pub-card" style="grid-column: span 2;">
+            <div class="pub-header">
+              <span class="pub-title"><a href="https://nirmitktripathii.github.io/PortfolioSite/whitepaper-farm-mech.html" target="_blank">The 230-Year Constraint: India's Mechanization &amp; Draft Power Problem</a></span>
+              <span class="pub-meta">16 min · Aug 2026</span>
+            </div>
+            <div class="pub-tags"><span class="pub-tag">Agri-Policy</span><span class="pub-tag">Economic Modeling</span><span class="pub-tag">Primary Historical Sources</span></div>
+            <div class="pub-desc">Historical data analysis &amp; policy research analyzing India's agricultural mechanization bottleneck from 18th-century primary sources to modern fractional horsepower constraints.</div>
+            <a href="https://nirmitktripathii.github.io/PortfolioSite/whitepaper-farm-mech.html" target="_blank" class="pub-link-btn">Read White Paper →</a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="page-num">Page 2 of 2</div>
+</div>
+
 </body>
 </html>
