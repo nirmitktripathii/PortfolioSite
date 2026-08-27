@@ -67,13 +67,29 @@
     <div class="section-tag">What I've built</div>
     <h2 class="section-title">Featured Projects</h2>
     <p class="section-sub">Flagship production systems, research implementations, and agentic AI architectures.</p>
-  </div>
-  <div class="projects-grid">
+  </div>  <div class="projects-grid">
 
     <!-- FLAGSHIP 1: INDIC DUBBING PLATFORM -->
     <div class="project-card flagship reveal">
-      <div class="project-emoji" style="background:linear-gradient(135deg,#200a18,#0a0a20)">
-        <img src="images/dubbing_architecture.png" alt="Indic AI Dubbing Platform" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
+      <div class="preview-box">
+        <div class="preview-dubbing-box">
+          <div class="wave-row">
+            <span class="wave-label"><i class="fas fa-volume-high"></i> EN Audio</span>
+            <div class="wave-track"><div class="wave-bar en"></div></div>
+            <span class="wave-time">6.50s</span>
+          </div>
+          <div class="wave-row">
+            <span class="wave-label" style="color:#f43f5e"><i class="fas fa-triangle-exclamation"></i> HI v2 Raw</span>
+            <div class="wave-track"><div class="wave-bar v2"></div></div>
+            <span class="wave-time" style="color:#f43f5e">11.80s</span>
+          </div>
+          <div class="wave-row">
+            <span class="wave-label" style="color:#4ade80"><i class="fas fa-check-circle"></i> HI v3 QLoRA</span>
+            <div class="wave-track"><div class="wave-bar v3"></div></div>
+            <span class="wave-time" style="color:#4ade80">6.48s</span>
+          </div>
+          <div class="dubbing-pill"><i class="fas fa-sliders"></i> Length Error: 0.103 rel (79% cut) · Syllables Synced</div>
+        </div>
       </div>
       <div class="project-body">
         <div class="flagship-badge"><i class="fas fa-crown"></i> Flagship Case Study</div>
@@ -125,18 +141,18 @@
         <div class="preview-map-box">
           <div class="map-grid-lines"></div>
           <div class="radar-sweep"></div>
-          <div class="map-pin p1"><span class="map-pin-dot"></span> Ward 14 · Drainage [Verified]</div>
-          <div class="map-pin p2"><span class="map-pin-dot"></span> Sector 62 · Pothole [Reported]</div>
+          <div class="map-pin p1"><span class="map-pin-dot"></span> Open pothole · Sec 62, Noida [Verified]</div>
+          <div class="map-pin p2"><span class="map-pin-dot"></span> Garbage disposal · Sec 59, Noida [Active]</div>
           <div class="ssr-card-badge">
-            <i class="fas fa-bolt"></i> SSR Card Generator · 1200x630<br>
-            <span style="opacity:0.7;font-size:8.5px">EXIF Stripped · ~$3/mo Budget</span>
+            <i class="fas fa-map-location-dot"></i> OpenStreetMap Tile Server · Noida Hub<br>
+            <span style="opacity:0.75;font-size:8.5px">SSR Card Generator · EXIF Stripped · ~$3/mo</span>
           </div>
         </div>
       </div>
       <div class="project-body">
         <div class="project-tags"><span class="tag">Full-Stack</span><span class="tag">Node/Postgres</span><span class="tag">Civic Tech</span><span class="tag">SSR</span></div>
         <h3>India आसपास — Civic Reporting</h3>
-        <p>Production civic-issue reporting platform: residents map potholes, garbage and drainage, with server-rendered social share cards, a two-tier trust model, and a hardened upload pipeline — all running for about $3/month.</p>
+        <p>Production civic-issue reporting platform: residents map potholes, garbage and drainage across Noida and NCR, with server-rendered social share cards, a two-tier trust model, and a hardened upload pipeline — all running for about $3/month.</p>
         <div class="project-links">
           <a href="https://github.com/nirmitktripathii/india-aaspaas" target="_blank">View Repo →</a>
           <a href="whitepaper-india-aaspaas.html" class="btn-demo"><i class="fas fa-file-lines"></i> White Paper</a>
@@ -195,8 +211,14 @@
 
     <!-- PROJECT 6: IKS ORACLE -->
     <div class="project-card reveal">
-      <div class="project-emoji" style="background:linear-gradient(135deg,#0a0a1a,#120a20)">
-        <img src="images/iks_oracle.png" alt="IKS Oracle Gyanstrot" style="width:100%;height:100%;object-fit:cover;opacity:0.7">
+      <div class="preview-box">
+        <div class="preview-iks-box">
+          <div class="iks-node center"><i class="fas fa-om"></i> IKS Vector Hub</div>
+          <div class="iks-node n1"><i class="fas fa-book-open"></i> Rigveda 1.164.46</div>
+          <div class="iks-node n2"><i class="fas fa-project-diagram"></i> Neo4j Graph</div>
+          <div class="iks-node n3"><i class="fas fa-language"></i> Sanskrit NLP</div>
+          <div class="iks-node n4"><i class="fas fa-network-wired"></i> LangGraph RAG</div>
+        </div>
       </div>
       <div class="project-body">
         <div class="project-tags"><span class="tag">RAG</span><span class="tag">LangGraph</span><span class="tag">Sanskrit NLP</span><span class="tag">IKS</span></div>
@@ -211,8 +233,20 @@
 
     <!-- PROJECT 7: VAEP FOOTBALL -->
     <div class="project-card reveal" style="transition-delay:0.1s">
-      <div class="project-emoji" style="background:linear-gradient(135deg,#0a201a,#0a1a20)">
-        <img src="images/football_analytics.png" alt="VAEP Football Analysis" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
+      <div class="preview-box">
+        <div class="preview-vaep-box">
+          <div class="vaep-sequence">
+            <div class="vaep-action"><strong>a₁: Pass</strong>(62.4, 45.1)</div>
+            <i class="fas fa-arrow-right" style="color:var(--accent);font-size:10px"></i>
+            <div class="vaep-action"><strong>a₂: Dribble</strong>(82.0, 38.5)</div>
+            <i class="fas fa-arrow-right" style="color:var(--accent);font-size:10px"></i>
+            <div class="vaep-action" style="border-color:#4ade80"><strong>a₃: Shot</strong>(94.2, 36.8)</div>
+          </div>
+          <div class="vaep-delta">
+            <span>V(a) = ΔP(scores) − ΔP(concedes)</span>
+            <strong style="color:#4ade80">+0.184 VAEP</strong>
+          </div>
+        </div>
       </div>
       <div class="project-body">
         <div class="project-tags"><span class="tag">Sports AI</span><span class="tag">Python</span><span class="tag">Streamlit</span><span class="tag">World Cup</span></div>
@@ -227,8 +261,20 @@
 
     <!-- PROJECT 8: xG MODEL -->
     <div class="project-card reveal" style="transition-delay:0.2s">
-      <div class="project-emoji" style="background:linear-gradient(135deg,#0a1520,#0a0a20)">
-        <img src="images/xg_model.png" alt="Football Analytics xG" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
+      <div class="preview-box">
+        <div class="preview-xg-box">
+          <div class="xg-pitch-mini">
+            <div class="xg-box-inner"></div>
+            <div class="xg-spot"></div>
+            <div class="xg-trajectory"></div>
+          </div>
+          <div class="xg-stats-mini">
+            <span style="color:var(--muted)">Coordinates: (88.5, 50.0)</span>
+            <span style="color:var(--muted)">Shot Angle: 36.8°</span>
+            <div class="xg-gauge">0.785 xG</div>
+            <span style="color:#4ade80;font-weight:700">● Goal Probability: High</span>
+          </div>
+        </div>
       </div>
       <div class="project-body">
         <div class="project-tags"><span class="tag">ML</span><span class="tag">XGBoost</span><span class="tag">Heatmap</span></div>
@@ -243,8 +289,22 @@
 
     <!-- PROJECT 9: RESUME MATCHER -->
     <div class="project-card reveal" style="transition-delay:0.3s">
-      <div class="project-emoji" style="background:linear-gradient(135deg,#20150a,#200a0a)">
-        <img src="images/cv_jd_matcher.png" alt="CV-JD Matcher" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
+      <div class="preview-box">
+        <div class="preview-matcher-box">
+          <div class="matcher-score-row">
+            <div>
+              <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase">SBERT Cosine Match</div>
+              <div class="score">91.4%</div>
+            </div>
+            <i class="fas fa-dna" style="font-size:26px;color:#818cf8;opacity:0.7"></i>
+          </div>
+          <div class="matcher-tags-row">
+            <span class="matcher-chip match">LangGraph 98%</span>
+            <span class="matcher-chip match">PyTorch 94%</span>
+            <span class="matcher-chip match">Indic NLP 91%</span>
+            <span class="matcher-chip miss">Missing: Rust</span>
+          </div>
+        </div>
       </div>
       <div class="project-body">
         <div class="project-tags"><span class="tag">NLP</span><span class="tag">SBERT</span><span class="tag">Skill Gap</span></div>
@@ -259,8 +319,19 @@
 
     <!-- PROJECT 10: PLANT DISEASE -->
     <div class="project-card reveal" style="transition-delay:0.4s">
-      <div class="project-emoji" style="background:linear-gradient(135deg,#0a2012,#15200a)">
-        <img src="images/plant_disease.png" alt="Plant Disease Classification" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
+      <div class="preview-box">
+        <div class="preview-plant-box">
+          <div class="leaf-viewfinder">
+            <i class="fas fa-leaf"></i>
+            <div class="scan-line"></div>
+          </div>
+          <div class="plant-diag-info">
+            <span style="color:var(--muted)">Target: Solanum lycopersicum</span>
+            <strong>Tomato Early Blight</strong>
+            <span style="color:#4ade80">● 98.4% Confidence</span>
+            <span style="font-size:8px;color:var(--muted)">PlantVillage 38-Class CNN</span>
+          </div>
+        </div>
       </div>
       <div class="project-body">
         <div class="project-tags"><span class="tag">Deep Learning</span><span class="tag">PyTorch</span><span class="tag">Computer Vision</span></div>
@@ -275,8 +346,15 @@
 
     <!-- PROJECT 11: WEATHER -->
     <div class="project-card reveal" style="transition-delay:0.5s">
-      <div class="project-emoji" style="background:linear-gradient(135deg,#0a2020,#0a200a)">
-        <img src="images/weather_app.png" alt="Weather Dashboard" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
+      <div class="preview-box">
+        <div class="preview-weather-box">
+          <i class="fas fa-cloud-bolt-sun weather-icon-anim"></i>
+          <div class="weather-telemetry">
+            <div style="font-size:18px;font-weight:700;color:#fff">28°C · Sunny</div>
+            <span style="color:var(--muted)">Proxy Latency: 14ms</span>
+            <div class="cache-hit-pill"><i class="fas fa-bolt"></i> Cache HIT · 12ms</div>
+          </div>
+        </div>
       </div>
       <div class="project-body">
         <div class="project-tags"><span class="tag">API</span><span class="tag">Proxy</span><span class="tag">Throttled</span></div>
@@ -411,9 +489,13 @@
   <div class="writing-grid">
 
     <a href="article-dubbing-isochrony.html" class="paper-card reveal">
-      <div class="paper-top pt-audio">
-        <span class="paper-kind">Field Note · Dubbing v3</span>
-        <i class="fas fa-microphone-lines paper-glyph"></i>
+      <div class="paper-visual pv-audio">
+        <div class="pv-telemetry">
+          <span class="pv-label">Isochrony Fine-Tune</span>
+          <span class="pv-val">49% → 10% Err</span>
+          <span style="font-size:8px;color:#4ade80">● Llama-3.1-8B QLoRA</span>
+        </div>
+        <i class="fas fa-microphone-lines pv-icon" style="color:var(--accent)"></i>
       </div>
       <div class="paper-body">
         <div class="paper-tags"><span class="tag">Fine-Tuning</span><span class="tag">QLoRA</span><span class="tag">Isochrony</span></div>
@@ -424,9 +506,13 @@
     </a>
 
     <a href="article-kaggle-gpu-lab.html" class="paper-card reveal">
-      <div class="paper-top pt-agents">
-        <span class="paper-kind">Field Note · MLOps</span>
-        <i class="fas fa-microchip paper-glyph"></i>
+      <div class="paper-visual pv-agents">
+        <div class="pv-telemetry">
+          <span class="pv-label">Kaggle MLOps</span>
+          <span class="pv-val">T4 GPU · 15.2 GB</span>
+          <span style="font-size:8px;color:#38bdf8">● Reverse Tunnel Out</span>
+        </div>
+        <i class="fas fa-microchip pv-icon" style="color:#38bdf8"></i>
       </div>
       <div class="paper-body">
         <div class="paper-tags"><span class="tag">Kaggle</span><span class="tag">GPU</span><span class="tag">Tunnel</span></div>
@@ -437,9 +523,13 @@
     </a>
 
     <a href="article-football-anticipation.html" class="paper-card reveal">
-      <div class="paper-top pt-vision">
-        <span class="paper-kind">Field Note · Computer Vision</span>
-        <i class="fas fa-futbol paper-glyph"></i>
+      <div class="paper-visual pv-vision">
+        <div class="pv-telemetry">
+          <span class="pv-label">SoccerNet 2026</span>
+          <span class="pv-val">mAP 17.69 (Avg)</span>
+          <span style="font-size:8px;color:var(--accent2)">● Decomposed Anticipation</span>
+        </div>
+        <i class="fas fa-futbol pv-icon" style="color:var(--accent2)"></i>
       </div>
       <div class="paper-body">
         <div class="paper-tags"><span class="tag">Anticipation</span><span class="tag">SoccerNet</span><span class="tag">Transformers</span></div>
@@ -455,9 +545,13 @@
   <div class="writing-grid">
 
     <a href="article-email-orchestrator.html" class="paper-card reveal">
-      <div class="paper-top pt-agents">
-        <span class="paper-kind">Part 1 · MCP</span>
-        <i class="fas fa-inbox paper-glyph"></i>
+      <div class="paper-visual pv-agents">
+        <div class="pv-telemetry">
+          <span class="pv-label">Part 1 · MCP Topology</span>
+          <span class="pv-val">1 Server ➔ 4 Inboxes</span>
+          <span style="font-size:8px;color:#38bdf8">● 17 Unified Tools</span>
+        </div>
+        <i class="fas fa-network-wired pv-icon" style="color:#38bdf8"></i>
       </div>
       <div class="paper-body">
         <div class="paper-tags"><span class="tag">Fan-out</span><span class="tag">17 tools</span></div>
@@ -468,9 +562,13 @@
     </a>
 
     <a href="article-email-resilience.html" class="paper-card reveal">
-      <div class="paper-top pt-civic">
-        <span class="paper-kind">Part 2 · Resilience</span>
-        <i class="fas fa-arrows-rotate paper-glyph"></i>
+      <div class="paper-visual pv-civic">
+        <div class="pv-telemetry">
+          <span class="pv-label">Part 2 · Reconnection</span>
+          <span class="pv-val">allSettled Isolation</span>
+          <span style="font-size:8px;color:#4ade80">● 49 Passing Tests</span>
+        </div>
+        <i class="fas fa-shield-heart pv-icon" style="color:#4ade80"></i>
       </div>
       <div class="paper-body">
         <div class="paper-tags"><span class="tag">Reconnection</span><span class="tag">allSettled</span></div>
@@ -481,9 +579,13 @@
     </a>
 
     <a href="article-email-thinking-budget.html" class="paper-card reveal">
-      <div class="paper-top pt-audio">
-        <span class="paper-kind">Part 3 · LLM</span>
-        <i class="fas fa-brain paper-glyph"></i>
+      <div class="paper-visual pv-audio">
+        <div class="pv-telemetry">
+          <span class="pv-label">Part 3 · Token Economics</span>
+          <span class="pv-val">Floor Budgeting</span>
+          <span style="font-size:8px;color:var(--accent)">● Thinking Saturation</span>
+        </div>
+        <i class="fas fa-brain pv-icon" style="color:var(--accent)"></i>
       </div>
       <div class="paper-body">
         <div class="paper-tags"><span class="tag">Thinking Models</span><span class="tag">Token Budget</span></div>
@@ -499,9 +601,13 @@
   <div class="writing-grid">
 
     <a href="whitepaper-podcast-factory.html" class="paper-card reveal">
-      <div class="paper-top pt-agents">
-        <span class="paper-kind">White Paper · Agentic AI</span>
-        <i class="fas fa-robot paper-glyph"></i>
+      <div class="paper-visual pv-agents">
+        <div class="pv-telemetry">
+          <span class="pv-label">White Paper · Multi-Agent</span>
+          <span class="pv-val">10 Autonomous Agents</span>
+          <span style="font-size:8px;color:#38bdf8">● Newsroom Loop</span>
+        </div>
+        <i class="fas fa-robot pv-icon" style="color:#38bdf8"></i>
       </div>
       <div class="paper-body">
         <div class="paper-tags"><span class="tag">Multi-Agent</span><span class="tag">LLM Orchestration</span><span class="tag">Fallback</span></div>
@@ -512,9 +618,13 @@
     </a>
 
     <a href="whitepaper-video-cloner.html" class="paper-card reveal">
-      <div class="paper-top pt-agents">
-        <span class="paper-kind">White Paper &middot; Resilience</span>
-        <i class="fas fa-shield-halved paper-glyph"></i>
+      <div class="paper-visual pv-agents">
+        <div class="pv-telemetry">
+          <span class="pv-label">White Paper · Resilience</span>
+          <span class="pv-val">3-Tier Failover</span>
+          <span style="font-size:8px;color:#38bdf8">● $0 Pipeline Stack</span>
+        </div>
+        <i class="fas fa-shield-halved pv-icon" style="color:#38bdf8"></i>
       </div>
       <div class="paper-body">
         <div class="paper-tags"><span class="tag">LLM Failover</span><span class="tag">Self-Healing</span><span class="tag">Zero-Cost</span></div>
@@ -525,9 +635,13 @@
     </a>
 
     <a href="whitepaper-farm-mech.html" class="paper-card reveal">
-      <div class="paper-top pt-vision">
-        <span class="paper-kind">Research · Agri &amp; Policy</span>
-        <i class="fas fa-wheat-awn paper-glyph"></i>
+      <div class="paper-visual pv-vision">
+        <div class="pv-telemetry">
+          <span class="pv-label">White Paper · Policy</span>
+          <span class="pv-val">230-Yr Constraint</span>
+          <span style="font-size:8px;color:var(--accent2)">● Divisible Power</span>
+        </div>
+        <i class="fas fa-wheat-awn pv-icon" style="color:var(--accent2)"></i>
       </div>
       <div class="paper-body">
         <div class="paper-tags"><span class="tag">History</span><span class="tag">Draft Power</span><span class="tag">Groundwater</span></div>
@@ -538,9 +652,13 @@
     </a>
 
     <a href="whitepaper-india-aaspaas.html" class="paper-card reveal">
-      <div class="paper-top pt-civic">
-        <span class="paper-kind">White Paper · Systems</span>
-        <i class="fas fa-city paper-glyph"></i>
+      <div class="paper-visual pv-civic">
+        <div class="pv-telemetry">
+          <span class="pv-label">White Paper · Full-Stack</span>
+          <span class="pv-val">Single-Origin SSR</span>
+          <span style="font-size:8px;color:#4ade80">● EXIF Stripped · ~$3/mo</span>
+        </div>
+        <i class="fas fa-city pv-icon" style="color:#4ade80"></i>
       </div>
       <div class="paper-body">
         <div class="paper-tags"><span class="tag">Full-Stack</span><span class="tag">SSR</span><span class="tag">Security</span></div>
@@ -551,9 +669,13 @@
     </a>
 
     <a href="whitepaper-dubbing.html" class="paper-card reveal">
-      <div class="paper-top pt-audio">
-        <span class="paper-kind">White Paper · Speech ML · v2</span>
-        <i class="fas fa-wave-square paper-glyph"></i>
+      <div class="paper-visual pv-audio">
+        <div class="pv-telemetry">
+          <span class="pv-label">White Paper · Speech ML</span>
+          <span class="pv-val">Demucs + IndicF5</span>
+          <span style="font-size:8px;color:var(--accent)">● Kaggle T4 Pipeline</span>
+        </div>
+        <i class="fas fa-wave-square pv-icon" style="color:var(--accent)"></i>
       </div>
       <div class="paper-body">
         <div class="paper-tags"><span class="tag">Isochrony</span><span class="tag">Gemini CoT</span><span class="tag">IndicF5</span></div>

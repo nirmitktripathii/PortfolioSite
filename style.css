@@ -566,4 +566,154 @@
 .cloner-step-item i { color: var(--accent2); font-size: 10px; }
 .cloner-badge { margin-left: auto; font-size: 8px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
 .cloner-badge.free { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
-.cloner-badge.heal { background: rgba(0,229,255,0.15); color: var(--accent); border: 1px solid rgba(0,229,255,0.3); }
+.cloner-badge.heal { background: rgba(0,229,255,0.15); color: var(--accent); border: 1px solid rgba(0,229,255,0.3); }
+
+/* 5. Indic Dubbing Isochrony Waveform Preview */
+.preview-dubbing-box {
+  background: radial-gradient(circle at 50% 50%, #1a0824 0%, #06050e 100%);
+  height: 100%;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+}
+.wave-row { display: flex; align-items: center; justify-content: space-between; font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); }
+.wave-label { width: 95px; font-weight: 700; font-size: 9.5px; }
+.wave-track { flex: 1; height: 12px; background: rgba(255,255,255,0.04); border-radius: 4px; margin: 0 10px; position: relative; overflow: hidden; display: flex; align-items: center; padding: 0 4px; }
+.wave-bar { height: 6px; border-radius: 3px; }
+.wave-bar.en { width: 65%; background: var(--accent); animation: waveSync 4s ease-in-out infinite; }
+.wave-bar.v2 { width: 100%; background: #f43f5e; opacity: 0.6; }
+.wave-bar.v3 { width: 66%; background: #4ade80; animation: waveSync 4s ease-in-out infinite; }
+.wave-time { font-size: 8.5px; width: 45px; text-align: right; }
+@keyframes waveSync {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 0.5; }
+}
+.dubbing-pill { display: inline-flex; align-items: center; gap: 5px; background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.25); color: #4ade80; font-size: 8.5px; font-family: 'Space Mono', monospace; padding: 3px 8px; border-radius: 12px; margin-top: 2px; align-self: flex-start; }
+
+/* 6. IKS Knowledge Graph Preview */
+.preview-iks-box {
+  background: radial-gradient(circle at 50% 50%, #1c1404 0%, #07070d 100%);
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.iks-node { position: absolute; background: rgba(14,21,38,0.9); border: 1px solid var(--border); padding: 4px 8px; border-radius: 6px; font-family: 'Space Mono', monospace; font-size: 8.5px; color: var(--text); backdrop-filter: blur(6px); display: flex; align-items: center; gap: 4px; }
+.iks-node.center { background: rgba(255,215,0,0.15); border-color: #ffd700; color: #ffd700; font-weight: 700; z-index: 2; }
+.iks-node.n1 { top: 20px; left: 24px; animation: iksOrbit1 6s ease-in-out infinite; }
+.iks-node.n2 { bottom: 20px; left: 24px; animation: iksOrbit2 6s ease-in-out infinite; }
+.iks-node.n3 { top: 20px; right: 24px; animation: iksOrbit3 6s ease-in-out infinite; }
+.iks-node.n4 { bottom: 20px; right: 24px; animation: iksOrbit4 6s ease-in-out infinite; }
+@keyframes iksOrbit1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(4px, 4px); } }
+@keyframes iksOrbit2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(4px, -4px); } }
+@keyframes iksOrbit3 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-4px, 4px); } }
+@keyframes iksOrbit4 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-4px, -4px); } }
+
+/* 7. VAEP Football Action Valuation Preview */
+.preview-vaep-box {
+  background: radial-gradient(circle at 50% 50%, #092015 0%, #050b0e 100%);
+  height: 100%;
+  position: relative;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.vaep-sequence { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-family: 'Space Mono', monospace; font-size: 8.5px; }
+.vaep-action { background: rgba(255,255,255,0.04); border: 1px solid rgba(0,229,255,0.25); padding: 5px 8px; border-radius: 6px; text-align: center; flex: 1; color: #fff; }
+.vaep-action strong { color: var(--accent); display: block; font-size: 9px; }
+.vaep-delta { font-family: 'Space Mono', monospace; font-size: 9.5px; color: #4ade80; background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.25); padding: 4px 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+
+/* 8. xG Shot Predictor Preview */
+.preview-xg-box {
+  background: radial-gradient(circle at 50% 50%, #0a1726 0%, #05060d 100%);
+  height: 100%;
+  position: relative;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.xg-pitch-mini { width: 130px; height: 90px; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; position: relative; background: rgba(0,255,136,0.03); }
+.xg-box-inner { position: absolute; right: 0; top: 15px; bottom: 15px; width: 40px; border: 1px solid rgba(255,255,255,0.2); border-right: none; }
+.xg-spot { position: absolute; right: 28px; top: 42px; width: 6px; height: 6px; border-radius: 50%; background: #fff; }
+.xg-trajectory { position: absolute; right: 0; top: 40px; width: 30px; height: 1px; background: dashed #00ff88; }
+.xg-stats-mini { display: flex; flex-direction: column; gap: 4px; font-family: 'Space Mono', monospace; font-size: 9px; text-align: right; }
+.xg-gauge { font-size: 22px; font-weight: 700; color: #00ff88; line-height: 1; }
+
+/* 9. AI Resume Matcher Radar Preview */
+.preview-matcher-box {
+  background: radial-gradient(circle at 50% 50%, #1a0f26 0%, #06050e 100%);
+  height: 100%;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.matcher-score-row { display: flex; justify-content: space-between; align-items: center; }
+.matcher-score-row .score { font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; color: #818cf8; }
+.matcher-tags-row { display: flex; flex-wrap: wrap; gap: 4px; }
+.matcher-chip { font-family: 'Space Mono', monospace; font-size: 8px; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+.matcher-chip.match { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+.matcher-chip.miss { background: rgba(244,63,94,0.15); color: #fb7185; border: 1px solid rgba(244,63,94,0.3); }
+
+/* 10. Plant Disease Viewfinder Preview */
+.preview-plant-box {
+  background: radial-gradient(circle at 50% 50%, #0d1e14 0%, #050b08 100%);
+  height: 100%;
+  position: relative;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.leaf-viewfinder { width: 100px; height: 90px; border: 2px dashed rgba(74,222,128,0.4); border-radius: 8px; position: relative; display: flex; align-items: center; justify-content: center; }
+.leaf-viewfinder i { font-size: 32px; color: #4ade80; animation: leafScan 3s ease-in-out infinite; }
+.scan-line { position: absolute; left: 0; right: 0; height: 2px; background: rgba(74,222,128,0.8); box-shadow: 0 0 8px #4ade80; animation: scanSweep 2.5s ease-in-out infinite; }
+@keyframes scanSweep { 0%, 100% { top: 5px; } 50% { top: 80px; } }
+@keyframes leafScan { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+.plant-diag-info { display: flex; flex-direction: column; gap: 3px; font-family: 'Space Mono', monospace; font-size: 9px; text-align: right; }
+.plant-diag-info strong { color: #4ade80; font-size: 10px; }
+
+/* 11. Global Weather Proxy Preview */
+.preview-weather-box {
+  background: radial-gradient(circle at 50% 50%, #0a1f2e 0%, #050b12 100%);
+  height: 100%;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.weather-icon-anim { font-size: 36px; color: #38bdf8; animation: weatherBob 4s ease-in-out infinite; }
+@keyframes weatherBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.weather-telemetry { display: flex; flex-direction: column; gap: 3px; font-family: 'Space Mono', monospace; font-size: 8.5px; text-align: right; }
+.cache-hit-pill { background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.3); color: #38bdf8; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 8px; margin-top: 2px; }
+
+/* ==========================================================================
+   PUBLICATION / WHITE PAPER VISUAL THUMBNAIL HEADERS
+   ========================================================================== */
+.paper-visual {
+  height: 90px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Space Mono', monospace;
+}
+.pv-audio { background: linear-gradient(135deg, #180826 0%, #070712 100%); border-top: 3px solid var(--accent); }
+.pv-agents { background: linear-gradient(135deg, #091a26 0%, #060a12 100%); border-top: 3px solid #38bdf8; }
+.pv-vision { background: linear-gradient(135deg, #1f0b18 0%, #0c050d 100%); border-top: 3px solid var(--accent2); }
+.pv-civic { background: linear-gradient(135deg, #081c16 0%, #040d0a 100%); border-top: 3px solid #4ade80; }
+.pv-telemetry { display: flex; flex-direction: column; gap: 2px; }
+.pv-telemetry .pv-label { font-size: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; }
+.pv-telemetry .pv-val { font-size: 13px; font-weight: 700; color: #fff; }
+.pv-icon { font-size: 28px; opacity: 0.8; }
