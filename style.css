@@ -344,4 +344,226 @@
 .btn-space.outline:hover{border-color:var(--accent);color:var(--accent)}
 .spaces-banner{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,rgba(0,229,255,0.06),rgba(123,97,255,0.06));border:1px solid var(--border);border-radius:14px;padding:24px 30px;margin-top:36px;flex-wrap:wrap;gap:20px}
 .spaces-banner-text h4{font-size:18px;font-weight:700;margin-bottom:4px}
-.spaces-banner-text p{color:var(--muted);font-size:14px}
+.spaces-banner-text p{color:var(--muted);font-size:14px}
+
+/* ==========================================================================
+   ANIMATED INTERACTIVE PROJECT PREVIEW PLAYERS (APPROACH A)
+   ========================================================================== */
+.preview-box {
+  width: 100%;
+  height: 200px;
+  background: #070913;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+/* 1. Terminal Preview (Email Orchestrator) */
+.preview-terminal {
+  background: #05070e;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: #a5d6ff;
+  padding: 12px 16px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.term-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 10px;
+}
+.term-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.term-dot.r { background: #ff5f56; }
+.term-dot.y { background: #ffbd2e; }
+.term-dot.g { background: #27c93f; }
+.term-title { margin-left: auto; font-size: 9.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.term-body { display: flex; flex-direction: column; gap: 6px; flex: 1; justify-content: center; }
+.term-line { opacity: 0; animation: termFadeIn 8s infinite; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.term-line:nth-child(1) { animation-delay: 0.2s; color: #38bdf8; font-weight: 700; }
+.term-line:nth-child(2) { animation-delay: 2.0s; color: #a5d6ff; }
+.term-line:nth-child(3) { animation-delay: 3.8s; color: #fbbf24; }
+.term-line:nth-child(4) { animation-delay: 5.4s; color: #4ade80; font-weight: 700; }
+
+@keyframes termFadeIn {
+  0% { opacity: 0; transform: translateY(4px); }
+  6%, 88% { opacity: 1; transform: translateY(0); }
+  96%, 100% { opacity: 0; transform: translateY(-4px); }
+}
+
+/* 2. Civic Map Preview (India Aaspaas) */
+.preview-map-box {
+  background: radial-gradient(circle at 50% 50%, #0d1e1c 0%, #060b10 100%);
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.map-grid-lines {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(0,229,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.06) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+.radar-sweep {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  border: 1px dashed rgba(0,229,255,0.25);
+  animation: radarSpin 6s linear infinite;
+}
+@keyframes radarSpin {
+  0% { transform: scale(0.6) rotate(0deg); opacity: 0.8; }
+  50% { transform: scale(1.1) rotate(180deg); opacity: 0.3; }
+  100% { transform: scale(0.6) rotate(360deg); opacity: 0.8; }
+}
+.map-pin {
+  position: absolute;
+  background: rgba(14, 21, 38, 0.85);
+  border: 1px solid var(--accent);
+  padding: 4px 8px;
+  border-radius: 14px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  animation: pinFloat 4s ease-in-out infinite;
+}
+.map-pin.p1 { top: 22px; left: 24px; animation-delay: 0s; }
+.map-pin.p2 { bottom: 24px; right: 20px; animation-delay: 2s; border-color: #4ade80; }
+.map-pin-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.map-pin.p2 .map-pin-dot { background: #4ade80; }
+@keyframes pinFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.ssr-card-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(6, 9, 18, 0.92);
+  border: 1px solid rgba(0,229,255,0.3);
+  padding: 8px 14px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 10px;
+  font-family: 'Space Mono', monospace;
+  color: var(--accent);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+  animation: ssrPulse 5s ease-in-out infinite;
+}
+@keyframes ssrPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.04); border-color: #4ade80; color: #4ade80; }
+}
+
+/* 3. Multi-Agent Pipeline Preview (Podcast Shorts Factory) */
+.preview-agent-box {
+  background: linear-gradient(135deg, #160a22 0%, #07060f 100%);
+  height: 100%;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+}
+.agent-flow-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.agent-node {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9.5px;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  text-align: center;
+  transition: all .3s;
+}
+.agent-node i { font-size: 13px; color: var(--accent3); }
+.agent-node.active-1 { animation: agentPulse1 6s infinite; }
+.agent-node.active-2 { animation: agentPulse2 6s infinite; }
+.agent-node.active-3 { animation: agentPulse3 6s infinite; }
+@keyframes agentPulse1 {
+  0%, 25% { border-color: var(--accent); background: rgba(0,229,255,0.12); transform: scale(1.05); }
+  35%, 100% { border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); transform: scale(1); }
+}
+@keyframes agentPulse2 {
+  0%, 25% { border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); transform: scale(1); }
+  30%, 60% { border-color: var(--accent3); background: rgba(123,97,255,0.15); transform: scale(1.05); }
+  70%, 100% { border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); transform: scale(1); }
+}
+@keyframes agentPulse3 {
+  0%, 60% { border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); transform: scale(1); }
+  65%, 95% { border-color: #4ade80; background: rgba(74,222,128,0.15); transform: scale(1.05); }
+  100% { border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); transform: scale(1); }
+}
+.agent-arrow { color: var(--muted); font-size: 11px; }
+.agent-telemetry {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Space Mono', monospace;
+  font-size: 8.5px;
+  color: var(--muted);
+  background: rgba(0,0,0,0.3);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.agent-telemetry span.ok { color: #4ade80; font-weight: 700; }
+
+/* 4. AI Video Style Cloner Preview */
+.preview-cloner-box {
+  background: linear-gradient(135deg, #10061e 0%, #040817 100%);
+  height: 100%;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+.cloner-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9.5px;
+}
+.cloner-step-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 5px 9px;
+  border-radius: 6px;
+  color: #cbd5e1;
+}
+.cloner-step-item i { color: var(--accent2); font-size: 10px; }
+.cloner-badge { margin-left: auto; font-size: 8px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+.cloner-badge.free { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+.cloner-badge.heal { background: rgba(0,229,255,0.15); color: var(--accent); border: 1px solid rgba(0,229,255,0.3); }
