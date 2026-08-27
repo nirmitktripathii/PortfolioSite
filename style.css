@@ -554,37 +554,55 @@
 }
 .agent-telemetry span.ok { color: #4ade80; font-weight: 700; }
 
-/* 4. AI Video Style Cloner Preview */
+/* 4. AI Video Style Cloner Preview (Enhanced Studio Pipeline) */
 .preview-cloner-box {
   background: linear-gradient(135deg, #10061e 0%, #040817 100%);
   height: 100%;
-  padding: 16px 14px;
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 8px;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
 }
-.cloner-steps {
+.cloner-topbar {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 3px 8px;
+  border-radius: 6px;
   font-family: 'Space Mono', monospace;
-  font-size: 9.5px;
+  font-size: 8.5px;
+  color: var(--muted);
 }
-.cloner-step-item {
+.cloner-cadence { color: var(--accent2); font-weight: 700; }
+.cloner-pipeline { display: flex; flex-direction: column; gap: 4px; margin-top: 3px; }
+.cloner-pipe-step {
   display: flex;
   align-items: center;
   gap: 8px;
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.06);
-  padding: 5px 9px;
+  padding: 4px 8px;
   border-radius: 6px;
-  color: #cbd5e1;
+  transition: all 0.3s;
 }
-.cloner-step-item i { color: var(--accent2); font-size: 10px; }
-.cloner-badge { margin-left: auto; font-size: 8px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
-.cloner-badge.free { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
-.cloner-badge.heal { background: rgba(0,229,255,0.15); color: var(--accent); border: 1px solid rgba(0,229,255,0.3); }
+.cloner-pipe-step.s1 { border-left: 3px solid #38bdf8; animation: pipePulse1 5s infinite; }
+.cloner-pipe-step.s2 { border-left: 3px solid #a855f7; animation: pipePulse2 5s infinite; }
+.cloner-pipe-step.s3 { border-left: 3px solid #4ade80; animation: pipePulse3 5s infinite; }
+@keyframes pipePulse1 { 0%, 30% { background: rgba(56,189,248,0.1); } 35%, 100% { background: rgba(255,255,255,0.03); } }
+@keyframes pipePulse2 { 0%, 30% { background: rgba(255,255,255,0.03); } 35%, 65% { background: rgba(168,85,247,0.12); } 70%, 100% { background: rgba(255,255,255,0.03); } }
+@keyframes pipePulse3 { 0%, 65% { background: rgba(255,255,255,0.03); } 70%, 100% { background: rgba(74,222,128,0.12); } }
+.pipe-icon { font-size: 10px; color: var(--muted); }
+.pipe-info { display: flex; flex-direction: column; gap: 1px; flex: 1; font-family: 'Space Mono', monospace; font-size: 8px; }
+.pipe-info strong { color: #fff; font-size: 8.5px; }
+.pipe-info span { color: var(--muted); }
+.pipe-badge { font-family: 'Space Mono', monospace; font-size: 7.5px; padding: 2px 5px; border-radius: 4px; font-weight: 700; white-space: nowrap; }
+.pipe-badge.ok { background: rgba(56,189,248,0.15); color: #38bdf8; border: 1px solid rgba(56,189,248,0.3); }
+.pipe-badge.heal { background: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
+.pipe-badge.cost { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
 
 /* 5. Indic Dubbing Isochrony Waveform Preview */
 .preview-dubbing-box {
@@ -611,41 +629,191 @@
 }
 .dubbing-pill { display: inline-flex; align-items: center; gap: 5px; background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.25); color: #4ade80; font-size: 8.5px; font-family: 'Space Mono', monospace; padding: 3px 8px; border-radius: 12px; margin-top: 2px; align-self: flex-start; }
 
-/* 6. IKS Knowledge Graph Preview */
+/* 6. IKS Knowledge Star Map Preview (Authentic Gyanstrot UI) */
 .preview-iks-box {
-  background: radial-gradient(circle at 50% 50%, #1c1404 0%, #07070d 100%);
+  background: #110d08;
   height: 100%;
   position: relative;
   overflow: hidden;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
 }
-.iks-node { position: absolute; background: rgba(14,21,38,0.9); border: 1px solid var(--border); padding: 4px 8px; border-radius: 6px; font-family: 'Space Mono', monospace; font-size: 8.5px; color: var(--text); backdrop-filter: blur(6px); display: flex; align-items: center; gap: 4px; }
-.iks-node.center { background: rgba(255,215,0,0.15); border-color: #ffd700; color: #ffd700; font-weight: 700; z-index: 2; }
-.iks-node.n1 { top: 20px; left: 24px; animation: iksOrbit1 6s ease-in-out infinite; }
-.iks-node.n2 { bottom: 20px; left: 24px; animation: iksOrbit2 6s ease-in-out infinite; }
-.iks-node.n3 { top: 20px; right: 24px; animation: iksOrbit3 6s ease-in-out infinite; }
-.iks-node.n4 { bottom: 20px; right: 24px; animation: iksOrbit4 6s ease-in-out infinite; }
-@keyframes iksOrbit1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(4px, 4px); } }
-@keyframes iksOrbit2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(4px, -4px); } }
-@keyframes iksOrbit3 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-4px, 4px); } }
-@keyframes iksOrbit4 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-4px, -4px); } }
-
-/* 7. VAEP Football Action Valuation Preview */
-.preview-vaep-box {
-  background: radial-gradient(circle at 50% 50%, #092015 0%, #050b0e 100%);
-  height: 100%;
+.iks-bg-img {
+  position: absolute;
+  inset: 0;
+  background: url('images/gyanstrot_iks_real.png') center/cover no-repeat;
+  filter: brightness(0.62) contrast(1.15) saturate(1.1);
+  transform: scale(1.02);
+  transition: transform 0.6s ease;
+}
+.project-card:hover .iks-bg-img {
+  transform: scale(1.08);
+}
+.iks-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(10,8,6,0.2) 0%, rgba(6,7,13,0.8) 100%);
+  pointer-events: none;
+}
+.iks-content-hud {
   position: relative;
-  padding: 16px 18px;
+  z-index: 2;
+  height: 100%;
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
-.vaep-sequence { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-family: 'Space Mono', monospace; font-size: 8.5px; }
-.vaep-action { background: rgba(255,255,255,0.04); border: 1px solid rgba(0,229,255,0.25); padding: 5px 8px; border-radius: 6px; text-align: center; flex: 1; color: #fff; }
-.vaep-action strong { color: var(--accent); display: block; font-size: 9px; }
-.vaep-delta { font-family: 'Space Mono', monospace; font-size: 9.5px; color: #4ade80; background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.25); padding: 4px 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+.iks-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(14, 11, 7, 0.88);
+  border: 1px solid rgba(255,215,0,0.25);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8.5px;
+  backdrop-filter: blur(8px);
+}
+.iks-query-pill { color: #fef08a; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+.iks-sim-score { color: #ffd700; font-weight: 700; background: rgba(255,215,0,0.15); border: 1px solid rgba(255,215,0,0.3); padding: 1px 6px; border-radius: 4px; }
+.iks-mid-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 6px 0;
+}
+.iks-star-map-tag {
+  background: rgba(6,7,13,0.85);
+  border: 1px solid rgba(255,215,0,0.3);
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: #fff;
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.iks-star-map-tag strong { color: #ffd700; font-size: 8.5px; }
+.iks-rishi-pill {
+  background: rgba(20, 14, 8, 0.9);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: #fde68a;
+  backdrop-filter: blur(6px);
+  max-width: 170px;
+  animation: rishiFloat 4s ease-in-out infinite;
+}
+@keyframes rishiFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+.iks-bottombar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(6,7,13,0.88);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--muted);
+  backdrop-filter: blur(8px);
+}
+
+/* 7. VAEP Football Action Valuation Preview (Authentic StatsBomb Match UI) */
+.preview-vaep-box {
+  background: #06120c;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.vaep-bg-img {
+  position: absolute;
+  inset: 0;
+  background: url('images/vaep_demo_real.png') center/cover no-repeat;
+  filter: brightness(0.65) contrast(1.15);
+  transform: scale(1.02);
+  transition: transform 0.6s ease;
+}
+.project-card:hover .vaep-bg-img {
+  transform: scale(1.08);
+}
+.vaep-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(6,18,12,0.15) 0%, rgba(6,7,13,0.78) 100%);
+  pointer-events: none;
+}
+.vaep-content-hud {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.vaep-hud-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Space Mono', monospace;
+  font-size: 8.5px;
+  background: rgba(6,9,18,0.88);
+  border: 1px solid rgba(0,255,136,0.25);
+  padding: 3px 8px;
+  border-radius: 6px;
+  backdrop-filter: blur(8px);
+}
+.vaep-match-tag { color: #a5f3fc; display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
+.vaep-badge-high { color: #4ade80; font-weight: 700; background: rgba(74,222,128,0.15); border: 1px solid rgba(74,222,128,0.3); padding: 1px 6px; border-radius: 4px; }
+.vaep-timeline-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  margin: 4px 0;
+}
+.vaep-action-chip {
+  background: rgba(6,9,18,0.9);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 3px 6px;
+  border-radius: 5px;
+  font-family: 'Space Mono', monospace;
+  font-size: 7.5px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  backdrop-filter: blur(6px);
+  flex: 1;
+}
+.vaep-action-chip strong { color: var(--accent); font-size: 8px; }
+.vaep-action-chip.goal { border-color: #4ade80; background: rgba(6,30,16,0.92); }
+.vaep-action-chip.goal strong { color: #4ade80; }
+.vaep-formula-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(6,9,18,0.88);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--muted);
+  backdrop-filter: blur(8px);
+}
 
 /* 8. xG Shot Predictor Preview */
 .preview-xg-box {
@@ -664,53 +832,219 @@
 .xg-stats-mini { display: flex; flex-direction: column; gap: 4px; font-family: 'Space Mono', monospace; font-size: 9px; text-align: right; }
 .xg-gauge { font-size: 22px; font-weight: 700; color: #00ff88; line-height: 1; }
 
-/* 9. AI Resume Matcher Radar Preview */
+/* 9. AI Resume Matcher Radar Preview (Enhanced SBERT Semantic HUD) */
 .preview-matcher-box {
-  background: radial-gradient(circle at 50% 50%, #1a0f26 0%, #06050e 100%);
+  background: radial-gradient(circle at 50% 50%, #150a26 0%, #05040a 100%);
   height: 100%;
-  padding: 16px 18px;
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
+  overflow: hidden;
 }
-.matcher-score-row { display: flex; justify-content: space-between; align-items: center; }
-.matcher-score-row .score { font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; color: #818cf8; }
-.matcher-tags-row { display: flex; flex-wrap: wrap; gap: 4px; }
-.matcher-chip { font-family: 'Space Mono', monospace; font-size: 8px; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+.matcher-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(129,140,248,0.25);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8.5px;
+  color: var(--muted);
+}
+.matcher-topbar strong { color: #a5b4fc; display: inline-flex; align-items: center; gap: 4px; }
+.matcher-mid-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 4px 0;
+}
+.matcher-radar-scope {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: 1px dashed rgba(129,140,248,0.35);
+  position: relative;
+  background: radial-gradient(circle, rgba(129,140,248,0.12) 0%, transparent 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.radar-sweep-beam {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border-right: 2px solid #818cf8;
+  animation: radarSpin 4s linear infinite;
+}
+.matcher-score-center {
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #c7d2fe;
+  text-shadow: 0 0 8px rgba(129,140,248,0.6);
+  z-index: 2;
+}
+.matcher-tags-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+.matcher-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+.matcher-chip {
+  font-family: 'Space Mono', monospace;
+  font-size: 7.5px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-weight: 600;
+  white-space: nowrap;
+}
 .matcher-chip.match { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
 .matcher-chip.miss { background: rgba(244,63,94,0.15); color: #fb7185; border: 1px solid rgba(244,63,94,0.3); }
+.matcher-bottombar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--muted);
+}
 
-/* 10. Plant Disease Viewfinder Preview */
+/* 10. Plant Disease Viewfinder Preview (High-Tech Diagnostic HUD) */
 .preview-plant-box {
-  background: radial-gradient(circle at 50% 50%, #0d1e14 0%, #050b08 100%);
+  background: radial-gradient(circle at 50% 50%, #081a11 0%, #030805 100%);
   height: 100%;
   position: relative;
-  padding: 16px 18px;
+  padding: 10px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
+  overflow: hidden;
 }
-.leaf-viewfinder { width: 100px; height: 90px; border: 2px dashed rgba(74,222,128,0.4); border-radius: 8px; position: relative; display: flex; align-items: center; justify-content: center; }
-.leaf-viewfinder i { font-size: 32px; color: #4ade80; animation: leafScan 3s ease-in-out infinite; }
-.scan-line { position: absolute; left: 0; right: 0; height: 2px; background: rgba(74,222,128,0.8); box-shadow: 0 0 8px #4ade80; animation: scanSweep 2.5s ease-in-out infinite; }
-@keyframes scanSweep { 0%, 100% { top: 5px; } 50% { top: 80px; } }
-@keyframes leafScan { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-.plant-diag-info { display: flex; flex-direction: column; gap: 3px; font-family: 'Space Mono', monospace; font-size: 9px; text-align: right; }
-.plant-diag-info strong { color: #4ade80; font-size: 10px; }
+.plant-scanner-frame {
+  width: 100px;
+  height: 110px;
+  border: 1px solid rgba(74,222,128,0.25);
+  border-radius: 8px;
+  position: relative;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.corner-hud { position: absolute; width: 6px; height: 6px; border-color: #4ade80; }
+.corner-hud.tl { top: -1px; left: -1px; border-top: 2px solid #4ade80; border-left: 2px solid #4ade80; }
+.corner-hud.tr { top: -1px; right: -1px; border-top: 2px solid #4ade80; border-right: 2px solid #4ade80; }
+.corner-hud.bl { bottom: -1px; left: -1px; border-bottom: 2px solid #4ade80; border-left: 2px solid #4ade80; }
+.corner-hud.br { bottom: -1px; right: -1px; border-bottom: 2px solid #4ade80; border-right: 2px solid #4ade80; }
+.plant-leaf-icon { font-size: 42px; color: #16a34a; opacity: 0.85; animation: leafGlow 3s ease-in-out infinite; }
+@keyframes leafGlow { 0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(74,222,128,0.3)); } 50% { transform: scale(1.05); filter: drop-shadow(0 0 10px rgba(74,222,128,0.6)); } }
+.laser-beam { position: absolute; left: 0; right: 0; height: 2px; background: #4ade80; box-shadow: 0 0 10px #4ade80; animation: laserSweep 3s ease-in-out infinite; z-index: 2; }
+@keyframes laserSweep { 0%, 100% { top: 6px; opacity: 0.9; } 50% { top: 100px; opacity: 0.9; } }
+.lesion-box { position: absolute; border: 1.5px dashed #f87171; border-radius: 4px; animation: lesionPulse 2s infinite; }
+.lesion-box.l1 { top: 32px; left: 24px; width: 22px; height: 18px; }
+.lesion-box.l2 { bottom: 28px; right: 26px; width: 18px; height: 20px; animation-delay: 1s; }
+@keyframes lesionPulse { 0%, 100% { border-color: #f87171; background: rgba(248,113,113,0.1); } 50% { border-color: #ef4444; background: rgba(248,113,113,0.25); } }
+.lesion-tag { position: absolute; bottom: 4px; font-family: 'Space Mono', monospace; font-size: 6.5px; color: #f87171; background: rgba(0,0,0,0.7); padding: 1px 3px; border-radius: 2px; }
 
-/* 11. Global Weather Proxy Preview */
+.plant-diag-hud { display: flex; flex-direction: column; gap: 3px; font-family: 'Space Mono', monospace; flex: 1; min-width: 0; }
+.plant-target-host { font-size: 7.5px; color: var(--muted); text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.plant-diag-name { font-size: 11px; font-weight: 700; color: #fff; line-height: 1.2; }
+.plant-prob-bar { position: relative; height: 14px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; display: flex; align-items: center; padding: 0 5px; margin-top: 2px; }
+.plant-prob-bar.sub { height: 11px; margin-top: 1px; background: rgba(255,255,255,0.03); }
+.prob-fill { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, #16a34a, #4ade80); border-radius: 4px; }
+.prob-fill.sub { background: #38bdf8; opacity: 0.5; }
+.prob-val { position: relative; z-index: 1; font-size: 7.5px; font-weight: 700; color: #000; }
+.prob-val.sub { font-size: 7px; color: #fff; }
+.plant-rx-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 7px; color: #4ade80; background: rgba(74,222,128,0.12); border: 1px solid rgba(74,222,128,0.25); padding: 2px 6px; border-radius: 4px; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* 11. Global Weather Proxy Preview (Satellite Doppler Radar Station) */
 .preview-weather-box {
-  background: radial-gradient(circle at 50% 50%, #0a1f2e 0%, #050b12 100%);
+  background: radial-gradient(circle at 50% 50%, #082136 0%, #030a12 100%);
   height: 100%;
-  padding: 16px 18px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+.weather-topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(56,189,248,0.25);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8.5px;
 }
-.weather-icon-anim { font-size: 36px; color: #38bdf8; animation: weatherBob 4s ease-in-out infinite; }
+.weather-topbar strong { color: #38bdf8; display: inline-flex; align-items: center; gap: 4px; }
+.weather-mid-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 4px 0;
+}
+.weather-radar-visual {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.weather-icon-anim {
+  font-size: 32px;
+  color: #38bdf8;
+  animation: weatherBob 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(56,189,248,0.4));
+}
 @keyframes weatherBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-.weather-telemetry { display: flex; flex-direction: column; gap: 3px; font-family: 'Space Mono', monospace; font-size: 8.5px; text-align: right; }
-.cache-hit-pill { background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.3); color: #38bdf8; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 8px; margin-top: 2px; }
+.weather-main-temp {
+  display: flex;
+  flex-direction: column;
+}
+.weather-temp-num { font-size: 20px; font-weight: 700; color: #fff; line-height: 1; font-family: 'DM Sans', sans-serif; }
+.weather-temp-cond { font-size: 8.5px; color: #7dd3fc; font-family: 'Space Mono', monospace; }
+.weather-telemetry-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--muted);
+  text-align: right;
+}
+.weather-bottombar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--muted);
+}
+.cache-hit-pill { background: rgba(56,189,248,0.18); border: 1px solid rgba(56,189,248,0.4); color: #38bdf8; padding: 1px 6px; border-radius: 4px; font-weight: 700; font-size: 8px; }
 
 /* ==========================================================================
    PUBLICATION / WHITE PAPER VISUAL THUMBNAIL HEADERS

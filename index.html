@@ -195,10 +195,35 @@
     <div class="project-card reveal">
       <div class="preview-box">
         <div class="preview-cloner-box">
-          <div class="cloner-steps">
-            <div class="cloner-step-item"><i class="fab fa-youtube"></i><span>1. Reverse-Engineer Channel Style</span><span class="cloner-badge free">Extracted</span></div>
-            <div class="cloner-step-item"><i class="fas fa-layer-group"></i><span>2. 3-Tier Multi-LLM Cascade</span><span class="cloner-badge heal">Failover OK</span></div>
-            <div class="cloner-step-item"><i class="fas fa-video"></i><span>3. Compile Script, Voice &amp; MP4</span><span class="cloner-badge free">$0 Stack</span></div>
+          <div class="cloner-topbar">
+            <span><i class="fab fa-youtube" style="color:#ff2d6b"></i> Ingest: youtube.com/@veritasium</span>
+            <span class="cloner-cadence">148 WPM · Hooked</span>
+          </div>
+          <div class="cloner-pipeline">
+            <div class="cloner-pipe-step s1">
+              <div class="pipe-icon"><i class="fas fa-bolt"></i></div>
+              <div class="pipe-info">
+                <strong>1. Multi-LLM Cascade</strong>
+                <span>Groq (429) ➔ Gemini Flash (200 OK)</span>
+              </div>
+              <span class="pipe-badge ok">Failover OK</span>
+            </div>
+            <div class="cloner-pipe-step s2">
+              <div class="pipe-icon"><i class="fas fa-shield-halved"></i></div>
+              <div class="pipe-info">
+                <strong>2. Self-Healing JSON Schema</strong>
+                <span>Repaired token AST in 18ms</span>
+              </div>
+              <span class="pipe-badge heal">Healed</span>
+            </div>
+            <div class="cloner-pipe-step s3">
+              <div class="pipe-icon"><i class="fas fa-film"></i></div>
+              <div class="pipe-info">
+                <strong>3. Neural Audio &amp; MoviePy Stack</strong>
+                <span>Edge-TTS ➔ 1080p MP4</span>
+              </div>
+              <span class="pipe-badge cost">$0 / Free Tier</span>
+            </div>
           </div>
         </div>
       </div>
@@ -216,11 +241,27 @@
     <div class="project-card reveal">
       <div class="preview-box">
         <div class="preview-iks-box">
-          <div class="iks-node center"><i class="fas fa-om"></i> IKS Vector Hub</div>
-          <div class="iks-node n1"><i class="fas fa-book-open"></i> Rigveda 1.164.46</div>
-          <div class="iks-node n2"><i class="fas fa-project-diagram"></i> Neo4j Graph</div>
-          <div class="iks-node n3"><i class="fas fa-language"></i> Sanskrit NLP</div>
-          <div class="iks-node n4"><i class="fas fa-network-wired"></i> LangGraph RAG</div>
+          <div class="iks-bg-img"></div>
+          <div class="iks-overlay"></div>
+          <div class="iks-content-hud">
+            <div class="iks-topbar">
+              <span class="iks-query-pill"><i class="fas fa-search"></i> "अग्निमीळे पुरोहितं..." (Rigveda 1.1.1)</span>
+              <span class="iks-sim-score">0.942 Cosine</span>
+            </div>
+            <div class="iks-mid-hud">
+              <div class="iks-star-map-tag">
+                <strong>Knowledge Star Map</strong>
+                <span>1,500 / 14,205 Nodes</span>
+              </div>
+              <div class="iks-rishi-pill">
+                <i class="fas fa-sun" style="color:#ffd700"></i> <strong>Bhaskara</strong> · Siddhanta-Siromani (Calculus)
+              </div>
+            </div>
+            <div class="iks-bottombar">
+              <span><i class="fas fa-brain"></i> Sanskrit-MiniLM · LightRAG</span>
+              <span style="color:#ffd700">Vedic GraphRAG</span>
+            </div>
+          </div>
         </div>
       </div>
       <div class="project-body">
@@ -238,16 +279,22 @@
     <div class="project-card reveal" style="transition-delay:0.1s">
       <div class="preview-box">
         <div class="preview-vaep-box">
-          <div class="vaep-sequence">
-            <div class="vaep-action"><strong>a₁: Pass</strong>(62.4, 45.1)</div>
-            <i class="fas fa-arrow-right" style="color:var(--accent);font-size:10px"></i>
-            <div class="vaep-action"><strong>a₂: Dribble</strong>(82.0, 38.5)</div>
-            <i class="fas fa-arrow-right" style="color:var(--accent);font-size:10px"></i>
-            <div class="vaep-action" style="border-color:#4ade80"><strong>a₃: Shot</strong>(94.2, 36.8)</div>
-          </div>
-          <div class="vaep-delta">
-            <span>V(a) = ΔP(scores) − ΔP(concedes)</span>
-            <strong style="color:#4ade80">+0.184 VAEP</strong>
+          <div class="vaep-bg-img"></div>
+          <div class="vaep-overlay"></div>
+          <div class="vaep-content-hud">
+            <div class="vaep-hud-header">
+              <span class="vaep-match-tag"><i class="fas fa-futbol"></i> Bengaluru vs Chennaiyin (11')</span>
+              <span class="vaep-badge-high">+0.742 Net VAEP</span>
+            </div>
+            <div class="vaep-timeline-strip">
+              <div class="vaep-action-chip"><strong>9m24s</strong> Pass · Udanta (+0.024)</div>
+              <div class="vaep-action-chip"><strong>10m19s</strong> Corner · Roshan (+0.088)</div>
+              <div class="vaep-action-chip goal"><strong>11m35s</strong> ⚽ Goal · Basafa (+0.785)</div>
+            </div>
+            <div class="vaep-formula-bar">
+              <span><i class="fas fa-calculator"></i> V(a) = ΔP(scores) − ΔP(concedes)</span>
+              <span style="color:#00ff88;font-weight:700">StatsBomb Live</span>
+            </div>
           </div>
         </div>
       </div>
@@ -294,18 +341,29 @@
     <div class="project-card reveal" style="transition-delay:0.3s">
       <div class="preview-box">
         <div class="preview-matcher-box">
-          <div class="matcher-score-row">
-            <div>
-              <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase">SBERT Cosine Match</div>
-              <div class="score">91.4%</div>
-            </div>
-            <i class="fas fa-dna" style="font-size:26px;color:#818cf8;opacity:0.7"></i>
+          <div class="matcher-topbar">
+            <strong><i class="fas fa-dna"></i> SBERT all-MiniLM-L6-v2</strong>
+            <span style="color:#4ade80">91.4% Cosine Match</span>
           </div>
-          <div class="matcher-tags-row">
-            <span class="matcher-chip match">LangGraph 98%</span>
-            <span class="matcher-chip match">PyTorch 94%</span>
-            <span class="matcher-chip match">Indic NLP 91%</span>
-            <span class="matcher-chip miss">Missing: Rust</span>
+          <div class="matcher-mid-hud">
+            <div class="matcher-radar-scope">
+              <div class="radar-sweep-beam"></div>
+              <div class="matcher-score-center">91.4%</div>
+            </div>
+            <div class="matcher-tags-col">
+              <div class="matcher-tags-row">
+                <span class="matcher-chip match">✔ LangGraph 98%</span>
+                <span class="matcher-chip match">✔ PyTorch 94%</span>
+              </div>
+              <div class="matcher-tags-row">
+                <span class="matcher-chip match">✔ Indic NLP 91%</span>
+                <span class="matcher-chip miss">✖ Gap: Rust</span>
+              </div>
+            </div>
+          </div>
+          <div class="matcher-bottombar">
+            <span><i class="fas fa-sliders"></i> Dense + TF-IDF Reranker</span>
+            <span style="color:#a5b4fc">Tier-1 Skill Match</span>
           </div>
         </div>
       </div>
@@ -324,15 +382,27 @@
     <div class="project-card reveal" style="transition-delay:0.4s">
       <div class="preview-box">
         <div class="preview-plant-box">
-          <div class="leaf-viewfinder">
-            <i class="fas fa-leaf"></i>
-            <div class="scan-line"></div>
+          <div class="plant-scanner-frame">
+            <div class="corner-hud tl"></div><div class="corner-hud tr"></div>
+            <div class="corner-hud bl"></div><div class="corner-hud br"></div>
+            <div class="laser-beam"></div>
+            <i class="fas fa-leaf plant-leaf-icon"></i>
+            <div class="lesion-box l1"></div>
+            <div class="lesion-box l2"></div>
+            <span class="lesion-tag">Lesion [88.4%]</span>
           </div>
-          <div class="plant-diag-info">
-            <span style="color:var(--muted)">Target: Solanum lycopersicum</span>
-            <strong>Tomato Early Blight</strong>
-            <span style="color:#4ade80">● 98.4% Confidence</span>
-            <span style="font-size:8px;color:var(--muted)">PlantVillage 38-Class CNN</span>
+          <div class="plant-diag-hud">
+            <div class="plant-target-host">Solanum lycopersicum (Tomato)</div>
+            <div class="plant-diag-name">Tomato Early Blight</div>
+            <div class="plant-prob-bar">
+              <div class="prob-fill" style="width:98.4%"></div>
+              <span class="prob-val">98.4% Alternaria solani</span>
+            </div>
+            <div class="plant-prob-bar sub">
+              <div class="prob-fill sub" style="width:1.2%"></div>
+              <span class="prob-val sub">1.2% Late Blight</span>
+            </div>
+            <div class="plant-rx-pill"><i class="fas fa-prescription-bottle-medical"></i> Rx: Copper Oxychloride 50 WP (2.5g/L)</div>
           </div>
         </div>
       </div>
@@ -351,11 +421,27 @@
     <div class="project-card reveal" style="transition-delay:0.5s">
       <div class="preview-box">
         <div class="preview-weather-box">
-          <i class="fas fa-cloud-bolt-sun weather-icon-anim"></i>
-          <div class="weather-telemetry">
-            <div style="font-size:18px;font-weight:700;color:#fff">28°C · Sunny</div>
-            <span style="color:var(--muted)">Proxy Latency: 14ms</span>
-            <div class="cache-hit-pill"><i class="fas fa-bolt"></i> Cache HIT · 12ms</div>
+          <div class="weather-topbar">
+            <strong><i class="fas fa-satellite"></i> OpenWeatherProxy API</strong>
+            <span style="color:#38bdf8">Global Doppler</span>
+          </div>
+          <div class="weather-mid-hud">
+            <div class="weather-radar-visual">
+              <i class="fas fa-cloud-bolt-sun weather-icon-anim"></i>
+              <div class="weather-main-temp">
+                <span class="weather-temp-num">28°C</span>
+                <span class="weather-temp-cond">Partly Cloudy</span>
+              </div>
+            </div>
+            <div class="weather-telemetry-col">
+              <span>💨 14 km/h NW</span>
+              <span>💧 62% Humidity</span>
+              <span>🧭 1013 hPa</span>
+            </div>
+          </div>
+          <div class="weather-bottombar">
+            <span class="cache-hit-pill"><i class="fas fa-bolt"></i> Cache HIT · 12ms</span>
+            <span style="font-size:7.5px">97% Bandwidth Saved</span>
           </div>
         </div>
       </div>
