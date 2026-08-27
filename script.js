@@ -22,12 +22,20 @@ const obs = new IntersectionObserver((entries) => {
     entries.forEach(e => {
         if (e.isIntersecting) {
             e.target.classList.add('visible');
+            obs.unobserve(e.target);
         }
     });
-}, { threshold: 0.1 });
+}, { threshold: 0.02, rootMargin: "0px 0px 300px 0px" });
 
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    // Safe fallback: reveal all if user or crawler doesn't trigger scroll
+    window.addEventListener('load', () => {
+        document.querySelectorAll('.reveal').forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 2) el.classList.add('visible');
+        });
+    });
 
     // Contact Form Submission to Google Sheet
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyMcs6xKTii0cE87NLLcQh6ciwVF3b6n2AuYxpFPO5aqrqY_VH49J6yLVP7Mlbnu-0k/exec'; 
@@ -73,8 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const html = document.documentElement;
     const themeIcon = themeToggle.querySelector('i');
 
-    // Load saved theme or use system preference
-    const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    // Load saved theme or default to dark
+    const savedTheme = localStorage.getItem('theme') || 'dark';
     
     const applyTheme = (theme) => {
         html.setAttribute('data-theme', theme);

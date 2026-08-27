@@ -399,7 +399,7 @@
 
 /* 2. Civic Map Preview (India Aaspaas) */
 .preview-map-box {
-  background: radial-gradient(circle at 50% 50%, #0d1e1c 0%, #060b10 100%);
+  background: #0d1e1c;
   position: relative;
   height: 100%;
   overflow: hidden;
@@ -407,30 +407,47 @@
   align-items: center;
   justify-content: center;
 }
-.map-grid-lines {
+.map-bg-img {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(rgba(0,229,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.06) 1px, transparent 1px);
-  background-size: 30px 30px;
+  background: url('images/india_aaspaas_map.png') center 42%/cover no-repeat;
+  filter: brightness(0.68) contrast(1.15) saturate(1.1);
+  transform: scale(1.02);
+  transition: transform 0.6s ease;
 }
-.radar-sweep {
+.project-card:hover .map-bg-img {
+  transform: scale(1.08);
+}
+.map-overlay-vignette {
   position: absolute;
-  width: 260px;
-  height: 260px;
-  border-radius: 50%;
-  border: 1px dashed rgba(0,229,255,0.25);
-  animation: radarSpin 6s linear infinite;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(6,7,13,0.1) 0%, rgba(6,7,13,0.75) 100%);
+  pointer-events: none;
 }
-@keyframes radarSpin {
-  0% { transform: scale(0.6) rotate(0deg); opacity: 0.8; }
-  50% { transform: scale(1.1) rotate(180deg); opacity: 0.3; }
-  100% { transform: scale(0.6) rotate(360deg); opacity: 0.8; }
+.map-topbar {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(6, 9, 18, 0.88);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(8px);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8.5px;
+  color: var(--muted);
+  z-index: 3;
 }
+.map-topbar strong { color: #fff; display: inline-flex; align-items: center; gap: 4px; }
 .map-pin {
   position: absolute;
-  background: rgba(14, 21, 38, 0.85);
+  background: rgba(14, 21, 38, 0.92);
   border: 1px solid var(--accent);
-  padding: 4px 8px;
+  padding: 4px 9px;
   border-radius: 14px;
   font-family: 'Space Mono', monospace;
   font-size: 9px;
@@ -439,36 +456,37 @@
   align-items: center;
   gap: 5px;
   backdrop-filter: blur(8px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-  animation: pinFloat 4s ease-in-out infinite;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.7);
+  z-index: 2;
+  transition: transform 0.3s;
 }
-.map-pin.p1 { top: 22px; left: 24px; animation-delay: 0s; }
-.map-pin.p2 { bottom: 24px; right: 20px; animation-delay: 2s; border-color: #4ade80; }
-.map-pin-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-.map-pin.p2 .map-pin-dot { background: #4ade80; }
-@keyframes pinFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-}
-.ssr-card-badge {
+.map-pin.sec62 { top: 46px; left: 30%; border-color: #ff5f56; animation: pinFloat1 4s ease-in-out infinite; }
+.map-pin.sec59 { bottom: 36px; left: 14%; border-color: #a855f7; animation: pinFloat2 4s ease-in-out infinite; }
+.map-pin.mamura { bottom: 42px; right: 6%; border-color: #38bdf8; animation: pinFloat3 4s ease-in-out infinite; }
+.map-pin-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+.map-pin.sec62 .map-pin-dot { background: #ff5f56; box-shadow: 0 0 8px #ff5f56; }
+.map-pin.sec59 .map-pin-dot { background: #a855f7; box-shadow: 0 0 8px #a855f7; }
+.map-pin.mamura .map-pin-dot { background: #38bdf8; box-shadow: 0 0 8px #38bdf8; }
+
+@keyframes pinFloat1 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes pinFloat2 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes pinFloat3 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+
+.map-live-badge {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(6, 9, 18, 0.92);
-  border: 1px solid rgba(0,229,255,0.3);
-  padding: 8px 14px;
-  border-radius: 8px;
-  text-align: center;
-  font-size: 10px;
+  bottom: 8px;
+  right: 10px;
+  background: rgba(6, 9, 18, 0.9);
+  border: 1px solid rgba(74,222,128,0.3);
+  padding: 3px 8px;
+  border-radius: 4px;
   font-family: 'Space Mono', monospace;
-  color: var(--accent);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-  animation: ssrPulse 5s ease-in-out infinite;
-}
-@keyframes ssrPulse {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); }
-  50% { transform: translate(-50%, -50%) scale(1.04); border-color: #4ade80; color: #4ade80; }
+  font-size: 8px;
+  color: #4ade80;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 /* 3. Multi-Agent Pipeline Preview (Podcast Shorts Factory) */
