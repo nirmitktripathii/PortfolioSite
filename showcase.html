@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nirmit K. Tripathii | AI Engineering & Architecture Lab</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @keyframes pulseGlow { 0%, 100% { opacity: 0.8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.03); } }
+    @keyframes sweepLaser { 0%, 100% { top: 6%; opacity: 0.9; } 50% { top: 90%; opacity: 0.9; } }
+    @keyframes radarSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes orbitFloat { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-4px); } }
+    @keyframes signalPulse { 0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.6); } 70% { box-shadow: 0 0 0 10px rgba(74, 222, 128, 0); } 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); } }
+    .animate-pulse-glow { animation: pulseGlow 3s infinite ease-in-out; }
+    .animate-laser { animation: sweepLaser 2.8s infinite ease-in-out; }
+    .animate-radar { animation: radarSpin 4s linear infinite; }
+    .animate-orbit { animation: orbitFloat 4s infinite ease-in-out; }
+    .animate-signal { animation: signalPulse 2s infinite; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+    .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-transparent text-[var(--foreground)] antialiased p-2 sm:p-4">
+  <div class="max-w-6xl mx-auto bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] rounded-2xl shadow-2xl overflow-hidden backdrop-blur-md">
+    
+    <!-- ================= TOP HERO & EXECUTIVE SUMMARY BAR ================= -->
+    <div class="p-4 sm:p-6 border-b border-[var(--border)] bg-gradient-to-r from-[var(--content)] via-[var(--card)] to-[var(--background)]">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        
+        <!-- Identity & Tagline -->
+        <div class="flex items-start sm:items-center gap-3.5">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-600 to-amber-500 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-indigo-500/20 flex-shrink-0">
+            ⚡
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-[var(--foreground)]">
+                Nirmit K. Tripathii
+              </h1>
+              <span class="px-2.5 py-0.5 text-[11px] mono font-bold bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 rounded-full">
+                AI / ML Systems Engineer
+              </span>
+              <span class="px-2 py-0.5 text-[10px] mono bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 rounded-full flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Available for Hire / Contract
+              </span>
+            </div>
+            <p class="text-xs sm:text-sm text-[var(--muted-foreground)] mt-0.5 max-w-2xl">
+              End-to-end full-stack AI competence: Fine-tuning &amp; QLoRA &rarr; Multi-Agent Orchestration (MCP) &rarr; Zero-Cost Resilient Production MLOps.
+            </p>
+          </div>
+        </div>
+
+        <!-- Executive Metrics Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mono">
+          <div class="p-2 rounded-lg bg-[var(--background)]/80 border border-[var(--border)] text-center">
+            <div class="text-xs text-[var(--muted-foreground)] uppercase">Projects Shipped</div>
+            <div class="text-base font-extrabold text-cyan-400">13+ Live</div>
+          </div>
+          <div class="p-2 rounded-lg bg-[var(--background)]/80 border border-[var(--border)] text-center">
+            <div class="text-xs text-[var(--muted-foreground)] uppercase">Languages</div>
+            <div class="text-base font-extrabold text-amber-400">22 Indic</div>
+          </div>
+          <div class="p-2 rounded-lg bg-[var(--background)]/80 border border-[var(--border)] text-center">
+            <div class="text-xs text-[var(--muted-foreground)] uppercase">Cloud Cost</div>
+            <div class="text-base font-extrabold text-emerald-400">$0 &ndash; $3/mo</div>
+          </div>
+          <div class="p-2 rounded-lg bg-[var(--background)]/80 border border-[var(--border)] text-center">
+            <div class="text-xs text-[var(--muted-foreground)] uppercase">Fastest Recovery</div>
+            <div class="text-base font-extrabold text-purple-400">18ms AST</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= EXECUTIVE PITCH & COMPETENCY SELECTOR ================= -->
+    <div class="px-4 py-3 bg-[var(--background)]/90 border-b border-[var(--border)] flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)] mono">Showcase Track:</span>
+        <div class="flex flex-wrap gap-1.5 mono">
+          <button onclick="setTrack('all')" id="btn-track-all" class="track-btn px-2.5 py-1 rounded-md font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+            All Systems (11)
+          </button>
+          <button onclick="setTrack('agentic')" id="btn-track-agentic" class="track-btn px-2.5 py-1 rounded-md text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)] border border-transparent">
+            🤖 Multi-Agent &amp; MCP
+          </button>
+          <button onclick="setTrack('speech')" id="btn-track-speech" class="track-btn px-2.5 py-1 rounded-md text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)] border border-transparent">
+            🎙️ Speech &amp; Indic NLP
+          </button>
+          <button onclick="setTrack('sports')" id="btn-track-sports" class="track-btn px-2.5 py-1 rounded-md text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)] border border-transparent">
+            ⚽ Sports AI &amp; Vision
+          </button>
+          <button onclick="setTrack('civic')" id="btn-track-civic" class="track-btn px-2.5 py-1 rounded-md text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)] border border-transparent">
+            📍 Civic Tech &amp; Fullstack
+          </button>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 mono text-xs">
+        <a href="https://huggingface.co/nirmitk" target="_blank" class="text-amber-400 hover:text-amber-300 flex items-center gap-1 font-bold">
+          <span>🤗 Live HF Spaces Hub &rarr;</span>
+        </a>
+        <a href="images/Nirmit_Tripathii_Resume_2026.pdf" download class="text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-bold">
+          <span>📄 Download CV &rarr;</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- ================= HORIZONTAL PROJECT NAV TABS ================= -->
+    <div class="p-2.5 border-b border-[var(--border)] bg-[var(--card)] overflow-x-auto flex gap-2 scrollbar-none text-xs mono">
+      <button onclick="selectProject('dubbing')" id="tab-dubbing" class="proj-tab px-3 py-2 rounded-xl font-bold flex items-center gap-2 transition-all bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-sm flex-shrink-0">
+        <span>🎙️</span> Indic AI Dubbing
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+      </button>
+      <button onclick="selectProject('email')" id="tab-email" class="proj-tab px-3 py-2 rounded-xl font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--background)] transition-all flex items-center gap-2 flex-shrink-0">
+        <span>🤖</span> Email Orchestrator MCP
+      </button>
+      <button onclick="selectProject('aaspaas')" id="tab-aaspaas" class="proj-tab px-3 py-2 rounded-xl font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--background)] transition-all flex items-center gap-2 flex-shrink-0">
+        <span>📍</span> India आसपास (Civic)
+      </button>
+      <button onclick="selectProject('podcast')" id="tab-podcast" class="proj-tab px-3 py-2 rounded-xl font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--background)] transition-all flex items-center gap-2 flex-shrink-0">
+        <span>🏭</span> Podcast Shorts 10-Agent
+      </button>
+      <button onclick="selectProject('cloner')" id="tab-cloner" class="proj-tab px-3 py-2 rounded-xl font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--background)] transition-all flex items-center gap-2 flex-shrink-0">
+        <span>🎬</span> AI Video Style Cloner
+      </button>
+      <button onclick="selectProject('iks')" id="tab-iks" class="proj-tab px-3 py-2 rounded-xl font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--background)] transition-all flex items-center gap-2 flex-shrink-0">
+        <span>🔱</span> IKS Oracle Gyanstrot
+      </button>
+      <button onclick="selectProject('vaep')" id="tab-vaep" class="proj-tab px-3 py-2 rounded-xl font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--background)] transition-all flex items-center gap-2 flex-shrink-0">
+        <span>⚽</span> VAEP Football Valuation
+      </button>
+      <button onclick="selectProject('xg')" id="tab-xg" class="proj-tab px-3 py-2 rounded-xl font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--background)] transition-all flex items-center gap-2 flex-shrink-0">
+        <span>🎯</span> Shot Quality xG Model
+      </button>
+      <button onclick="selectProject('resume')" id="tab-resume" class="proj-tab px-3 py-2 rounded-xl font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--background)] transition-all flex items-center gap-2 flex-shrink-0">
+        <span>📄</span> SBERT Resume Matcher
+      </button>
+      <button onclick="selectProject('plant')" id="tab-plant" class="proj-tab px-3 py-2 rounded-xl font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--background)] transition-all flex items-center gap-2 flex-shrink-0">
+        <span>🌿</span> Plant Disease Agro-Vision
+      </button>
+      <button onclick="selectProject('weather')" id="tab-weather" class="proj-tab px-3 py-2 rounded-xl font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--background)] transition-all flex items-center gap-2 flex-shrink-0">
+        <span>🛰️</span> Weather Proxy API
+      </button>
+    </div>
+
+    <!-- ================= MAIN INTERACTIVE WORKSPACE ================= -->
+    <div class="p-4 sm:p-6 space-y-6">
+
+      <!-- ================= 1. INDIC AI DUBBING ================= -->
+      <div id="view-dubbing" class="project-view space-y-5">
+        <!-- Top Context Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-[var(--background)] p-4 rounded-xl border border-[var(--border)]">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 text-[10px] mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded">Flagship Project 1</span>
+              <h2 class="text-base sm:text-lg font-bold text-[var(--foreground)]">Indic AI Dubbing Platform: Isochrony &amp; Voice Cloning</h2>
+            </div>
+            <p class="text-xs text-[var(--muted-foreground)] mt-1">
+              Phoneme-duration constrained translation across 11 Indic languages cutting syllable expansion by 79% for natural cinematic lip-sync.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 mono text-xs flex-shrink-0">
+            <a href="article-dubbing-isochrony.html" class="px-3 py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--content)] border border-[var(--border)] text-emerald-400 font-bold transition-all">
+              📖 5,000-Word Build Log
+            </a>
+            <a href="https://github.com/nirmitktripathii/dubbing_app" target="_blank" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-black font-bold transition-all">
+              🐙 GitHub Repo
+            </a>
+          </div>
+        </div>
+
+        <!-- Interactive Isochrony Waveform Simulator -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <div class="lg:col-span-8 bg-zinc-950 border border-emerald-500/30 rounded-xl p-5 flex flex-col justify-between space-y-4">
+            <div class="flex items-center justify-between mono text-xs border-b border-white/10 pb-2.5">
+              <span class="text-emerald-300 font-bold">🎙️ Syllable Duration &amp; Lip-Sync Comparator</span>
+              <span class="text-zinc-400">Audio Clip: <code class="text-sky-300">science_explainer_clip01.mp4</code></span>
+            </div>
+
+            <!-- Waveform comparison tracks -->
+            <div class="space-y-4 my-2 mono text-xs">
+              <!-- Track 1: English Reference -->
+              <div>
+                <div class="flex justify-between text-[11px] text-zinc-300 mb-1.5">
+                  <span class="font-bold flex items-center gap-1.5"><i class="text-sky-400">●</i> 1. English Source Reference (EN)</span>
+                  <span class="text-sky-400 font-bold">6.50s (Target Budget)</span>
+                </div>
+                <div class="w-full h-4 rounded-lg bg-zinc-900 border border-white/5 overflow-hidden relative">
+                  <div class="h-full bg-sky-500 rounded-lg flex items-center px-3 text-[10px] text-black font-bold" style="width: 65%;">
+                    "Electrons orbit around the atomic nucleus at quantum states."
+                  </div>
+                </div>
+              </div>
+
+              <!-- Track 2: Raw MT -->
+              <div>
+                <div class="flex justify-between text-[11px] text-rose-400 mb-1.5">
+                  <span class="font-bold flex items-center gap-1.5"><i>●</i> 2. Raw Hindi MT (Unconstrained Llama/NLLB)</span>
+                  <span class="font-bold">11.80s (+81% Overrun · Lip-Flap Broken)</span>
+                </div>
+                <div class="w-full h-4 rounded-lg bg-zinc-900 border border-white/5 overflow-hidden relative">
+                  <div class="h-full bg-rose-500/80 rounded-lg flex items-center px-3 text-[10px] text-black font-bold" style="width: 100%;">
+                    "इलेक्ट्रॉन परमाणु नाभिक के चारों ओर क्वांटम अवस्थाओं में चक्कर लगाते हैं..." (Over-expanded)
+                  </div>
+                </div>
+              </div>
+
+              <!-- Track 3: Fine-Tuned Isochrony QLoRA -->
+              <div>
+                <div class="flex justify-between text-[11px] text-emerald-400 mb-1.5">
+                  <span class="font-bold flex items-center gap-1.5"><i class="text-emerald-400">●</i> 3. v3 QLoRA Isochrony Constrained (Nirmit's Model)</span>
+                  <span class="font-bold text-emerald-300">6.48s (&Delta; = -0.02s · Perfect Lip-Sync)</span>
+                </div>
+                <div class="w-full h-4 rounded-lg bg-zinc-900 border border-emerald-500/40 overflow-hidden relative shadow-[0_0_15px_rgba(74,222,128,0.2)]">
+                  <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-lg flex items-center px-3 text-[10px] text-black font-bold" style="width: 64.8%;">
+                    "इलेक्ट्रॉन क्वांटम स्तरों पर नाभिक की परिक्रमा करते हैं।" (Cadence Matched)
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Architecture Flow Pill -->
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 text-center text-[11px] mono pt-2 border-t border-white/10">
+              <div class="p-2 rounded bg-zinc-900 border border-white/5">
+                <div class="text-zinc-500 text-[10px]">1. Audio Demux</div>
+                <strong class="text-zinc-300">Demucs v4</strong>
+              </div>
+              <div class="p-2 rounded bg-zinc-900 border border-white/5">
+                <div class="text-zinc-500 text-[10px]">2. Syllable Estimator</div>
+                <strong class="text-zinc-300">Indic Syllabifier</strong>
+              </div>
+              <div class="p-2 rounded bg-zinc-900 border border-emerald-500/30">
+                <div class="text-emerald-400 text-[10px]">3. Budget QLoRA</div>
+                <strong class="text-emerald-300">Llama-3.1-8B-v3</strong>
+              </div>
+              <div class="p-2 rounded bg-zinc-900 border border-white/5">
+                <div class="text-zinc-500 text-[10px]">4. Voice Clone</div>
+                <strong class="text-zinc-300">IndicF5-TTS</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Key Quantitative Benchmarks & Interview Talking Points -->
+          <div class="lg:col-span-4 space-y-4">
+            <div class="bg-[var(--background)] p-4 rounded-xl border border-[var(--border)] space-y-3">
+              <div class="text-[10px] mono uppercase font-bold text-emerald-400">Empirical Benchmark Metrics</div>
+              <div class="space-y-2.5 text-xs mono">
+                <div class="flex justify-between p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <span class="text-[var(--muted-foreground)]">Length Error (Rel):</span>
+                  <span class="font-bold text-emerald-400">0.495 &rarr; 0.103 (-79%)</span>
+                </div>
+                <div class="flex justify-between p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <span class="text-[var(--muted-foreground)]">Translation Quality (chrF++):</span>
+                  <span class="font-bold text-emerald-400">22.0 &rarr; 30.1 (+36.8%)</span>
+                </div>
+                <div class="flex justify-between p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <span class="text-[var(--muted-foreground)]">Voice Cloning Latency:</span>
+                  <span class="font-bold text-cyan-400">1.2x Real-Time</span>
+                </div>
+                <div class="flex justify-between p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <span class="text-[var(--muted-foreground)]">Supported Indic Languages:</span>
+                  <span class="font-bold text-amber-400">11 Languages</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-emerald-950/20 p-4 rounded-xl border border-emerald-500/30 text-xs">
+              <strong class="text-emerald-300 block mb-1">💡 Recruiter / Interview Pitch:</strong>
+              <p class="text-[var(--muted-foreground)] leading-relaxed">
+                "Demonstrates deep fine-tuning proficiency (QLoRA with custom loss penalties on sequence length), multimodal audio stem separation, and production-grade TTS synthesis without resorting to paid third-party voice APIs."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 2. EMAIL ORCHESTRATOR MCP ================= -->
+      <div id="view-email" class="project-view hidden space-y-5">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-[var(--background)] p-4 rounded-xl border border-[var(--border)]">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 text-[10px] mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 rounded">Flagship Project 2</span>
+              <h2 class="text-base sm:text-lg font-bold text-[var(--foreground)]">Email Orchestrator: Multi-Account MCP Super-Server</h2>
+            </div>
+            <p class="text-xs text-[var(--muted-foreground)] mt-1">
+              Unified Model Context Protocol (MCP) server aggregating Gmail, Zoho, Yahoo, and Outlook into a self-healing multi-agent reasoning hub.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 mono text-xs flex-shrink-0">
+            <a href="article-email-orchestrator.html" class="px-3 py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--content)] border border-[var(--border)] text-cyan-400 font-bold transition-all">
+              📖 Architecture Log
+            </a>
+            <a href="article-email-resilience.html" class="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-black font-bold transition-all">
+              🛡️ Resilience Log
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <!-- Terminal & Fault Injection Simulator -->
+          <div class="lg:col-span-8 bg-zinc-950 border border-cyan-500/30 rounded-xl p-5 flex flex-col justify-between space-y-4">
+            <div class="flex items-center justify-between mono text-xs border-b border-white/10 pb-2.5">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+                <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
+                <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+                <span class="text-cyan-300 font-bold ml-2">mcp-email-daemon · stdio JSON-RPC</span>
+              </div>
+              <span class="text-zinc-400">17 Unified MCP Tools Active</span>
+            </div>
+
+            <!-- Terminal output body -->
+            <div id="email-term-body" class="bg-black/80 rounded-lg p-4 mono text-xs text-zinc-300 space-y-2 border border-white/5 min-h-[160px]">
+              <div class="text-zinc-500">> mcp_orchestrator.initialize(providers=["gmail", "zoho", "yahoo", "outlook"])</div>
+              <div class="text-emerald-400">&#10004; [Gmail] Connected via OAuth2 (200 OK &middot; 3 unread priority threads)</div>
+              <div class="text-emerald-400">&#10004; [Zoho] Connected via IMAP SSL (200 OK &middot; 1 invoice pending)</div>
+              <div class="text-emerald-400">&#10004; [Outlook] Child process PID: 4182 listening on stdio</div>
+              <div class="text-cyan-300">> mcp_orchestrator.fanout_query("action_required: true, deadline: '< 24h'")</div>
+              <div class="text-zinc-400">&#8627; Fanout completed across 4 accounts in 38ms &middot; 2 actionable items identified.</div>
+            </div>
+
+            <!-- Interactive Fault Injection Buttons -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/10 text-xs mono">
+              <div class="flex items-center gap-2">
+                <button onclick="injectMcpFault('sigterm')" class="px-3 py-1.5 rounded bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 font-bold transition-all">
+                  ⚡ Inject Outlook SIGTERM Crash
+                </button>
+                <button onclick="injectMcpFault('ratelimit')" class="px-3 py-1.5 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 font-bold transition-all">
+                  ⚠️ Trigger Gmail 429 Throttle
+                </button>
+              </div>
+              <span class="text-emerald-400 font-bold">49 Unit Tests Passing (100%)</span>
+            </div>
+          </div>
+
+          <!-- Architectural Capabilities & Interview Talking Points -->
+          <div class="lg:col-span-4 space-y-4">
+            <div class="bg-[var(--background)] p-4 rounded-xl border border-[var(--border)] space-y-3 text-xs mono">
+              <div class="text-[10px] uppercase font-bold text-cyan-400">Architectural Innovations</div>
+              <div class="space-y-2">
+                <div class="p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <strong class="text-cyan-300 block">MCP Server-as-Client Recursion</strong>
+                  <span class="text-[var(--muted-foreground)]">Acts as unified super-server while multiplexing to child MCP clients.</span>
+                </div>
+                <div class="p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <strong class="text-purple-300 block">Self-Healing Child Watchdog</strong>
+                  <span class="text-[var(--muted-foreground)]">Detects dead sockets and spawns fresh sub-daemons in &lt; 45ms.</span>
+                </div>
+                <div class="p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <strong class="text-emerald-300 block">Thinking Budget Optimizer</strong>
+                  <span class="text-[var(--muted-foreground)]">Calculates token ROI per email draft to trim inference cost 68%.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-cyan-950/20 p-4 rounded-xl border border-cyan-500/30 text-xs">
+              <strong class="text-cyan-300 block mb-1">💡 Recruiter / Interview Pitch:</strong>
+              <p class="text-[var(--muted-foreground)] leading-relaxed">
+                "Demonstrates cutting-edge mastery of Anthropic's Model Context Protocol (MCP), asynchronous Node/TypeScript process supervision, and building resilient AI agent infrastructure."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 3. INDIA AASPAAS ================= -->
+      <div id="view-aaspaas" class="project-view hidden space-y-5">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-[var(--background)] p-4 rounded-xl border border-[var(--border)]">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 text-[10px] mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 rounded">Civic Full-Stack AI</span>
+              <h2 class="text-base sm:text-lg font-bold text-[var(--foreground)]">India आसपास: Hyperlocal Civic Issue Reporting</h2>
+            </div>
+            <p class="text-xs text-[var(--muted-foreground)] mt-1">
+              Production platform for crowd-mapping potholes, garbage, and drainage across Noida &amp; NCR with automated image verification.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 mono text-xs flex-shrink-0">
+            <a href="https://india-aaspaas.onrender.com/" target="_blank" class="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold transition-all shadow-md shadow-rose-500/20">
+              🚀 Open Live Production App &rarr;
+            </a>
+            <a href="whitepaper-india-aaspaas.html" class="px-3 py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--content)] border border-[var(--border)] text-rose-400 font-bold transition-all">
+              📄 White Paper
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <!-- OpenStreetMap Interactive Grid Simulator -->
+          <div class="lg:col-span-8 bg-zinc-950 border border-rose-500/30 rounded-xl p-5 flex flex-col justify-between space-y-4">
+            <div class="flex items-center justify-between mono text-xs border-b border-white/10 pb-2.5">
+              <span class="text-rose-300 font-bold">📍 Noida Sector 62 / Sector 59 / Mamura Live Pin Hub</span>
+              <span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40">OpenStreetMap API</span>
+            </div>
+
+            <!-- Simulated Map Canvas with pins -->
+            <div class="relative w-full h-52 bg-zinc-900 border border-zinc-700/60 rounded-xl overflow-hidden flex items-center justify-center">
+              <div class="absolute inset-0 bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:16px_16px] opacity-40"></div>
+              
+              <!-- Sector 62 Pin -->
+              <button onclick="inspectCivicPin('pothole')" class="absolute top-8 left-12 p-2 rounded-lg bg-black/90 border border-rose-500 text-[10px] mono text-rose-300 flex items-center gap-2 hover:scale-105 transition-all shadow-lg animate-signal">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                <strong>🔴 Open pothole &middot; Sector 62</strong>
+              </button>
+
+              <!-- Sector 59 Pin -->
+              <button onclick="inspectCivicPin('garbage')" class="absolute bottom-8 right-16 p-2 rounded-lg bg-black/90 border border-purple-500 text-[10px] mono text-purple-300 flex items-center gap-2 hover:scale-105 transition-all shadow-lg animate-signal" style="animation-delay: 0.8s;">
+                <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                <strong>🟣 Garbage disposal &middot; Sector 59</strong>
+              </button>
+
+              <!-- Mamura Pin -->
+              <button onclick="inspectCivicPin('drainage')" class="absolute top-12 right-20 p-2 rounded-lg bg-black/90 border border-sky-500 text-[10px] mono text-sky-300 flex items-center gap-2 hover:scale-105 transition-all shadow-lg animate-signal" style="animation-delay: 1.6s;">
+                <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span>
+                <strong>🔵 Drainage overflow &middot; Mamura</strong>
+              </button>
+            </div>
+
+            <div id="civic-pin-inspector" class="p-3 bg-black/70 rounded-lg border border-white/10 text-xs mono flex items-center justify-between text-zinc-300">
+              <span>Selected Incident: <strong class="text-rose-400">Open pothole near Fortis Hospital (Sector 62)</strong></span>
+              <span class="text-emerald-400 font-bold">&#10004; Verified by Community (Score: 12)</span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 space-y-4">
+            <div class="bg-[var(--background)] p-4 rounded-xl border border-[var(--border)] space-y-3 text-xs mono">
+              <div class="text-[10px] uppercase font-bold text-rose-400">Production Infrastructure</div>
+              <div class="space-y-2">
+                <div class="flex justify-between p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <span class="text-[var(--muted-foreground)]">Hosting &amp; DB:</span>
+                  <span class="font-bold text-rose-400">Render + PostgreSQL</span>
+                </div>
+                <div class="flex justify-between p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <span class="text-[var(--muted-foreground)]">Total Monthly Spend:</span>
+                  <span class="font-bold text-emerald-400">~$3 / month</span>
+                </div>
+                <div class="flex justify-between p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <span class="text-[var(--muted-foreground)]">Social Card Generation:</span>
+                  <span class="font-bold text-cyan-400">Server-Side Canvas SSR</span>
+                </div>
+                <div class="flex justify-between p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <span class="text-[var(--muted-foreground)]">Trust Model:</span>
+                  <span class="font-bold text-amber-400">2-Tier Verification</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-rose-950/20 p-4 rounded-xl border border-rose-500/30 text-xs">
+              <strong class="text-rose-300 block mb-1">💡 Recruiter / Interview Pitch:</strong>
+              <p class="text-[var(--muted-foreground)] leading-relaxed">
+                "Demonstrates building real-world civic impact technology with hardened uploads, server-side caching, spatial GIS coordinates, and extreme cloud-cost frugality."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 4. PODCAST SHORTS FACTORY ================= -->
+      <div id="view-podcast" class="project-view hidden space-y-5">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-[var(--background)] p-4 rounded-xl border border-[var(--border)]">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 text-[10px] mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded">Autonomous Multi-Agent</span>
+              <h2 class="text-base sm:text-lg font-bold text-[var(--foreground)]">Podcast Shorts Factory: 10-Agent Autonomous Studio</h2>
+            </div>
+            <p class="text-xs text-[var(--muted-foreground)] mt-1">
+              Autonomous swarm of 10 specialized LLM agents turning long-form podcasts into viral short clips with automatic QA gates.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 mono text-xs flex-shrink-0">
+            <a href="whitepaper-podcast-factory.html" class="px-3 py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--content)] border border-[var(--border)] text-amber-400 font-bold transition-all">
+              📄 White Paper
+            </a>
+            <a href="https://github.com/nirmitktripathii/podcast-shorts-factory" target="_blank" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-bold transition-all">
+              🐙 GitHub Repo
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <div class="lg:col-span-8 bg-zinc-950 border border-amber-500/30 rounded-xl p-5 flex flex-col justify-between space-y-4">
+            <div class="flex items-center justify-between mono text-xs border-b border-white/10 pb-2">
+              <span class="text-amber-300 font-bold">🤖 10-Agent Sequential &amp; Parallel State Machine</span>
+              <span class="text-emerald-400 font-bold">MIT Licensed &middot; $0 Cloud Stack</span>
+            </div>
+
+            <!-- Agent Flow Nodes Diagram -->
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 mono text-xs">
+              <div class="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-center">
+                <div class="text-[10px] text-zinc-500">Agent 01</div>
+                <strong class="text-zinc-200">📥 Ingest</strong>
+              </div>
+              <div class="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-center">
+                <div class="text-[10px] text-zinc-500">Agent 02</div>
+                <strong class="text-zinc-200">📝 Whisper STT</strong>
+              </div>
+              <div class="p-2.5 rounded-lg bg-zinc-900 border border-amber-500/50 text-center bg-amber-950/20">
+                <div class="text-[10px] text-amber-400">Agent 03</div>
+                <strong class="text-amber-300">🔥 Hook Detector</strong>
+              </div>
+              <div class="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-center">
+                <div class="text-[10px] text-zinc-500">Agent 04</div>
+                <strong class="text-zinc-200">⏱️ Boundaries</strong>
+              </div>
+              <div class="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-center">
+                <div class="text-[10px] text-zinc-500">Agent 05</div>
+                <strong class="text-zinc-200">✂️ Auto-Crop</strong>
+              </div>
+              <div class="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-center">
+                <div class="text-[10px] text-zinc-500">Agent 06</div>
+                <strong class="text-zinc-200">💬 Subtitler</strong>
+              </div>
+              <div class="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-center">
+                <div class="text-[10px] text-zinc-500">Agent 07</div>
+                <strong class="text-zinc-200">🖼️ B-Roll Gen</strong>
+              </div>
+              <div class="p-2.5 rounded-lg bg-zinc-900 border border-emerald-500/50 text-center bg-emerald-950/20">
+                <div class="text-[10px] text-emerald-400">Agent 08</div>
+                <strong class="text-emerald-300">🛡️ QA Gatekeeper</strong>
+              </div>
+              <div class="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-center">
+                <div class="text-[10px] text-zinc-500">Agent 09</div>
+                <strong class="text-zinc-200">📅 Scheduler</strong>
+              </div>
+              <div class="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-center">
+                <div class="text-[10px] text-zinc-500">Agent 10</div>
+                <strong class="text-zinc-200">📊 Analytics Loop</strong>
+              </div>
+            </div>
+
+            <!-- Provider Cascade Telemetry -->
+            <div class="p-3 rounded-lg bg-black/60 border border-white/10 mono text-xs flex items-center justify-between text-zinc-300">
+              <span>Failover Route: <strong class="text-amber-400">Groq (Llama-3.3-70B) &rarr; Gemini 1.5 Flash &rarr; Local Ollama</strong></span>
+              <span class="text-emerald-400 font-bold">&#10004; Unattended Execution</span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 space-y-4">
+            <div class="bg-[var(--background)] p-4 rounded-xl border border-[var(--border)] space-y-3 text-xs mono">
+              <div class="text-[10px] uppercase font-bold text-amber-400">Agentic Orchestration Edge</div>
+              <div class="space-y-2">
+                <div class="p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <strong class="text-amber-300 block">Automated QA Gate</strong>
+                  <span class="text-[var(--muted-foreground)]">Rejects clips with poor hook scores or audio misalignment before publishing.</span>
+                </div>
+                <div class="p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <strong class="text-emerald-300 block">Learning Feedback Loop</strong>
+                  <span class="text-[var(--muted-foreground)]">Feeds YouTube retention telemetry back into the prompt optimizer.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-amber-950/20 p-4 rounded-xl border border-amber-500/30 text-xs">
+              <strong class="text-amber-300 block mb-1">💡 Recruiter / Interview Pitch:</strong>
+              <p class="text-[var(--muted-foreground)] leading-relaxed">
+                "Demonstrates multi-agent swarm design, deterministic QA feedback gates, and building full media automation systems that run self-reliantly for $0."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 5. AI VIDEO STYLE CLONER ================= -->
+      <div id="view-cloner" class="project-view hidden space-y-5">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-[var(--background)] p-4 rounded-xl border border-[var(--border)]">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 text-[10px] mono font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded">Resilient Generative AI</span>
+              <h2 class="text-base sm:text-lg font-bold text-[var(--foreground)]">AI Video Style Cloner: $0 Self-Healing Media Pipeline</h2>
+            </div>
+            <p class="text-xs text-[var(--muted-foreground)] mt-1">
+              Reverse-engineers creator pacing, script structure, and visual hooks with a 3-tier LLM failover and AST schema repair.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 mono text-xs flex-shrink-0">
+            <a href="whitepaper-video-cloner.html" class="px-3 py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--content)] border border-[var(--border)] text-purple-400 font-bold transition-all">
+              📄 Architecture White Paper
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <div class="lg:col-span-8 bg-zinc-950 border border-purple-500/30 rounded-xl p-5 flex flex-col justify-between space-y-4">
+            <div class="flex items-center justify-between mono text-xs border-b border-white/10 pb-2">
+              <span class="text-purple-300 font-bold">🎬 Pacing Ingest: youtube.com/@veritasium (148 WPM &middot; Hooked)</span>
+              <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/40">Self-Healing AST in 18ms</span>
+            </div>
+
+            <!-- Pipeline stages with simulated test button -->
+            <div class="space-y-3 mono text-xs">
+              <div id="cloner-run-step1" class="p-3 rounded-lg bg-zinc-900 border border-sky-500/40 flex items-center justify-between transition-all">
+                <div>
+                  <strong class="text-sky-300 block">Tier 1: Multi-LLM Cascade</strong>
+                  <span class="text-zinc-400">Groq (Llama-3.3-70B) &rarr; Gemini 1.5 Flash (200 OK)</span>
+                </div>
+                <span class="px-2 py-0.5 rounded bg-sky-400/20 text-sky-300 font-bold">Active Route</span>
+              </div>
+
+              <div id="cloner-run-step2" class="p-3 rounded-lg bg-zinc-900 border border-purple-500/40 flex items-center justify-between transition-all">
+                <div>
+                  <strong class="text-purple-300 block">Tier 2: JSON AST Structural Validator</strong>
+                  <span class="text-zinc-400">Repaired unescaped quote in script payload in 18ms without re-querying API</span>
+                </div>
+                <span class="px-2 py-0.5 rounded bg-purple-400/20 text-purple-300 font-bold">Auto-Repaired</span>
+              </div>
+
+              <div id="cloner-run-step3" class="p-3 rounded-lg bg-zinc-900 border border-emerald-500/40 flex items-center justify-between transition-all">
+                <div>
+                  <strong class="text-emerald-300 block">Tier 3: MoviePy Compositor &amp; Edge-TTS</strong>
+                  <span class="text-zinc-400">Rendered 1080p MP4 with animated subtitles &amp; procedural visual backdrops</span>
+                </div>
+                <span class="px-2 py-0.5 rounded bg-emerald-400/20 text-emerald-300 font-bold">$0 Cost Stack</span>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t border-white/10 text-xs mono">
+              <button onclick="triggerClonerSimulation()" class="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold shadow-md shadow-purple-500/20 transition-all">
+                ⚡ Simulate API Outage &amp; Self-Healing
+              </button>
+              <span class="text-emerald-400 font-bold">&#10004; Zero-Network Procedural Fallback</span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 space-y-4">
+            <div class="bg-[var(--background)] p-4 rounded-xl border border-[var(--border)] space-y-3 text-xs mono">
+              <div class="text-[10px] uppercase font-bold text-purple-400">Production Resilience Features</div>
+              <div class="space-y-2">
+                <div class="p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <strong class="text-purple-300 block">Zero-Cost Infrastructure</strong>
+                  <span class="text-[var(--muted-foreground)]">Combines generous free tiers with local headless render pipelines.</span>
+                </div>
+                <div class="p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <strong class="text-sky-300 block">AST Self-Healing</strong>
+                  <span class="text-[var(--muted-foreground)]">Fixes malformed LLM JSON stream anomalies locally in 18ms.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-purple-950/20 p-4 rounded-xl border border-purple-500/30 text-xs">
+              <strong class="text-purple-300 block mb-1">💡 Recruiter / Interview Pitch:</strong>
+              <p class="text-[var(--muted-foreground)] leading-relaxed">
+                "Demonstrates building unbreakable AI applications that never crash on end-users even when upstream LLM providers return 429 or 500 errors."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 6. IKS ORACLE GYANSTROT ================= -->
+      <div id="view-iks" class="project-view hidden space-y-5">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-[var(--background)] p-4 rounded-xl border border-[var(--border)]">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 text-[10px] mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded">Multilingual GraphRAG</span>
+              <h2 class="text-base sm:text-lg font-bold text-[var(--foreground)]">IKS Oracle &mdash; Gyanstrot: Indian Knowledge Systems</h2>
+            </div>
+            <p class="text-xs text-[var(--muted-foreground)] mt-1">
+              Semantic retrieval engine and 3D Knowledge Star Map navigating 14,205 Sanskrit sutras, Upanishads, and mathematics treatises.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 mono text-xs flex-shrink-0">
+            <a href="https://huggingface.co/spaces/nirmitk/gyanstrot-iks" target="_blank" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-bold transition-all shadow-md shadow-amber-500/20">
+              🚀 Open Live Space &rarr;
+            </a>
+            <a href="https://huggingface.co/spaces/nirmitk/gyanstrot-iks/tree/main" target="_blank" class="px-3 py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--content)] border border-[var(--border)] text-amber-400 font-bold transition-all">
+              🐙 Space Repo
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <div class="lg:col-span-8 bg-zinc-950 border border-amber-500/30 rounded-xl p-5 flex flex-col justify-between space-y-4">
+            <div class="flex items-center justify-between mono text-xs border-b border-white/10 pb-2">
+              <span class="text-amber-300 font-bold">🔱 Multilingual Vector Graph: LightRAG + Sanskrit-MiniLM</span>
+              <span class="text-amber-400 font-bold">14,205 Nodes Indexed</span>
+            </div>
+
+            <!-- Interactive Knowledge Query Simulator -->
+            <div class="space-y-3 mono text-xs">
+              <div class="p-3 bg-black/80 rounded-lg border border-amber-500/30 space-y-2">
+                <div class="flex justify-between items-center text-[11px]">
+                  <span class="text-amber-200">Sanskrit Semantic Query:</span>
+                  <span id="iks-lab-score" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">0.968 Cosine Similarity</span>
+                </div>
+                <div id="iks-lab-query" class="text-sm font-bold text-amber-300">"बिम्बार्धस्य फलं..." (Siddhanta-Siromani, Grahaganita)</div>
+                <p id="iks-lab-meaning" class="text-zinc-400 text-[11px]">
+                  &rarr; Explores instantaneous motion (<span class="text-amber-200 mono">Tatkalika Gati</span>) and early differential calculus for planetary positions.
+                </p>
+              </div>
+
+              <!-- Quick Query Presets -->
+              <div class="flex flex-wrap gap-2 text-[11px]">
+                <button onclick="setIksLabQuery('calculus')" class="px-2.5 py-1 rounded bg-zinc-900 border border-amber-500/40 text-amber-200 hover:bg-amber-500/20 transition-all">
+                  📜 Bhaskara II (Differential Calculus)
+                </button>
+                <button onclick="setIksLabQuery('zero')" class="px-2.5 py-1 rounded bg-zinc-900 border border-amber-500/40 text-amber-200 hover:bg-amber-500/20 transition-all">
+                  ☀️ Aryabhata (Zero &amp; Sine Tables)
+                </button>
+                <button onclick="setIksLabQuery('rigveda')" class="px-2.5 py-1 rounded bg-zinc-900 border border-cyan-500/40 text-cyan-200 hover:bg-cyan-500/20 transition-all">
+                  📖 Rigveda (Cosmological Hymns)
+                </button>
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded-lg bg-black/60 border border-white/10 mono text-xs flex items-center justify-between text-zinc-300">
+              <span>Architecture: <strong class="text-amber-400">Gemini 1.5 Pro + LightRAG Multi-Hop Graph Reranker</strong></span>
+              <span class="text-amber-400 font-bold">Satyamev Jayate</span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 space-y-4">
+            <div class="bg-[var(--background)] p-4 rounded-xl border border-[var(--border)] space-y-3 text-xs mono">
+              <div class="text-[10px] uppercase font-bold text-amber-400">Research &amp; NLP Competencies</div>
+              <div class="space-y-2">
+                <div class="p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <strong class="text-amber-300 block">Sanskrit Morphological Parsing</strong>
+                  <span class="text-[var(--muted-foreground)]">Handles complex compound sandhi splitting and ancient grammatical declensions.</span>
+                </div>
+                <div class="p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <strong class="text-cyan-300 block">3-Hop Knowledge Star Map</strong>
+                  <span class="text-[var(--muted-foreground)]">Discovers cross-disciplinary links between Vedic mathematics and Ayurvedic medicine.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-amber-950/20 p-4 rounded-xl border border-amber-500/30 text-xs">
+              <strong class="text-amber-300 block mb-1">💡 Recruiter / Interview Pitch:</strong>
+              <p class="text-[var(--muted-foreground)] leading-relaxed">
+                "Demonstrates building specialized domain GraphRAG systems in non-English low-resource languages with complex graph retrieval schemas."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 7. VAEP FOOTBALL ================= -->
+      <div id="view-vaep" class="project-view hidden space-y-5">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-[var(--background)] p-4 rounded-xl border border-[var(--border)]">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 text-[10px] mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded">Sports AI &amp; Spatial Modeling</span>
+              <h2 class="text-base sm:text-lg font-bold text-[var(--foreground)]">VAEP Football Action Valuation (StatsBomb &amp; Wyscout)</h2>
+            </div>
+            <p class="text-xs text-[var(--muted-foreground)] mt-1">
+              Probabilistic framework valuing all on-ball events across Top 5 European Leagues, World Cup 2018, and Indian Super League (ISL).
+            </p>
+          </div>
+          <div class="flex items-center gap-2 mono text-xs flex-shrink-0">
+            <a href="https://huggingface.co/spaces/nirmitk/vaep-football-analyzer" target="_blank" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-black font-bold transition-all shadow-md shadow-emerald-500/20">
+              🚀 Open Live Space &rarr;
+            </a>
+            <a href="https://github.com/nirmitktripathii/VAEP-Football-Analyzer" target="_blank" class="px-3 py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--content)] border border-[var(--border)] text-emerald-400 font-bold transition-all">
+              🐙 GitHub Repo
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <div class="lg:col-span-8 bg-zinc-950 border border-emerald-500/30 rounded-xl p-5 flex flex-col justify-between space-y-4">
+            <div class="flex items-center justify-between mono text-xs border-b border-white/10 pb-2">
+              <span class="text-emerald-300 font-bold">⚽ Match: Bengaluru FC vs Chennaiyin FC (Goal 11')</span>
+              <span class="text-emerald-400 font-bold">+0.742 Total VAEP Value</span>
+            </div>
+
+            <!-- Football Pitch Interactive Coordinate Tracker -->
+            <div class="relative w-full h-48 bg-emerald-950/40 border border-emerald-600/30 rounded-xl overflow-hidden flex items-center justify-center">
+              <svg class="absolute inset-0 w-full h-full opacity-40" viewBox="0 0 300 160">
+                <rect x="5" y="5" width="290" height="150" fill="none" stroke="#4ade80" stroke-width="1.5"/>
+                <line x1="150" y1="5" x2="150" y2="155" stroke="#4ade80" stroke-width="1.5"/>
+                <circle cx="150" cy="80" r="28" fill="none" stroke="#4ade80" stroke-width="1.5"/>
+                <rect x="5" y="35" width="45" height="90" fill="none" stroke="#4ade80" stroke-width="1.5"/>
+                <rect x="250" y="35" width="45" height="90" fill="none" stroke="#4ade80" stroke-width="1.5"/>
+              </svg>
+
+              <!-- Dynamic Action Trajectory -->
+              <svg class="absolute inset-0 w-full h-full z-10" viewBox="0 0 300 160">
+                <path d="M 60,120 Q 140,50 220,75 T 285,80" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="4,4"/>
+                <circle cx="60" cy="120" r="5" fill="#38bdf8"/>
+                <circle cx="220" cy="75" r="5" fill="#facc15"/>
+                <circle cx="285" cy="80" r="6" fill="#4ade80" class="animate-pulse"/>
+              </svg>
+
+              <div class="absolute left-10 bottom-6 px-2 py-0.5 rounded bg-black/90 border border-sky-400 text-[9px] mono text-sky-300 z-20">
+                1. Pass (Udanta)
+              </div>
+              <div class="absolute right-20 top-12 px-2 py-0.5 rounded bg-black/90 border border-amber-400 text-[9px] mono text-amber-300 z-20">
+                2. Cross (Roshan)
+              </div>
+              <div class="absolute right-4 top-16 px-2 py-0.5 rounded bg-black/90 border border-emerald-400 text-[9px] mono text-emerald-300 font-bold z-20">
+                ⚽ Goal (Basafa)
+              </div>
+            </div>
+
+            <!-- Mathematical Formula Breakdown -->
+            <div class="p-3 rounded-lg bg-black/80 border border-white/10 mono text-xs flex items-center justify-between text-zinc-300">
+              <span>Formula: <code class="text-emerald-400">V(a) = &Delta;P(scores) &minus; &Delta;P(concedes)</code></span>
+              <span class="text-emerald-400 font-bold">Offensive: +0.754 | Defensive: -0.012</span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 space-y-4">
+            <div class="bg-[var(--background)] p-4 rounded-xl border border-[var(--border)] space-y-3 text-xs mono">
+              <div class="text-[10px] uppercase font-bold text-emerald-400">Data Engineering Features</div>
+              <div class="space-y-2">
+                <div class="p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <strong class="text-emerald-300 block">StatsBomb 360 Freeze-Frames</strong>
+                  <span class="text-[var(--muted-foreground)]">Calculates defensive density around ball carrier at moment of pass.</span>
+                </div>
+                <div class="p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <strong class="text-cyan-300 block">LLM Tactical Reporter</strong>
+                  <span class="text-[var(--muted-foreground)]">Synthesizes coach-level tactical summaries with Groq Llama-3.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-emerald-950/20 p-4 rounded-xl border border-emerald-500/30 text-xs">
+              <strong class="text-emerald-300 block mb-1">💡 Recruiter / Interview Pitch:</strong>
+              <p class="text-[var(--muted-foreground)] leading-relaxed">
+                "Demonstrates mastery of complex spatial analytics, SPADL event streams, Markov-based Expected Threat (xT), and modern sports analytics architectures."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 8. xG SHOT QUALITY MODEL ================= -->
+      <div id="view-xg" class="project-view hidden space-y-5">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-[var(--background)] p-4 rounded-xl border border-[var(--border)]">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 text-[10px] mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 rounded">Supervised ML</span>
+              <h2 class="text-base sm:text-lg font-bold text-[var(--foreground)]">Shot Quality Expected Goals (xG) Simulator</h2>
+            </div>
+            <p class="text-xs text-[var(--muted-foreground)] mt-1">
+              XGBoost classifier predicting probability of goal conversion using Euclidean distance, Law of Cosines angles, and foot type.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 mono text-xs flex-shrink-0">
+            <a href="shot_predict.html" target="_blank" class="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-black font-bold transition-all shadow-md shadow-cyan-500/20">
+              🎯 Try Live Simulator &rarr;
+            </a>
+            <a href="https://github.com/nirmitktripathii/Modeling-Shot-Quality-Using-Expected-Goals-Metric" target="_blank" class="px-3 py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--content)] border border-[var(--border)] text-cyan-400 font-bold transition-all">
+              🐙 GitHub Repo
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <!-- Interactive Shot Pitch Simulator -->
+          <div class="lg:col-span-8 bg-zinc-950 border border-cyan-500/30 rounded-xl p-5 flex flex-col justify-between space-y-4">
+            <div class="flex items-center justify-between mono text-xs border-b border-white/10 pb-2">
+              <span class="text-cyan-300 font-bold">🎯 Click Anywhere on Attacking Half to Calculate xG</span>
+              <span id="xg-live-gauge" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">0.785 xG &middot; High Prob</span>
+            </div>
+
+            <!-- Pitch Half Clickable Area -->
+            <div id="xg-pitch-interactive" onclick="calculateInteractiveXG(event)" class="relative w-full h-48 bg-emerald-950/40 border border-emerald-500/40 rounded-xl cursor-crosshair overflow-hidden flex items-center justify-center">
+              <svg class="absolute inset-0 w-full h-full opacity-40 pointer-events-none" viewBox="0 0 200 120">
+                <rect x="5" y="5" width="190" height="110" fill="none" stroke="#4ade80" stroke-width="1.5"/>
+                <rect x="150" y="25" width="45" height="70" fill="none" stroke="#4ade80" stroke-width="1.5"/>
+                <rect x="180" y="42" width="15" height="36" fill="none" stroke="#4ade80" stroke-width="1.5"/>
+                <circle cx="150" cy="60" r="16" fill="none" stroke="#4ade80" stroke-width="1.5"/>
+              </svg>
+
+              <!-- Dynamic Shot Location Dot & Trajectory -->
+              <div id="xg-shot-pin" class="absolute right-20 top-20 w-4 h-4 rounded-full bg-cyan-400 border-2 border-white shadow-[0_0_12px_#38bdf8] pointer-events-none"></div>
+              <div id="xg-goal-line" class="absolute right-2 top-24 w-16 h-0.5 bg-gradient-to-r from-transparent to-cyan-400 pointer-events-none"></div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 text-center mono text-xs">
+              <div class="p-2 rounded bg-black/60 border border-white/5">
+                <span class="text-zinc-500 text-[10px]">Distance to Goal:</span>
+                <div id="xg-dist-val" class="text-cyan-300 font-bold">11.5 meters</div>
+              </div>
+              <div class="p-2 rounded bg-black/60 border border-white/5">
+                <span class="text-zinc-500 text-[10px]">Law of Cosines Angle:</span>
+                <div id="xg-angle-val" class="text-amber-300 font-bold">36.8&deg;</div>
+              </div>
+              <div class="p-2 rounded bg-black/60 border border-white/5">
+                <span class="text-zinc-500 text-[10px]">Shot Conversion xG:</span>
+                <div id="xg-prob-val" class="text-emerald-400 font-bold text-sm">0.785</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 space-y-4">
+            <div class="bg-[var(--background)] p-4 rounded-xl border border-[var(--border)] space-y-3 text-xs mono">
+              <div class="text-[10px] uppercase font-bold text-cyan-400">Mathematical Formulations</div>
+              <div class="space-y-2">
+                <div class="p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <strong class="text-cyan-300 block">Law of Cosines Geometry</strong>
+                  <span class="text-[var(--muted-foreground)]">Calculates exact visual angle between posts (100,46) and (100,54).</span>
+                </div>
+                <div class="p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <strong class="text-emerald-300 block">Body Part Weighting</strong>
+                  <span class="text-[var(--muted-foreground)]">Strong Foot (2.0x), Weak Foot (0.6x), Headers (0.4x).</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-cyan-950/20 p-4 rounded-xl border border-cyan-500/30 text-xs">
+              <strong class="text-cyan-300 block mb-1">💡 Recruiter / Interview Pitch:</strong>
+              <p class="text-[var(--muted-foreground)] leading-relaxed">
+                "Demonstrates classic machine learning feature engineering, spatial trigonometry, and deploying low-latency model inference endpoints."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 9. SBERT RESUME MATCHER ================= -->
+      <div id="view-resume" class="project-view hidden space-y-5">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-[var(--background)] p-4 rounded-xl border border-[var(--border)]">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 text-[10px] mono font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded">Dense NLP Embeddings</span>
+              <h2 class="text-base sm:text-lg font-bold text-[var(--foreground)]">AI Resume Matcher: SBERT Semantic Radar &amp; Skill Gap</h2>
+            </div>
+            <p class="text-xs text-[var(--muted-foreground)] mt-1">
+              Sentence-Transformers (all-MiniLM-L6-v2) vector matching + O(n) precompiled regex skill extraction.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 mono text-xs flex-shrink-0">
+            <a href="matcher.html" target="_blank" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all shadow-md shadow-indigo-500/20">
+              🔬 Open Full Matcher &rarr;
+            </a>
+            <a href="https://github.com/nirmitktripathii/PortfolioSite" target="_blank" class="px-3 py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--content)] border border-[var(--border)] text-indigo-400 font-bold transition-all">
+              🐙 GitHub Repo
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <div class="lg:col-span-8 bg-zinc-950 border border-indigo-500/30 rounded-xl p-5 flex flex-col justify-between space-y-4">
+            <div class="flex items-center justify-between mono text-xs border-b border-white/10 pb-2">
+              <span class="text-indigo-300 font-bold">🎯 SBERT Cosine Similarity &amp; Gap Matrix</span>
+              <span class="text-emerald-400 font-bold">91.4% Cosine Match</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+              <div class="sm:col-span-5 flex justify-center">
+                <div class="relative w-36 h-36 rounded-full border border-indigo-500/40 bg-indigo-950/20 flex items-center justify-center">
+                  <div class="absolute inset-0 rounded-full border-r-2 border-indigo-400 animate-radar"></div>
+                  <div class="relative z-10 text-center mono">
+                    <div class="text-2xl font-extrabold text-indigo-200">91.4%</div>
+                    <div class="text-[9px] text-indigo-400 uppercase">Cosine Match</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="sm:col-span-7 space-y-2 mono text-xs">
+                <div class="text-[10px] text-zinc-400 uppercase">Skill Gap Analysis (O(n) Regex):</div>
+                <div class="flex flex-wrap gap-1.5">
+                  <span class="px-2 py-1 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[11px]">&#10004; LangGraph (98%)</span>
+                  <span class="px-2 py-1 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[11px]">&#10004; PyTorch (94%)</span>
+                  <span class="px-2 py-1 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[11px]">&#10004; Indic NLP (91%)</span>
+                  <span class="px-2 py-1 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[11px]">&#10004; Docker / MLOps (95%)</span>
+                  <span class="px-2 py-1 rounded bg-rose-500/15 border border-rose-500/30 text-rose-300 text-[11px]">&#10008; Missing: Rust</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded-lg bg-black/60 border border-white/10 mono text-xs flex items-center justify-between text-zinc-300">
+              <span>Optimization: <strong class="text-indigo-300">Pre-loaded Model in Worker RAM + Compiled Regex</strong></span>
+              <span class="text-emerald-400 font-bold">24ms Latency</span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 space-y-4">
+            <div class="bg-[var(--background)] p-4 rounded-xl border border-[var(--border)] space-y-3 text-xs mono">
+              <div class="text-[10px] uppercase font-bold text-indigo-400">Engineering Optimizations</div>
+              <div class="space-y-2">
+                <div class="p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <strong class="text-indigo-300 block">Pre-Warmed SBERT</strong>
+                  <span class="text-[var(--muted-foreground)]">Model stays resident in memory to eliminate 3s cold-start on incoming requests.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-indigo-950/20 p-4 rounded-xl border border-indigo-500/30 text-xs">
+              <strong class="text-indigo-300 block mb-1">💡 Recruiter / Interview Pitch:</strong>
+              <p class="text-[var(--muted-foreground)] leading-relaxed">
+                "Demonstrates building high-speed semantic document matchers using state-of-the-art transformer embeddings with memory-optimized inference."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 10. PLANT DISEASE ================= -->
+      <div id="view-plant" class="project-view hidden space-y-5">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-[var(--background)] p-4 rounded-xl border border-[var(--border)]">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 text-[10px] mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded">Computer Vision &amp; DVC</span>
+              <h2 class="text-base sm:text-lg font-bold text-[var(--foreground)]">Plant Disease Classification: Deep Agro-Vision Scanner</h2>
+            </div>
+            <p class="text-xs text-[var(--muted-foreground)] mt-1">
+              CNN vision classifier on PlantVillage dataset with DVC data pipelines and automated treatment prescriptions.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 mono text-xs flex-shrink-0">
+            <a href="plant_disease.html" target="_blank" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-black font-bold transition-all shadow-md shadow-emerald-500/20">
+              🌿 Live Scanner Demo &rarr;
+            </a>
+            <a href="https://github.com/nirmitktripathii/plant_disease_classification" target="_blank" class="px-3 py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--content)] border border-[var(--border)] text-emerald-400 font-bold transition-all">
+              🐙 GitHub Repo
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <div class="lg:col-span-8 bg-zinc-950 border border-emerald-500/30 rounded-xl p-5 flex flex-col justify-between space-y-4">
+            <div class="flex items-center justify-between mono text-xs border-b border-white/10 pb-2">
+              <span class="text-emerald-300 font-bold">🌿 Target: Solanum lycopersicum (Tomato)</span>
+              <span class="text-emerald-400 font-bold">98.4% Confidence</span>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center gap-6">
+              <!-- Laser Viewfinder -->
+              <div class="relative w-36 h-36 border border-emerald-500/40 rounded-xl bg-black/60 flex items-center justify-center overflow-hidden flex-shrink-0">
+                <div class="absolute left-0 right-0 h-0.5 bg-emerald-400 shadow-[0_0_12px_#4ade80] animate-laser z-20"></div>
+                <div class="text-5xl text-emerald-600/80 animate-pulse-glow">🍃</div>
+                <div class="absolute top-6 left-6 w-7 h-6 border-2 border-dashed border-rose-500 bg-rose-500/20 rounded z-10"></div>
+                <div class="absolute bottom-6 right-7 w-6 h-7 border-2 border-dashed border-rose-500 bg-rose-500/20 rounded z-10"></div>
+              </div>
+
+              <!-- Softmax Probability Bars -->
+              <div class="space-y-2.5 flex-1 w-full mono text-xs">
+                <div>
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <strong class="text-emerald-300">Tomato Early Blight (Alternaria solani)</strong>
+                    <span class="text-emerald-400 font-bold">98.4%</span>
+                  </div>
+                  <div class="w-full h-2.5 rounded-full bg-zinc-800 overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full" style="width: 98.4%"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-zinc-400">Late Blight (Phytophthora)</span>
+                    <span class="text-zinc-400">1.2%</span>
+                  </div>
+                  <div class="w-full h-2 rounded-full bg-zinc-800 overflow-hidden">
+                    <div class="h-full bg-sky-500/60 rounded-full" style="width: 1.2%"></div>
+                  </div>
+                </div>
+
+                <div class="p-2.5 rounded bg-emerald-950/30 border border-emerald-500/30 text-[11px] text-emerald-300 flex items-center gap-2">
+                  <span>💊</span>
+                  <strong>Rx: Copper Oxychloride 50 WP (2.5g/L) &middot; 7-day spray cycle</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded-lg bg-black/60 border border-white/10 mono text-xs flex items-center justify-between text-zinc-300">
+              <span>MLOps: <strong class="text-emerald-400">DVC Data Pipelines (dvc repro) + Flask + Docker</strong></span>
+              <span class="text-emerald-400 font-bold">14ms Edge Inference</span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 space-y-4">
+            <div class="bg-[var(--background)] p-4 rounded-xl border border-[var(--border)] space-y-3 text-xs mono">
+              <div class="text-[10px] uppercase font-bold text-emerald-400">MLOps Architecture</div>
+              <div class="space-y-2">
+                <div class="p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <strong class="text-emerald-300 block">DVC Pipeline Reproducibility</strong>
+                  <span class="text-[var(--muted-foreground)]">Tracks dataset versioning, model checkpoints, and hyperparameter metrics.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-emerald-950/20 p-4 rounded-xl border border-emerald-500/30 text-xs">
+              <strong class="text-emerald-300 block mb-1">💡 Recruiter / Interview Pitch:</strong>
+              <p class="text-[var(--muted-foreground)] leading-relaxed">
+                "Demonstrates computer vision classification combined with disciplined MLOps engineering practices using Data Version Control (DVC)."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 11. WEATHER PROXY ================= -->
+      <div id="view-weather" class="project-view hidden space-y-5">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-[var(--background)] p-4 rounded-xl border border-[var(--border)]">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 text-[10px] mono font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30 rounded">Low-Latency API Gateway</span>
+              <h2 class="text-base sm:text-lg font-bold text-[var(--foreground)]">Global Weather Dashboard &amp; Throttled Proxy</h2>
+            </div>
+            <p class="text-xs text-[var(--muted-foreground)] mt-1">
+              In-memory cached API proxy with Flask-Limiter safeguarding third-party quota caps with 12ms responses.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 mono text-xs flex-shrink-0">
+            <a href="weather.html" target="_blank" class="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold transition-all shadow-md shadow-sky-500/20">
+              🌤️ Check Weather Live &rarr;
+            </a>
+            <a href="https://github.com/nirmitktripathii/PortfolioSite" target="_blank" class="px-3 py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--content)] border border-[var(--border)] text-sky-400 font-bold transition-all">
+              🐙 GitHub Repo
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <div class="lg:col-span-8 bg-zinc-950 border border-sky-500/30 rounded-xl p-5 flex flex-col justify-between space-y-4">
+            <div class="flex items-center justify-between mono text-xs border-b border-white/10 pb-2">
+              <span class="text-sky-300 font-bold">🛰️ Live Telemetry: OpenWeatherProxy Gateway</span>
+              <span class="px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/40">Cache HIT &middot; 12ms</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+              <div class="p-4 rounded-xl bg-black/60 border border-sky-500/20 flex items-center gap-4">
+                <div class="text-4xl text-sky-400 animate-orbit">⛅</div>
+                <div>
+                  <div class="text-2xl font-extrabold text-white">28&deg;C</div>
+                  <div class="text-xs text-sky-300 mono">Partly Cloudy &middot; Noida</div>
+                </div>
+              </div>
+
+              <div class="space-y-2 mono text-xs">
+                <div class="flex justify-between p-2 rounded bg-black/60 border border-white/5">
+                  <span class="text-zinc-400">Wind Velocity:</span>
+                  <span class="text-white font-bold">14 km/h NW</span>
+                </div>
+                <div class="flex justify-between p-2 rounded bg-black/60 border border-white/5">
+                  <span class="text-zinc-400">Relative Humidity:</span>
+                  <span class="text-white font-bold">62%</span>
+                </div>
+                <div class="flex justify-between p-2 rounded bg-black/60 border border-white/5">
+                  <span class="text-zinc-400">Barometric Pressure:</span>
+                  <span class="text-white font-bold">1013 hPa</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded-lg bg-black/60 border border-white/10 mono text-xs flex items-center justify-between text-zinc-300">
+              <span>Rate Limits: <strong class="text-sky-400">1000/day &middot; 60/hr &middot; 10/min per IP</strong></span>
+              <span class="text-emerald-400 font-bold">97% Upstream Bandwidth Saved</span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 space-y-4">
+            <div class="bg-[var(--background)] p-4 rounded-xl border border-[var(--border)] space-y-3 text-xs mono">
+              <div class="text-[10px] uppercase font-bold text-sky-400">Gateway Architecture</div>
+              <div class="space-y-2">
+                <div class="p-2 rounded bg-[var(--card)] border border-[var(--border)]">
+                  <strong class="text-sky-300 block">TTL In-Memory Cache</strong>
+                  <span class="text-[var(--muted-foreground)]">10-minute cache window reduces external API bill to zero.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-sky-950/20 p-4 rounded-xl border border-sky-500/30 text-xs">
+              <strong class="text-sky-300 block mb-1">💡 Recruiter / Interview Pitch:</strong>
+              <p class="text-[var(--muted-foreground)] leading-relaxed">
+                "Demonstrates building robust proxy gateways that protect underlying services against denial-of-service and quota exhaustion."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= EXECUTIVE CONTACT & INTERVIEW FOOTER ================= -->
+    <div class="p-4 sm:p-5 bg-[var(--content)]/60 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs mono">
+      <div class="flex items-center gap-2 text-[var(--muted-foreground)]">
+        <span>Ready for senior roles in AI/ML Engineering &amp; LLM Systems.</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <a href="https://www.linkedin.com/in/nirmitk-tripathii-553a92158" target="_blank" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold transition-all">
+          💼 Connect on LinkedIn
+        </a>
+        <a href="mailto:nirmitktripathii@gmail.com" class="px-3 py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] font-bold transition-all">
+          ✉️ Send Email
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= JAVASCRIPT CONTROLLER ================= -->
+  <script>
+    const projectList = ['dubbing', 'email', 'aaspaas', 'podcast', 'cloner', 'iks', 'vaep', 'xg', 'resume', 'plant', 'weather'];
+
+    function selectProject(id) {
+      projectList.forEach(p => {
+        const tab = document.getElementById('tab-' + p);
+        const view = document.getElementById('view-' + p);
+        if (p === id) {
+          tab.className = 'proj-tab px-3 py-2 rounded-xl font-bold flex items-center gap-2 transition-all bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-sm flex-shrink-0';
+          view.classList.remove('hidden');
+        } else {
+          tab.className = 'proj-tab px-3 py-2 rounded-xl font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--background)] transition-all flex items-center gap-2 flex-shrink-0';
+          view.classList.add('hidden');
+        }
+      });
+    }
+
+    function setTrack(category) {
+      document.querySelectorAll('.track-btn').forEach(btn => {
+        btn.className = 'track-btn px-2.5 py-1 rounded-md text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)] border border-transparent';
+      });
+      const activeBtn = document.getElementById('btn-track-' + category);
+      if (activeBtn) {
+        activeBtn.className = 'track-btn px-2.5 py-1 rounded-md font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40';
+      }
+
+      if (category === 'agentic') selectProject('email');
+      else if (category === 'speech') selectProject('dubbing');
+      else if (category === 'sports') selectProject('vaep');
+      else if (category === 'civic') selectProject('aaspaas');
+      else selectProject('dubbing');
+    }
+
+    // Email Fault Injection
+    function injectMcpFault(type) {
+      const term = document.getElementById('email-term-body');
+      if (type === 'sigterm') {
+        term.innerHTML += `<div class="text-rose-400 font-bold">&gt; [ALERT] SIGTERM signal received from Outlook process (PID: 4182 terminated)</div>`;
+        setTimeout(() => {
+          term.innerHTML += `<div class="text-purple-300 font-bold">&gt; [SELF-HEALING] Reconnecting socket daemon &rarr; spawned PID 4190 in 42ms</div>`;
+          term.innerHTML += `<div class="text-emerald-400">&#10004; [Outlook] 200 OK &middot; All 17 tools restored</div>`;
+        }, 600);
+      } else if (type === 'ratelimit') {
+        term.innerHTML += `<div class="text-amber-400 font-bold">&gt; [WARNING] Gmail API returned 429 Too Many Requests</div>`;
+        setTimeout(() => {
+          term.innerHTML += `<div class="text-cyan-300">&gt; [BACKOFF] Exponential jitter backoff active &rarr; cached query served from local AST cache</div>`;
+        }, 500);
+      }
+    }
+
+    // India Aaspaas Pin Inspector
+    function inspectCivicPin(type) {
+      const inspector = document.getElementById('civic-pin-inspector');
+      if (type === 'pothole') {
+        inspector.innerHTML = `<span>Selected Incident: <strong class="text-rose-400">Open pothole near Fortis Hospital (Sector 62)</strong></span><span class="text-emerald-400 font-bold">&#10004; Verified by Community (Score: 12)</span>`;
+      } else if (type === 'garbage') {
+        inspector.innerHTML = `<span>Selected Incident: <strong class="text-purple-400">Garbage accumulation near Metro Station (Sector 59)</strong></span><span class="text-amber-400 font-bold">⚠️ Pending Municipal Review</span>`;
+      } else if (type === 'drainage') {
+        inspector.innerHTML = `<span>Selected Incident: <strong class="text-sky-400">Monsoon drainage overflow (Mamura Chowk)</strong></span><span class="text-emerald-400 font-bold">&#10004; Work Order Assigned</span>`;
+      }
+    }
+
+    // IKS Query Selector
+    function setIksLabQuery(val) {
+      const q = document.getElementById('iks-lab-query');
+      const m = document.getElementById('iks-lab-meaning');
+      const s = document.getElementById('iks-lab-score');
+      if (val === 'calculus') {
+        q.innerText = '"बिम्बार्धस्य फलं..." (Siddhanta-Siromani, Grahaganita)';
+        m.innerHTML = '&rarr; Explores instantaneous motion (<span class="text-amber-200 mono">Tatkalika Gati</span>) and early differential calculus for planetary positions.';
+        s.innerText = '0.968 Cosine Similarity';
+      } else if (val === 'zero') {
+        q.innerText = '"स्थानात् स्थानं दशगुणं स्यात्..." (Aryabhatiya, Ganitapada)';
+        m.innerHTML = '&rarr; Documents decimal place-value arithmetic, zero as a functional digit, and sine chord tables.';
+        s.innerText = '0.954 Cosine Similarity';
+      } else if (val === 'rigveda') {
+        q.innerText = '"नासदासीन्नो सदासीत्तदानीं..." (Rigveda, Nasadiya Sukta 10.129)';
+        m.innerHTML = '&rarr; Foundational cosmological creation hymn on the pre-universe primordial energy matrix.';
+        s.innerText = '0.941 Cosine Similarity';
+      }
+    }
+
+    // xG Interactive Pitch Calculation
+    function calculateInteractiveXG(e) {
+      const rect = document.getElementById('xg-pitch-interactive').getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      // Pin location
+      const pin = document.getElementById('xg-shot-pin');
+      pin.style.left = (clickX - 8) + 'px';
+      pin.style.top = (clickY - 8) + 'px';
+
+      // Normalize coordinates
+      const normX = Math.round((clickX / rect.width) * 100);
+      const normY = Math.round((clickY / rect.height) * 100);
+
+      // Distance to goal (100, 50)
+      const dist = Math.sqrt(Math.pow(100 - normX, 2) + Math.pow(50 - normY, 2));
+      const distMeters = ((dist * 0.45) + 3).toFixed(1);
+
+      // Simulated Angle
+      const angle = Math.max(8, Math.min(85, Math.round(75 - (dist * 0.6)))).toFixed(1);
+
+      // Probability
+      const xg = Math.max(0.02, Math.min(0.92, (1 / (1 + Math.exp(0.08 * (dist - 25)))))).toFixed(3);
+
+      document.getElementById('xg-dist-val').innerText = distMeters + ' meters';
+      document.getElementById('xg-angle-val').innerText = angle + '°';
+      document.getElementById('xg-prob-val').innerText = xg;
+      document.getElementById('xg-live-gauge').innerText = xg + ' xG · ' + (xg > 0.4 ? 'High Prob' : (xg > 0.15 ? 'Medium Prob' : 'Low Prob'));
+    }
+
+    // Video Cloner Simulation
+    function triggerClonerSimulation() {
+      const s1 = document.getElementById('cloner-run-step1');
+      const s2 = document.getElementById('cloner-run-step2');
+      s1.classList.add('bg-rose-950/60', 'border-rose-500');
+      s1.querySelector('span:last-child').innerText = 'Groq 429 RateLimit!';
+      s1.querySelector('span:last-child').className = 'px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-bold';
+
+      setTimeout(() => {
+        s1.classList.remove('bg-rose-950/60', 'border-rose-500');
+        s1.querySelector('span:last-child').innerText = 'Failover 200 OK (Gemini)';
+        s1.querySelector('span:last-child').className = 'px-2 py-0.5 rounded bg-sky-400/20 text-sky-300 font-bold';
+
+        s2.classList.add('bg-purple-600/40');
+        setTimeout(() => s2.classList.remove('bg-purple-600/40'), 800);
+      }, 700);
+    }
+  </script>
+</body>
+</html>
