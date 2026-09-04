@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GitScout · Part 2 — The Moat Is a Pure Function — Nirmit K. Tripathii</title>
+  <meta name="description" content="Part 2 of the GitScout white-paper series: the async FastAPI + Next.js architecture, a natural-key data model, and a pure-function three-layer trust engine — validated by 11 unit tests and a live re-probe that dropped a farm's admitted count from 20 to 0."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/d8eaa222fe.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="read-progress" id="readProgress"></div>
+<nav>
+  <a href="index.html"><img src="images/logo.png" class="logo-img" alt="Logo"/></a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="index.html#writing">Writing</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+  <div class="nav-burger" onclick="location.href='index.html'"><i class="fas fa-home"></i></div>
+</nav>
+
+<div class="article-shell">
+  <a href="index.html#writing" class="article-back"><i class="fas fa-arrow-left"></i> ALL WRITING</a>
+
+  <header class="article-hero">
+    <div class="article-kicker"><i class="fas fa-sitemap"></i> White Paper · GitScout · Part 2 of 3</div>
+    <h1 class="article-title">The Moat Is a Pure Function</h1>
+    <p class="article-standfirst">How "trust is the product" becomes code: an async FastAPI backend, a Next.js frontend, a data model built on a natural bounty key, and a pure-function trust engine that rejects farms and scams before any network call — validated by unit tests and a live re-probe against a real farm.</p>
+    <div class="article-meta">
+      <span class="am"><i class="fas fa-user"></i> Nirmit K. Tripathii</span>
+      <span class="am"><i class="fas fa-calendar"></i> Sep 2026</span>
+      <span class="am"><i class="fas fa-clock"></i> 9 min read</span>
+      <span class="am"><i class="fas fa-layer-group"></i> Series · Part 2</span>
+    </div>
+    <div class="article-chips">
+      <span class="tag">FastAPI</span><span class="tag">SQLAlchemy Async</span><span class="tag">Next.js</span><span class="tag">Security</span><span class="tag">Testing</span>
+    </div>
+    <div class="article-chips" style="margin-top:14px">
+      <a href="https://gitscout.vercel.app" target="_blank" class="btn-demo"><i class="fas fa-external-link-alt"></i> Live App</a>
+      <a href="whitepaper-gitscout-01-ideation.html" class="btn-demo"><i class="fas fa-arrow-left"></i> Part 1</a>
+      <a href="whitepaper-gitscout-03-lifecycle.html" class="btn-demo"><i class="fas fa-arrow-right"></i> Part 3</a>
+    </div>
+  </header>
+
+  <div class="article-layout">
+    <aside class="article-toc">
+      <h4>On this page</h4>
+      <nav id="toc">
+        <a href="#architecture">System architecture</a>
+        <a href="#data">Data model</a>
+        <a href="#trust">The trust engine</a>
+        <a href="#pipeline">Pipeline correctness</a>
+        <a href="#validation">Validation</a>
+        <a href="#security">Security posture</a>
+        <a href="#buys">What it buys</a>
+      </nav>
+    </aside>
+
+    <article class="prose">
+      <p class="lead">Part 1 established the thesis: <em>trust is the product.</em> This paper describes how that thesis is implemented — an async FastAPI backend, a Next.js frontend, an SQLAlchemy data model built around a natural bounty key, and a pure-function trust engine that is the moat. We cover the layered scraping pipeline, the security posture, and how each trust rule is validated by unit tests and by a live re-probe against a real farm.</p>
+
+      <h2 id="architecture"><span class="h2num">01</span>System architecture</h2>
+      <p>GitScout is a two-tier application deployed across Render (backend) and Vercel (frontend):</p>
+      <pre><code>Next.js (App Router, TS)  ──HTTP──▶  FastAPI (async)  ──▶  SQLAlchemy async  ──▶  Postgres (Neon) / SQLite
+        Vercel                          Render                                       (SSL: require)</code></pre>
+      <p><strong>Backend layout</strong> (<code>backend/app/</code>):</p>
+      <ul>
+        <li><code>api/v1/</code> — versioned REST surface: <code>bounties</code>, <code>issues</code>, <code>triage</code>, <code>notifications</code>, <code>billing</code>, <code>health</code>, wired through <code>router.py</code>.</li>
+        <li><code>scrapers/</code> — the ingestion pipeline: <code>github_client</code>, <code>orchestrator</code>, <code>bounty_extractor</code>, <code>classifier</code>, <code>domain_registry</code>, and the trust engine <code>bounty_trust.py</code>.</li>
+        <li><code>triage/</code> — issue intelligence: <code>ast_localizer</code> (free, deterministic AST triage), <code>llm_engine</code>/<code>enhancer</code> (optional LLM enrichment), <code>repro_generator</code>, <code>fix_planner</code>.</li>
+        <li><code>security/</code> — <code>headers.py</code> and <code>rate_limiter.py</code>.</li>
+        <li><code>dispatcher/</code> — multi-channel notification (Discord, email, Telegram, WhatsApp).</li>
+        <li><code>models/</code>, <code>schemas/</code> — ORM models and Pydantic schemas kept deliberately separate.</li>
+      </ul>
+
+      <h2 id="data"><span class="h2num">02</span>Data model</h2>
+      <p>The model is designed around a <strong>natural, collision-proof key</strong> rather than a surrogate id:</p>
+      <pre><code>class Issue(Base):
+    __tablename__ = "issues"
+    # Natural PK: "repo_owner/repo_name#issue_number"
+    id: Mapped[str] = mapped_column(String(255), primary_key=True, index=True)
+    ...
+    has_bounty:        Mapped[bool]            = mapped_column(Boolean, default=False, index=True)
+    bounty_amount_usd: Mapped[Optional[float]] = mapped_column(Float, nullable=True, index=True)
+    bounty_source:     Mapped[Optional[str]]   = mapped_column(String(50),  nullable=True)
+    bounty_url:        Mapped[Optional[str]]   = mapped_column(String(500), nullable=True)
+    hourly_roi:        Mapped[Optional[float]] = mapped_column(Float, nullable=True, index=True)</code></pre>
+      <ul>
+        <li><strong><code>id = "owner/name#number"</code></strong> makes re-ingestion idempotent — the same GitHub issue always maps to the same row, so scrapes can run repeatedly without duplicating data.</li>
+        <li><strong>Bounty fields are nullable and indexed.</strong> An issue is an issue first; a bounty is an optional overlay. <code>bounty_amount_usd</code> and <code>hourly_roi</code> are indexed because they are the primary sort keys of the product ("show me the highest-ROI real bounties").</li>
+        <li><strong><code>bounty_source</code> and <code>bounty_url</code> preserve provenance</strong> — every bounty links back to its source of truth, a trust requirement, not a nicety.</li>
+        <li><strong>Async everywhere.</strong> <code>create_async_engine</code> with <code>pool_pre_ping</code> and <code>pool_recycle=300</code>; the connection layer switches <code>ssl: require</code> for Postgres/Neon and <code>check_same_thread: False</code> for SQLite so the same code runs in tests and in production.</li>
+      </ul>
+
+      <h2 id="trust"><span class="h2num">03</span>The trust engine (<code>bounty_trust.py</code>)</h2>
+      <p>This is the moat. It is a <strong>pure module</strong> — no network, no I/O — so it is fast, free, and exhaustively unit-testable. It runs <em>before</em> any reputation call. Three layers of defense, in order:</p>
+      <div class="metric-grid">
+        <div class="metric"><div class="mv">L1</div><div class="ml"><strong>Hard blocklist.</strong> Known scam sources rejected outright: <code>bounty-plaza</code> and its owner account are permanently blocked. No heuristics, no appeal.</div></div>
+        <div class="metric"><div class="mv">L2</div><div class="ml"><strong>Structural farm prefilter.</strong> Numeric/throwaway owner heuristic, junk-title detection, the engagement/vanity-token gate, and a star gate (<code>MIN_BOUNTY_REPO_STARS = 50</code>).</div></div>
+        <div class="metric"><div class="mv">L3</div><div class="ml"><strong>Reputation assessment</strong> for survivors: fork/archived checks and curation against an allowlist of known-good paying orgs (<code>tscircuit</code>, <code>activepieces</code>, <code>onyx-dot-app</code>, …).</div></div>
+      </div>
+      <h3>The engagement / vanity-token gate</h3>
+      <p>The subtle case is a repo that clears the star gate but still pays nothing real — it rewards <em>social engagement</em> with <em>vanity tokens</em>. The gate encodes exactly that shape:</p>
+      <ul>
+        <li><code>_SOCIAL_TASK_RE</code> — "star the repo," "join our Discord," "follow on X," "post a video."</li>
+        <li><code>_REAL_CURRENCIES</code> vs <code>_NON_TOKEN_UNITS</code> / <code>_REWARD_TOKEN_RE</code> — distinguishes <code>$</code>, <code>USD</code>, <code>€</code> from made-up point tokens ("RTC", "points").</li>
+        <li><code>_BOUNTY_TAG_RE</code> — crucially, the token check only fires <strong>inside a bounty/pool context</strong>, so a normal repo that merely mentions a token name is not misclassified.</li>
+      </ul>
+      <div class="callout">
+        <i class="fas fa-shield-halved"></i>
+        <div class="ct"><strong>The safety property</strong>The guard is intentionally conservative: it must <em>never</em> reject a real cash bounty. That property is asserted directly by a test.</div>
+      </div>
+
+      <h2 id="pipeline"><span class="h2num">04</span>Scraping pipeline correctness</h2>
+      <p>Two correctness fixes shaped the pipeline:</p>
+      <ol>
+        <li><strong>Real cash lives behind platform markers, not the raw label.</strong> The orchestrator queries <code>algora.io in:body</code>, <code>Funding on Polar in:body</code>, and <code>💎 Bounty</code> — not bare <code>label:bounty</code>, which is ~40% farm noise.</li>
+        <li><strong>Separate GitHub-valid passes, then merge</strong> (<code>d51ea96</code>). A single over-combined search query can be silently rejected by the GitHub Search API and return zero results. Running each qualifier as its own valid pass and merging makes discovery robust.</li>
+      </ol>
+
+      <h2 id="validation"><span class="h2num">05</span>Validation</h2>
+      <p>The trust engine ships with <strong>11 passing unit tests</strong> (<code>test_bounty_trust.py</code>), including the three that pin the engagement gate's contract:</p>
+      <ul>
+        <li><code>test_engagement_bounty_detection</code> — a star-for-tokens farm is rejected.</li>
+        <li><code>test_engagement_filter_spares_real_cash_bounties</code> — a genuine <code>$</code>-denominated bounty is <strong>not</strong> rejected (the safety property).</li>
+        <li><code>test_prefilter_rejects_engagement_farms</code> — end-to-end through <code>prefilter_farm</code>.</li>
+      </ul>
+      <div class="metric-grid">
+        <div class="metric"><div class="mv">20 → 0</div><div class="ml">A real farm (<code>Scottcjn/rustchain-bounties</code>, paying "RTC" tokens for stars) admitted 20 candidates before the gate — and 0 after.</div></div>
+        <div class="metric"><div class="mv">11/11</div><div class="ml">Trust-engine unit tests green.</div></div>
+      </div>
+      <p>Beyond unit tests, the gate was validated by that <strong>live re-probe against a real farm</strong> — the difference between a rule that passes a synthetic test and one that works on the live web. The wider backend carries a full suite (<code>test_api_*</code>, <code>test_scrapers</code>, <code>test_security</code>, <code>test_ast_localizer</code>, <code>test_dispatcher</code>, <code>test_health</code>), so the trust engine is validated in the context of the running API, not in isolation.</p>
+
+      <h2 id="security"><span class="h2num">06</span>Security posture</h2>
+      <ul>
+        <li><strong>Dedicated <code>security/</code> layer</strong> — security headers (<code>headers.py</code>) and a rate limiter (<code>rate_limiter.py</code>), tested by <code>test_security.py</code>.</li>
+        <li><strong>Transport security</strong> — <code>ssl: require</code> enforced for Postgres/Neon connections.</li>
+        <li><strong>Secret hygiene</strong> — a prior incident (real credentials pasted in plaintext into hand-off docs, <em>not</em> committed to git) drove a redaction-and-logging fix and a rotation task. The lesson is documented so it is not repeated: secrets never live in docs, and key material is redacted in logs.</li>
+        <li><strong>Anti-abuse as a first-class concern</strong> — the trust engine itself is a security control: it stops GitScout from becoming a distribution channel for a crypto-deposit scam. That is a security property, not merely a data-quality one.</li>
+      </ul>
+
+      <h2 id="buys"><span class="h2num">07</span>What this buys the product</h2>
+      <p>The architecture makes the thesis operational: a <strong>small, trustworthy feed</strong> produced by a <strong>cheap, testable, layered filter</strong>, with <strong>provenance on every row</strong>. <a href="whitepaper-gitscout-03-lifecycle.html">Part 3 &rarr;</a> shows what happens when that engine meets the real bounty market — and why the honest outcome was to <em>not</em> ship a fabricated win.</p>
+      <p><em>Prepared with Claude Opus 4.8. Code references are to the live <code>backend/app/</code> tree.</em></p>
+    </article>
+  </div>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026 Nirmit K. Tripathii &nbsp;&middot;&nbsp; Made with <span>&#9829;</span> by Nirmit</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  (function(){
+    const bar = document.getElementById('readProgress');
+    const links = Array.from(document.querySelectorAll('#toc a'));
+    const ids = links.map(a => a.getAttribute('href').slice(1));
+    const onScroll = () => {
+      const h = document.documentElement;
+      const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      if (bar) bar.style.width = Math.max(0, Math.min(1, scrolled)) * 100 + '%';
+      let current = ids[0];
+      for (const id of ids){
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 120) current = id;
+      }
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+</body>
+</html>

@@ -166,6 +166,36 @@
       </div>
     </div>
 
+    <!-- PROJECT: GITSCOUT -->
+    <div class="project-card reveal">
+      <div class="preview-box">
+        <div class="preview-terminal">
+          <div class="term-header">
+            <span class="term-dot r"></span>
+            <span class="term-dot y"></span>
+            <span class="term-dot g"></span>
+            <span class="term-title">gitscout · trust-engine · prefilter_farm</span>
+          </div>
+          <div class="term-body">
+            <div class="term-line">> scrape("algora.io in:body") → 41 raw hits</div>
+            <div class="term-line">↳ blocklist: bounty-plaza rejected (crypto-deposit scam)</div>
+            <div class="term-line">↳ engagement gate: rustchain-bounties 20 → 0 admitted</div>
+            <div class="term-line">✔ 18 trusted candidates · 11/11 trust tests green</div>
+          </div>
+        </div>
+      </div>
+      <div class="project-body">
+        <div class="project-tags"><span class="tag">FastAPI (async)</span><span class="tag">Next.js</span><span class="tag">Trust Engine</span><span class="tag">Anti-Fraud</span></div>
+        <h3>GitScout — Trust-Filtered Bounty Intelligence</h3>
+        <p>An open-source bounty &amp; issue aggregator whose moat is telling the truth about a bounty — including when the truth is "don't bother." A pure-function, three-layer trust engine rejects engagement farms and crypto-deposit scams before any network call; live-validated when a real farm's admitted count dropped from 20 to 0.</p>
+        <div class="project-links">
+          <a href="https://gitscout.vercel.app" target="_blank" class="btn-demo"><i class="fas fa-external-link-alt"></i> Live App</a>
+          <a href="article-gitscout-report.html" class="btn-demo"><i class="fas fa-file-lines"></i> Field Report</a>
+          <a href="whitepaper-gitscout-01-ideation.html" class="btn-demo"><i class="fas fa-book"></i> White Paper Series</a>
+        </div>
+      </div>
+    </div>
+
     <!-- PROJECT 4: PODCAST SHORTS FACTORY -->
     <div class="project-card reveal">
       <div class="preview-box">
@@ -684,6 +714,79 @@
         <h3>The Model Spent Its Whole Budget Thinking</h3>
         <p>Empty JSON from an 80-token task with a 512 budget. On a thinking model the fix for a truncated answer is a <em>bigger</em> budget — and it fails completely silently. Floor it, double on retry.</p>
         <div class="paper-foot"><span>2026</span><span class="read">11 min read &rarr;</span></div>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="reveal"><div class="section-tag" style="margin:64px 0 26px">GitScout &middot; trust-filtered bounty intelligence — a field report + 3-part series</div></div>
+  <div class="writing-grid">
+
+    <a href="article-gitscout-report.html" class="paper-card reveal">
+      <div class="paper-visual pv-civic">
+        <div class="pv-telemetry">
+          <span class="pv-label">Field Report · Strategy</span>
+          <span class="pv-val">H4 Falsified</span>
+          <span style="font-size:8px;color:#4ade80">● Honest Negative Result</span>
+        </div>
+        <i class="fas fa-shield-halved pv-icon" style="color:#4ade80"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">Anti-Fraud</span><span class="tag">Live Verification</span></div>
+        <h3>The Bounty That Told Me Not to Bother</h3>
+        <p>I verified four real Algora bounties live and found every winnable-looking one saturated or already paid. The honest move was to report the negative result, not manufacture a win — which is exactly what the product promises its users.</p>
+        <div class="paper-foot"><span>2026</span><span class="read">10 min read &rarr;</span></div>
+      </div>
+    </a>
+
+    <a href="whitepaper-gitscout-01-ideation.html" class="paper-card reveal">
+      <div class="paper-visual pv-vision">
+        <div class="pv-telemetry">
+          <span class="pv-label">Part 1 · Research</span>
+          <span class="pv-val">~40% Farm Noise</span>
+          <span style="font-size:8px;color:var(--accent2)">● 4 Falsifiable Hypotheses</span>
+        </div>
+        <i class="fas fa-magnifying-glass-chart pv-icon" style="color:var(--accent2)"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">Product Research</span><span class="tag">Open Source</span></div>
+        <h3>Trust Is the Product</h3>
+        <p>Ideation and research behind a trust-first bounty aggregator: the polluted label space, the <code>bounty-plaza</code> crypto-deposit scam we reverse-engineered, and the four falsifiable hypotheses that shaped the build.</p>
+        <div class="paper-foot"><span>2026</span><span class="read">7 min read &rarr;</span></div>
+      </div>
+    </a>
+
+    <a href="whitepaper-gitscout-02-architecture.html" class="paper-card reveal">
+      <div class="paper-visual pv-agents">
+        <div class="pv-telemetry">
+          <span class="pv-label">Part 2 · Architecture</span>
+          <span class="pv-val">Pure-Function Moat</span>
+          <span style="font-size:8px;color:#38bdf8">● 11/11 Trust Tests</span>
+        </div>
+        <i class="fas fa-sitemap pv-icon" style="color:#38bdf8"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">FastAPI</span><span class="tag">Security</span></div>
+        <h3>The Moat Is a Pure Function</h3>
+        <p>The async FastAPI + Next.js architecture, a natural-key data model, and a three-layer trust engine that rejects farms and scams before any network call — validated by unit tests and a live re-probe that dropped a farm's admitted count from 20 to 0.</p>
+        <div class="paper-foot"><span>2026</span><span class="read">9 min read &rarr;</span></div>
+      </div>
+    </a>
+
+    <a href="whitepaper-gitscout-03-lifecycle.html" class="paper-card reveal">
+      <div class="paper-visual pv-audio">
+        <div class="pv-telemetry">
+          <span class="pv-label">Part 3 · Lifecycle</span>
+          <span class="pv-val">10 open / 707 done</span>
+          <span style="font-size:8px;color:var(--accent)">● No Fabricated Win</span>
+        </div>
+        <i class="fas fa-flag-checkered pv-icon" style="color:var(--accent)"></i>
+      </div>
+      <div class="paper-body">
+        <div class="paper-tags"><span class="tag">Bounty Lifecycle</span><span class="tag">Honest Negatives</span></div>
+        <h3>The Honest Negative Result</h3>
+        <p>The end-to-end bounty lifecycle run live: public boards on hot orgs are saturated red oceans. Why the failure created GitScout's second product axis — a viability signal — and why no completed claim was manufactured.</p>
+        <div class="paper-foot"><span>2026</span><span class="read">8 min read &rarr;</span></div>
       </div>
     </a>
 

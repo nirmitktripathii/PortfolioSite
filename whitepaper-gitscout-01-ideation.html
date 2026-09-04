@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GitScout · Part 1 — Trust Is the Product — Nirmit K. Tripathii</title>
+  <meta name="description" content="Part 1 of the GitScout white-paper series: the ideation and research behind a trust-first open-source bounty aggregator — the polluted label space, the bounty-plaza scam we reverse-engineered, and four falsifiable hypotheses."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/d8eaa222fe.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="read-progress" id="readProgress"></div>
+<nav>
+  <a href="index.html"><img src="images/logo.png" class="logo-img" alt="Logo"/></a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="index.html#writing">Writing</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+  <div class="nav-burger" onclick="location.href='index.html'"><i class="fas fa-home"></i></div>
+</nav>
+
+<div class="article-shell">
+  <a href="index.html#writing" class="article-back"><i class="fas fa-arrow-left"></i> ALL WRITING</a>
+
+  <header class="article-hero">
+    <div class="article-kicker"><i class="fas fa-magnifying-glass-chart"></i> White Paper · GitScout · Part 1 of 3</div>
+    <h1 class="article-title">Trust Is the Product</h1>
+    <p class="article-standfirst">Ideation and research behind a bounty aggregator that filters out the farms and scams polluting open-source funding. Part 1 documents why GitScout exists, the specific scam we reverse-engineered, and the four falsifiable hypotheses we set out to test.</p>
+    <div class="article-meta">
+      <span class="am"><i class="fas fa-user"></i> Nirmit K. Tripathii</span>
+      <span class="am"><i class="fas fa-calendar"></i> Sep 2026</span>
+      <span class="am"><i class="fas fa-clock"></i> 7 min read</span>
+      <span class="am"><i class="fas fa-layer-group"></i> Series · Part 1</span>
+    </div>
+    <div class="article-chips">
+      <span class="tag">Product Research</span><span class="tag">Anti-Fraud</span><span class="tag">Open Source</span><span class="tag">Hypothesis-Driven</span>
+    </div>
+    <div class="article-chips" style="margin-top:14px">
+      <a href="https://gitscout.vercel.app" target="_blank" class="btn-demo"><i class="fas fa-external-link-alt"></i> Live App</a>
+      <a href="whitepaper-gitscout-02-architecture.html" class="btn-demo"><i class="fas fa-arrow-right"></i> Part 2 &rarr;</a>
+    </div>
+  </header>
+
+  <div class="article-layout">
+    <aside class="article-toc">
+      <h4>On this page</h4>
+      <nav id="toc">
+        <a href="#problem">The problem</a>
+        <a href="#market">Market research</a>
+        <a href="#insight">The core insight</a>
+        <a href="#hypotheses">Falsifiable hypotheses</a>
+        <a href="#method">Research method</a>
+        <a href="#found">What we found</a>
+      </nav>
+    </aside>
+
+    <article class="prose">
+      <p class="lead">GitScout aggregates real open-source bounties and issues and filters out the farms and scams that pollute the space. This first paper documents <em>why</em> the product exists, the research that shaped it, and the single design decision that defines it: <strong>trust is the product, not a feature.</strong></p>
+
+      <h2 id="problem"><span class="h2num">01</span>The problem</h2>
+      <p>"Bounty aggregator" sounds like a solved problem — GitHub search plus a <code>label:bounty</code> filter. In practice that naive feed is close to worthless:</p>
+      <ul>
+        <li><strong>The label space is polluted.</strong> A large fraction of <code>label:bounty</code> repositories are <em>engagement farms</em>: they pay vanity tokens ("star this repo," "join our Discord," "post on X") that have no cash value. In our raw scrapes, roughly <strong>40%</strong> of the label space was one token-farm cluster.</li>
+        <li><strong>Real cash hides behind different markers.</strong> Genuine paying bounties are signposted not by the raw <code>bounty</code> label but by platform fingerprints in the issue body — <code>algora.io in:body</code>, <code>Funding on Polar in:body</code>, or a platform-specific <code>💎 Bounty</code> label. A tool that filters on the obvious label misses the real money and surfaces the noise.</li>
+        <li><strong>Outright scams exist.</strong> The catalyst for GitScout was a live scam mirror (<code>bounty-plaza</code>) that re-hosts legitimate-looking bounties to lure developers into depositing crypto (USDT) to a "treasury" address they never recover. Any aggregator that ingests uncritically becomes a <em>distribution channel for the scam</em>.</li>
+      </ul>
+      <div class="callout">
+        <i class="fas fa-lightbulb"></i>
+        <div class="ct"><strong>The real problem isn't aggregation.</strong>It's discrimination — telling real from fake, payable from performative, winnable from picked-over — at scale, cheaply, and honestly.</div>
+      </div>
+
+      <h2 id="market"><span class="h2num">02</span>Market research</h2>
+      <p>We studied the live landscape rather than trusting platform marketing.</p>
+      <table class="data-table">
+        <thead><tr><th>Platform</th><th>Payout</th><th>Fee</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Algora</strong></td><td>Fiat USD via Stripe Connect (2–5 days post-reward)</td><td>~19% + Stripe</td><td>Largest. <code>/attempt #N</code> with a plan, then a PR with <code>/claim #N</code>; UI changes need a demo video.</td></tr>
+          <tr><td><strong>Opire</strong> (opire.dev)</td><td>Fiat</td><td>~4%</td><td>Smaller, less crowded. Returned HTTP 502 during checks — a lesson in not single-sourcing discovery.</td></tr>
+          <tr><td><strong>Polar.sh</strong></td><td>Fiat</td><td>—</td><td>Issue funding, marked by <code>Funding on Polar</code>.</td></tr>
+          <tr><td>Gitcoin / Immunefi</td><td>Crypto</td><td>—</td><td>Legitimate but a distinct, wallet-required path. Out of scope for the default user.</td></tr>
+        </tbody>
+      </table>
+      <p>Algora explicitly warns that <em>"low-quality AI PRs will not receive review and will be closed."</em> The scam layer — <code>bounty-plaza</code> and its class — re-skins real bounties and inserts a crypto-deposit step. The tell is structural: numeric/throwaway owner accounts, a treasury address, and social-task "bounties" paying non-currency tokens.</p>
+
+      <h2 id="insight"><span class="h2num">03</span>The core insight</h2>
+      <p>Across all three layers, the differentiator a raw feed cannot provide is <strong>judgment about trust and viability.</strong> We crystallized this into the product thesis:</p>
+      <div class="callout good">
+        <i class="fas fa-quote-left"></i>
+        <div class="ct"><strong>The thesis</strong>GitScout's moat is that it tells the truth about a bounty — including when the truth is "don't bother."</div>
+      </div>
+      <p>This reframes every downstream decision. The aggregator is not optimized for <em>volume</em> of listings (that favors the farms); it is optimized for <em>precision</em> — a small feed you can trust over a large feed you cannot.</p>
+
+      <h2 id="hypotheses"><span class="h2num">04</span>Hypotheses, stated to be falsifiable</h2>
+      <p>Good research states what would prove it wrong. We committed to four testable claims:</p>
+      <div class="metric-grid">
+        <div class="metric"><div class="mv">H1</div><div class="ml">The label space is farm-dominated — a large minority of <code>label:bounty</code> hits are engagement/token farms.</div></div>
+        <div class="metric"><div class="mv">H2</div><div class="ml">Structural signals separate scam from real cheaply, with no network call (owner shape, title junk, social-task language, reward-unit type, star count).</div></div>
+        <div class="metric"><div class="mv">H3</div><div class="ml">Real cash lives behind platform markers, not the raw label.</div></div>
+        <div class="metric"><div class="mv">H4</div><div class="ml">A newcomer can win a first bounty quickly by picking a small task off a popular board. <em>The naive thesis — and, spoiler, the one the data falsified.</em></div></div>
+      </div>
+
+      <h2 id="method"><span class="h2num">05</span>Research method</h2>
+      <ul>
+        <li><strong>Local-first trust filtering.</strong> Every candidate is scored by a pure function (<code>prefilter_farm</code>) before any network reputation call — fast, free, deterministic, and unit-testable.</li>
+        <li><strong>Live, trust-filtered scrapes</strong> of the real paying markers, stack-filtered to Python and TypeScript, merging results from multiple GitHub-valid query passes rather than one combined query (which the GitHub Search API can silently reject).</li>
+        <li><strong>Manual live verification</strong> of individual candidates in the Algora and GitHub UIs — the only way to read the amount, the reward state, and, decisively, the <em>competition</em>.</li>
+      </ul>
+
+      <h2 id="found"><span class="h2num">06</span>What we found (preview)</h2>
+      <table class="data-table">
+        <thead><tr><th>Hypothesis</th><th>Verdict</th><th>Evidence</th></tr></thead>
+        <tbody>
+          <tr><td>H1 — farm-dominated label space</td><td><strong>Confirmed</strong></td><td>~40% of the sampled label space was a single token-farm cluster.</td></tr>
+          <tr><td>H2 — structural signals separate scam from real</td><td><strong>Confirmed</strong></td><td>Live re-probe dropped a farm's admitted count from 20 to 0 after the engagement gate landed.</td></tr>
+          <tr><td>H3 — real cash lives behind platform markers</td><td><strong>Confirmed</strong></td><td>Platform-marker filtering surfaced 18 trusted candidates from 41 raw hits; the raw label space was mostly noise.</td></tr>
+          <tr><td>H4 — newcomer wins a first bounty fast</td><td><strong>Falsified</strong></td><td>Public boards on hot orgs are saturated red oceans (Part 3).</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn">
+        <i class="fas fa-flask"></i>
+        <div class="ct"><strong>The falsification of H4 is the most valuable result.</strong>It <em>created</em> GitScout's second product axis — a viability signal layered on top of the trust signal. Parts 2 and 3 build on that.</div>
+      </div>
+
+      <p><a href="whitepaper-gitscout-02-architecture.html">Part 2 &rarr;</a> covers architecture, the data model, security testing, and validation. <a href="whitepaper-gitscout-03-lifecycle.html">Part 3</a> covers the end-to-end lifecycle of claiming and fixing a real bounty — including the honest account of why we did not fabricate a win.</p>
+      <p class="muted-note"><em>Prepared with Claude Opus 4.8.</em></p>
+    </article>
+  </div>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026 Nirmit K. Tripathii &nbsp;&middot;&nbsp; Made with <span>&#9829;</span> by Nirmit</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  (function(){
+    const bar = document.getElementById('readProgress');
+    const links = Array.from(document.querySelectorAll('#toc a'));
+    const ids = links.map(a => a.getAttribute('href').slice(1));
+    const onScroll = () => {
+      const h = document.documentElement;
+      const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      if (bar) bar.style.width = Math.max(0, Math.min(1, scrolled)) * 100 + '%';
+      let current = ids[0];
+      for (const id of ids){
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 120) current = id;
+      }
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+</body>
+</html>

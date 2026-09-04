@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GitScout · Part 3 — The Honest Negative Result — Nirmit K. Tripathii</title>
+  <meta name="description" content="Part 3 of the GitScout white-paper series: the end-to-end bounty lifecycle and what happened when we ran it live. The naive 'win a first bounty fast' thesis was falsified — and reporting that negative result honestly is the deliverable."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/d8eaa222fe.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="read-progress" id="readProgress"></div>
+<nav>
+  <a href="index.html"><img src="images/logo.png" class="logo-img" alt="Logo"/></a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="index.html#writing">Writing</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+  <div class="nav-burger" onclick="location.href='index.html'"><i class="fas fa-home"></i></div>
+</nav>
+
+<div class="article-shell">
+  <a href="index.html#writing" class="article-back"><i class="fas fa-arrow-left"></i> ALL WRITING</a>
+
+  <header class="article-hero">
+    <div class="article-kicker"><i class="fas fa-flag-checkered"></i> White Paper · GitScout · Part 3 of 3</div>
+    <h1 class="article-title">The Honest Negative Result</h1>
+    <p class="article-standfirst">The full lifecycle of winning a real open-source bounty — discovery, claim, fix, review, payout — and what happened when we ran it live. The headline is a negative result, reported honestly: the naive "win a first bounty fast" thesis was falsified, and consistent with GitScout's anti-fabrication premise, no completed claim was manufactured.</p>
+    <div class="article-meta">
+      <span class="am"><i class="fas fa-user"></i> Nirmit K. Tripathii</span>
+      <span class="am"><i class="fas fa-calendar"></i> Sep 2026</span>
+      <span class="am"><i class="fas fa-clock"></i> 8 min read</span>
+      <span class="am"><i class="fas fa-layer-group"></i> Series · Part 3</span>
+    </div>
+    <div class="article-chips">
+      <span class="tag">Bounty Lifecycle</span><span class="tag">Honest Negatives</span><span class="tag">Market Analysis</span><span class="tag">Product Insight</span>
+    </div>
+    <div class="article-chips" style="margin-top:14px">
+      <a href="https://gitscout.vercel.app" target="_blank" class="btn-demo"><i class="fas fa-external-link-alt"></i> Live App</a>
+      <a href="whitepaper-gitscout-02-architecture.html" class="btn-demo"><i class="fas fa-arrow-left"></i> Part 2</a>
+    </div>
+  </header>
+
+  <div class="article-layout">
+    <aside class="article-toc">
+      <h4>On this page</h4>
+      <nav id="toc">
+        <a href="#idealized">The idealized lifecycle</a>
+        <a href="#live">What happened live</a>
+        <a href="#negative">The negative result</a>
+        <a href="#strengthens">Why it strengthens the product</a>
+        <a href="#strategy">The realistic strategy</a>
+        <a href="#wallet">The "wallet" question</a>
+        <a href="#conclusion">Conclusion</a>
+      </nav>
+    </aside>
+
+    <article class="prose">
+      <p class="lead">This final paper walks the full lifecycle of winning a real open-source bounty — from discovery through claim, fix, review, and payout — and reports what happened when we tried to execute it live. The headline is a <strong>negative result, reported honestly</strong>: the naive "pick a task off a popular board and win it fast" thesis (H4 from Part 1) was <strong>falsified</strong> by live data. Consistent with GitScout's anti-fabrication premise, we did not manufacture a completed claim.</p>
+
+      <h2 id="idealized"><span class="h2num">01</span>The idealized lifecycle</h2>
+      <p>The end-to-end path a bounty <em>should</em> follow:</p>
+      <ol>
+        <li><strong>Discover</strong> a real, funded, unassigned bounty on your stack.</li>
+        <li><strong>Read the rules.</strong> On Algora: comment <code>/attempt #N</code> with an implementation plan; don't ask to be assigned unless you've contributed before; UI changes require a demo video; <em>"low-quality AI PRs will not receive review and will be closed."</em></li>
+        <li><strong>Research &amp; reproduce</strong> the issue against the real codebase.</li>
+        <li><strong>Fix</strong> it with a clean, reviewable change.</li>
+        <li><strong>Propose</strong> a PR whose body contains <code>/claim #N</code>.</li>
+        <li><strong>Review loop</strong> with the maintainer until merge.</li>
+        <li><strong>Get paid</strong> — <em>"100% of the bounty is received 2–5 days post-reward"</em>, i.e. USD via Stripe Connect.</li>
+      </ol>
+      <p>Steps 1–2 are where most of the value — and most of the failure — actually lives.</p>
+
+      <h2 id="live"><span class="h2num">02</span>What happened live (verified 2026-09-03)</h2>
+      <p>We executed steps 1–2 for real, deep-diving four candidates in the live Algora and GitHub UIs:</p>
+      <table class="data-table">
+        <thead><tr><th>Issue</th><th>Amount</th><th>State</th><th>Attempts</th><th>Reality</th></tr></thead>
+        <tbody>
+          <tr><td><code>onyx-dot-app/onyx#2281</code></td><td>$250</td><td>Open since <strong>Oct 2024</strong>, unrewarded</td><td>40+</td><td>Maintainer-approved but a two-year graveyard.</td></tr>
+          <tr><td><code>tscircuit/pcb-viewer#163</code></td><td>$3</td><td>Open</td><td>40+</td><td>Lead attempter has <strong>59 completed</strong> tscircuit bounties.</td></tr>
+          <tr><td><code>tscircuit/jlcsearch#92</code></td><td>$1</td><td>Open</td><td><strong>103 claims</strong></td><td>Micro-value, maximally swarmed.</td></tr>
+          <tr><td><code>tscircuit/template-api-fake#2</code></td><td>$12</td><td><strong>Already Rewarded</strong> yet still Open</td><td>18+</td><td>People "start" a bounty that was already paid out.</td></tr>
+        </tbody>
+      </table>
+      <p>The whole tscircuit org board: <strong>10 open / 707 completed</strong>. The remaining open items are the picked-over remainder — old, tiny ($1–$170), and heavily claimed. Opire, the <em>less</em>-crowded alternative we wanted to fall back on, was returning <strong>HTTP 502</strong> at check time.</p>
+
+      <h2 id="negative"><span class="h2num">03</span>The negative result, stated plainly</h2>
+      <div class="callout warn">
+        <i class="fas fa-triangle-exclamation"></i>
+        <div class="ct"><strong>H4 is false.</strong>A newcomer cannot reliably win a first bounty by picking a small task off a popular public board. Those boards are red oceans: dozens of attempts per issue, dominated by professionalized hunters with 50+ completed bounties, for $1–$250 — and they don't even reliably signal when an issue is already paid.</div>
+      </div>
+      <p>Two temptations were available here, and both were refused:</p>
+      <ol>
+        <li><strong>Attempt a saturated issue anyway</strong> to produce a "win" narrative. Rejected: expected value is ~$0, and a rushed AI PR into a repo that <em>explicitly closes low-quality AI PRs</em> would damage the user's real reputation.</li>
+        <li><strong>Write up a claim that never happened.</strong> Rejected outright — fabricating a completed bounty is exactly the fraud GitScout exists to detect. The credibility of an anti-fraud tool cannot survive its author faking a result.</li>
+      </ol>
+      <p>Reporting the negative result <em>is</em> the deliverable here.</p>
+
+      <h2 id="strengthens"><span class="h2num">04</span>Why this strengthens the product</h2>
+      <p>The failure exposed a <strong>second axis of worthlessness</strong> that a raw feed cannot see. A bounty wastes your time if it is either <strong>not real</strong> (farm/scam — handled by the Part 2 trust engine) or <strong>real but unwinnable/already-won</strong> (saturated, stale, or already rewarded). GitScout already scores the first. The live data proves it must also score the second — a <strong>viability/liveness signal</strong>:</p>
+      <ul>
+        <li><strong>Attempt density</strong> — count of <code>/attempt</code> claims; <code>&gt;~10</code> ⇒ red.</li>
+        <li><strong>Already-rewarded flag</strong> — presence of a "Rewarded" label / award-bot comment ⇒ hard-hide from the "open" view.</li>
+        <li><strong>Veteran lock-in</strong> — a hunter with a large completed count already attempting.</li>
+        <li><strong>Staleness</strong> — a large, old, still-open bounty is usually a graveyard.</li>
+        <li><strong>Newcomer-eligibility</strong> — boards that gate assignment on prior contribution.</li>
+      </ul>
+      <div class="callout good">
+        <i class="fas fa-circle-check"></i>
+        <div class="ct"><strong>A defensible product insight, not a consolation prize.</strong>A single "realistic for a newcomer? yes/no + why" verdict, layered on the existing "is it a scam? yes/no." It fell out of an honest failure.</div>
+      </div>
+
+      <h2 id="strategy"><span class="h2num">05</span>The realistic strategy that actually wins</h2>
+      <ol>
+        <li><strong>Reset expectations.</strong> A first win is likely <strong>$3–$50</strong> and is <em>reputation-building</em>, not income — the price of unlocking the "contributed before" gate.</li>
+        <li><strong>Compete on freshness, not on picked-over issues.</strong> The winnable bounty is the one posted minutes ago with zero attempts. This motivates GitScout's next feature: a <strong>new-bounty monitor</strong> that alerts on freshly-funded issues on your stack so you can be the first credible <code>/attempt</code>.</li>
+        <li><strong>Build reputation with non-bounty PRs first</strong> — one or two small, clean merged PRs to become a known contributor before racing for cash.</li>
+        <li><strong>Diversify platforms</strong> — re-check Opire when it's up (less crowded, ~4% fee); consider Polar-funded issues; avoid crypto-native platforms unless you specifically want them.</li>
+        <li><strong>Verify at the issue, every time</strong> — amount, <em>not already rewarded</em>, attempt count, and whether a veteran is on it — before writing any code.</li>
+      </ol>
+
+      <h2 id="wallet"><span class="h2num">06</span>Getting paid — the "wallet" question, corrected</h2>
+      <p>A natural request is to "create a wallet to receive a claimed bounty." Two corrections:</p>
+      <ol>
+        <li><strong>The realistic (Algora/Opire) path needs no crypto wallet.</strong> Payouts are <strong>USD via Stripe Connect / bank transfer</strong>, 2–5 days post-reward. A crypto wallet only enters via (a) the <code>bounty-plaza</code> <strong>scam</strong> we filter out, or (b) optional crypto-native platforms (Gitcoin/Immunefi).</li>
+        <li><strong>The assistant cannot and did not create an account, wallet, or payout instrument.</strong> Creating accounts and entering financial/identity details are the user's own actions. The concrete steps, for the user to perform: sign in to <strong>Algora</strong> (or Opire) with the existing GitHub account; complete <strong>Stripe Connect payout onboarding</strong> (identity + bank/debit) to become "eligible for payouts." That is the entire "wallet" for this path — no crypto.</li>
+      </ol>
+
+      <h2 id="conclusion"><span class="h2num">07</span>Conclusion of the series</h2>
+      <p>GitScout set out to be a bounty aggregator you can trust. Across three papers it became something sharper: a tool that scores both <strong>authenticity</strong> (is it a scam?) and <strong>viability</strong> (can <em>you</em> actually win it?), and whose own development honored the same standard by <strong>reporting a falsified hypothesis instead of hiding it</strong>. The next build is the freshness monitor and the viability signal; the next action for the user is Stripe payout onboarding and a reputation-first first contribution — not a race into a saturated board.</p>
+      <div class="callout">
+        <i class="fas fa-award"></i>
+        <div class="ct"><strong>The most valuable thing this project produced is also the least glamorous:</strong>a documented, verifiable <em>no</em>. That is exactly the output the product promises its users.</div>
+      </div>
+      <p><em>Prepared with Claude Opus 4.8. All bounty amounts, states, and attempt counts were read from the live Algora / GitHub UI on 2026-09-03. No bounty claim was submitted, and none is represented as having occurred.</em></p>
+    </article>
+  </div>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026 Nirmit K. Tripathii &nbsp;&middot;&nbsp; Made with <span>&#9829;</span> by Nirmit</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  (function(){
+    const bar = document.getElementById('readProgress');
+    const links = Array.from(document.querySelectorAll('#toc a'));
+    const ids = links.map(a => a.getAttribute('href').slice(1));
+    const onScroll = () => {
+      const h = document.documentElement;
+      const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      if (bar) bar.style.width = Math.max(0, Math.min(1, scrolled)) * 100 + '%';
+      let current = ids[0];
+      for (const id of ids){
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 120) current = id;
+      }
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+</body>
+</html>
