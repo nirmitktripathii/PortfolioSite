@@ -68,16 +68,16 @@
           <text class="svg-title" x="20" y="28">Where a thinking model's output budget goes</text>
           <!-- 512 budget -->
           <text class="svg-label" x="20" y="72">budget 512</text>
-          <rect x="120" y="56" width="330" height="26" fill="var(--accent3)"/><text class="svg-label" x="130" y="74" fill="#fff">~350–460 reasoning tokens (spent first)</text>
-          <rect x="450" y="56" width="70" height="26" fill="var(--accent2)"/><text class="svg-label" x="455" y="74" fill="#fff">JSON…</text>
+          <rect x="120" y="56" width="330" height="26" fill="var(--accent3)"/><text style="fill:#fff" class="svg-label" x="130" y="74">~350–460 reasoning tokens (spent first)</text>
+          <rect x="450" y="56" width="70" height="26" fill="var(--accent2)"/><text style="fill:#fff" class="svg-label" x="455" y="74">JSON…</text>
           <rect x="520" y="56" width="2" height="26" fill="var(--text)"/>
-          <text class="svg-label" x="528" y="74" fill="var(--accent2)">✕ MAX_TOKENS — cut off mid-thought, empty output</text>
+          <text style="fill:var(--accent2)" class="svg-label" x="522" y="102" text-anchor="end">✕ MAX_TOKENS — cut off mid-thought, empty output</text>
           <!-- 2048 budget -->
           <text class="svg-label" x="20" y="140">budget 2048</text>
-          <rect x="120" y="124" width="150" height="26" fill="var(--accent3)"/><text class="svg-label" x="130" y="142" fill="#fff">reasoning</text>
-          <rect x="270" y="124" width="40" height="26" fill="var(--accent)"/><text class="svg-label" x="276" y="142" fill="#000">JSON</text>
-          <rect x="310" y="124" width="300" height="26" fill="none" stroke="var(--border)" stroke-dasharray="4 3"/><text class="svg-label" x="320" y="142">unused headroom — free (generation stops at STOP)</text>
-          <text class="svg-label" x="120" y="180" fill="#3fb950">✓ reasoning + object both fit, with room to spare</text>
+          <rect x="120" y="124" width="150" height="26" fill="var(--accent3)"/><text style="fill:#fff" class="svg-label" x="130" y="142">reasoning</text>
+          <rect x="270" y="124" width="40" height="26" fill="var(--accent)"/><text style="fill:#000" class="svg-label" x="276" y="142">JSON</text>
+          <rect x="310" y="124" width="400" height="26" fill="none" stroke="var(--border)" stroke-dasharray="4 3"/><text class="svg-label" x="320" y="142">unused headroom — free (generation stops at STOP)</text>
+          <text style="fill:#3fb950" class="svg-label" x="120" y="180">✓ reasoning + object both fit, with room to spare</text>
         </svg>
         <figcaption class="figcap">The smaller you make the budget — reasoning that your <em>output</em> is tiny — the more likely you strangle the response before it reaches the output. On a thinking model, headroom is free insurance.</figcaption>
       </figure>
