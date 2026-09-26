@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dubbing v2.5: From a Free T4 to a GPU Job API — Nirmit K. Tripathii</title>
+  <meta name="description" content="v2.5 of my Indic dubbing pipeline stops guessing at length and stops ignoring meaning. How the updated code works, how it deploys today on a free Kaggle T4, and what the move to an async GPU job API has measured so far."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/d8eaa222fe.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="read-progress" id="readProgress"></div>
+<nav>
+  <a href="index.html"><img src="images/logo.png" class="logo-img" alt="Logo"/></a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="index.html#writing">Writing</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+  <div class="nav-burger" onclick="location.href='index.html'"><i class="fas fa-home"></i></div>
+</nav>
+
+<div class="article-shell">
+  <a href="index.html#writing" class="article-back"><i class="fas fa-arrow-left"></i> ALL WRITING</a>
+
+  <header class="article-hero">
+    <div class="article-kicker"><i class="fas fa-server"></i> Article · Building an Indic Dubbing Pipeline · v2.5 Ship Log</div>
+    <h1 class="article-title">Dubbing v2.5: From a Free T4 to a GPU Job API</h1>
+    <p class="article-standfirst">v2.5 stops guessing at length and stops ignoring meaning. Then it has to run somewhere. This is how the updated pipeline works end to end, how it deploys today on a free Kaggle T4, and what the move to an async GPU job API has measured so far, with every projection labelled as one.</p>
+    <div class="article-meta">
+      <span class="am"><i class="fas fa-user"></i> Nirmit K. Tripathii</span>
+      <span class="am"><i class="fas fa-calendar"></i> 2026</span>
+      <span class="am"><i class="fas fa-clock"></i> 12 min read</span>
+      <span class="am"><i class="fab fa-github"></i> <a href="https://github.com/nirmitktripathii/dubbing_app" target="_blank" style="color:inherit">dubbing_app</a></span>
+    </div>
+    <div class="article-chips">
+      <span class="tag">Deployment</span><span class="tag">MLOps</span><span class="tag">Isochrony</span><span class="tag">Modal</span><span class="tag">Indic NLP</span>
+    </div>
+  </header>
+
+  <div class="article-layout">
+    <aside class="article-toc">
+      <h4>On this page</h4>
+      <nav id="toc">
+        <a href="#changed">What v2.5 changed</a>
+        <a href="#chosen">How a line gets chosen</a>
+        <a href="#stages">The seven stages</a>
+        <a href="#quota">Living on free-tier quotas</a>
+        <a href="#kaggle">Deployment today</a>
+        <a href="#api">Deployment next</a>
+        <a href="#time">Where the time goes</a>
+        <a href="#next">What's next</a>
+      </nav>
+    </aside>
+
+    <article class="prose">
+      <p class="lead">Version 2 of my dubbing pipeline could translate a line to roughly the right length. It could not tell you whether the shorter line still meant the same thing.</p>
+      <p>Worse, the ruler it measured "length" with was a vowel-group syllable heuristic that the repo records as roughly <strong>0.43× off the truth</strong>, with a different bias for every language. The pipeline was optimising hard against a number that was wrong, and it had no check at all on the thing that mattered more.</p>
+      <p>v2.5 fixes both. Then it has to run somewhere cheap. This write-up covers the updated code in <a href="https://github.com/nirmitktripathii/dubbing_app" target="_blank">nirmitktripathii/dubbing_app</a>: what changed, how a single line is chosen, the seven stages from video in to dubbed video out, and the two deployment tracks. One is the free Kaggle T4 setup that runs today. The other is the GPU job API that is being built and measured now.</p>
+
+      <div class="callout">
+        <i class="fas fa-circle-info"></i>
+        <div class="ct"><strong>Scope note</strong><a href="article-dubbing-isochrony.html">Teaching an LLM to Fit Its Mouth</a> covers the v3 fine-tune research track, and <a href="whitepaper-dubbing.html">The Deployed Dubbing Pipeline (v2)</a> covers the previous version. This one is the v2.5 code. Numbers are labelled: <em>measured</em> means read from a real run log in the repo; <em>projection</em> means arithmetic on measured parts that has not been run yet.</div>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric"><div class="mv">44/44</div><div class="ml">validation segments scored for meaning, across all 11 languages</div></div>
+        <div class="metric"><div class="mv">42/44</div><div class="ml">passed both the meaning and the length gate; 2 reported as misses</div></div>
+        <div class="metric"><div class="mv">0.838</div><div class="ml">average cross-lingual semantic similarity (IndicSBERT)</div></div>
+        <div class="metric"><div class="mv">0.934</div><div class="ml">average isochrony score across the 44 segments</div></div>
+      </div>
+
+      <h2 id="changed"><span class="h2num">01</span>What v2.5 changed</h2>
+      <p>Five changes. In each case v2 was guessing about something it could have measured.</p>
+      <table class="data-table">
+        <thead><tr><th>Area</th><th>v2</th><th>v2.5</th></tr></thead>
+        <tbody>
+          <tr><td>Length ruler</td><td>Vowel-group syllable heuristic (~0.43× off, language-dependent bias)</td><td>Real phonemes via espeak-ng G2P (<code>phonemes:espeak-ng-1.50</code>) plus IndicNLP normalisation</td></tr>
+          <tr><td>Meaning check</td><td>None. Any grammatical translation passed</td><td>IndicSBERT cross-lingual gate: cosine ≥ <strong>0.70</strong> against the English source</td></tr>
+          <tr><td>Choosing a line</td><td>One generation; take what comes back</td><td>Iterative chain-of-thought loop: 3 candidates per segment, meaning gate first, closest phoneme count wins, up to 3 refinement rounds</td></tr>
+          <tr><td>When it can't win</td><td>Silent failure</td><td>Keeps the best candidate it saw, reports <code>gates_passed=False</code>, and stamps which ruler measured it (espeak-ng or the heuristic fallback)</td></tr>
+          <tr><td>Non-Devanagari scripts</td><td>MiniLM collapsed 8 of 11 languages to a meaningless ~0.99 similarity</td><td>IndicSBERT discriminates, e.g. 0.72–0.94 on Tamil, Telugu and Odia</td></tr>
+        </tbody>
+      </table>
+      <p>The last row is the one I would have missed without a test. The old embedder wasn't wrong about Tamil, Telugu or Odia. It was blind to them: it scored translations in 8 of the 11 languages at about 0.99 whatever they said. A meaning gate built on it would have passed almost anything. <strong>A gate that cannot fail is not a gate.</strong></p>
+      <p>The fourth row is the one I care about most as an engineer. A pipeline that ships a compromised line and says nothing is worse than one that fails loudly, because the only way to find the bad line is to listen to the whole video.</p>
+
+      <h2 id="chosen"><span class="h2num">02</span>How a line gets chosen</h2>
+      <p>For every transcribed segment, the pipeline knows how long the original speaker took. That window becomes a phoneme budget, the <em>ideal</em> count. The translator produces three candidates. Only those that clear the meaning gate go on, and of those the one whose phoneme count is closest to the budget wins. Candidates that miss are refined for up to three rounds. <em>Mean it first, then fit it.</em> Every candidate that clears the gate is also ranked by one combined cost, and the loop tracks the best it has ever seen:</p>
+      <pre><code>cost = 0.60 · (1 − semantic_similarity)  +  0.40 · |phonemes − ideal| / ideal
+        └── meaning (IndicSBERT) ──┘        └──── timing fit (espeak-ng) ────┘
+
+gates passed  ⇔  semantic ≥ 0.70  AND  |phonemes − ideal| / ideal ≤ 0.15</code></pre>
+      <p>The weights lean toward meaning on purpose. The voice model later in the pipeline controls duration natively, so it can absorb a timing miss of a few percent. Nothing after this step can repair a dropped clause.</p>
+      <p>If nothing clears both gates after the refinement rounds, the loop does not pretend. It keeps the lowest-cost candidate, marks the segment <code>gates_passed=False</code> and records which ruler measured it. That record is what makes the validation readable.</p>
+      <h3>Validation on the real target</h3>
+      <p>I validated v2.5 end to end on the real deployment target, Kaggle (CPU). The set was all 11 languages × 4 sentences = <strong>44 segments</strong>. The real espeak-ng ruler was active, not the fallback. IndicSBERT scored all 44, including the 8 non-Devanagari scripts, and all 44 translations were non-empty. Average semantic similarity was <strong>0.838</strong> and average isochrony <strong>0.934</strong>.</p>
+      <p>42 of 44 passed both gates. The other two were reported as <em>too short at the loop's global minimum</em>. That is exactly the kind of visible, per-segment failure the fourth change was built to produce.</p>
+
+      <h2 id="stages"><span class="h2num">03</span>The seven stages</h2>
+      <p>Around that selection loop, the pipeline is seven stages, video in to video out.</p>
+      <table class="data-table">
+        <thead><tr><th>#</th><th>Stage</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Separation</td><td>Demucs (<code>htdemucs</code>) splits the vocals from the music and background, so the background is never touched</td></tr>
+          <tr><td>2</td><td>Transcription</td><td>Faster-Whisper (large-v3, INT8 on Kaggle) produces text and timestamps: the windows everything else must hit</td></tr>
+          <tr><td>3</td><td>Isochrony translation</td><td>The loop above. Gemma handles bulk candidates and Gemini handles refinement, throttled and disk-cached</td></tr>
+          <tr><td>4</td><td>Voice reference</td><td>Picks a clean ~12 s reference clip of the speaker by signal-to-noise ratio</td></tr>
+          <tr><td>5</td><td>Duration-controlled TTS</td><td>IndicF5 speaks each line at its target duration: native voices in Basic mode, voice cloning in Premium</td></tr>
+          <tr><td>6</td><td>Assembly</td><td>Places each clip on the original timeline with no <code>atempo</code> stretching, 50 ms crossfades and a loudness-normalised (LUFS) mix</td></tr>
+          <tr><td>7</td><td>Composition</td><td>FFmpeg muxes the dubbed audio and the subtitles back into the original video</td></tr>
+        </tbody>
+      </table>
+      <p>The README now opens with a playable demo: a 79-second English science clip dubbed into Hindi, in 13 segments. The background is untouched, and the subtitle tracks share identical timing windows. The opening line runs 00:00.27 → 00:02.87 in both. That identical window is the whole project in one line.</p>
+
+      <h2 id="quota"><span class="h2num">04</span>Living on free-tier quotas</h2>
+      <p>Three candidates per segment, plus refinement rounds, across 11 languages is a lot of LLM calls, and the pipeline runs on free API keys. v2.5.1 is the release that stopped rate limits from killing runs:</p>
+      <ul>
+        <li><strong>Split routing.</strong> The first pass goes to Gemma (<code>gemma-4-31b-it</code>, falling back to <code>gemma-4-26b-a4b-it</code>). Only refinement calls go to Gemini (<code>gemini-3.1-flash-lite</code>, falling back to <code>gemini-3.5-flash-lite</code>). Bulk calls and refinement calls therefore draw on different models' limits.</li>
+        <li><strong>Client-side throttling.</strong> Requests are paced per model, at 30 and 15 requests per minute. The client honours the server's 429 <code>retryDelay</code> instead of hammering, and an optional requests-per-day cap is backed by a daily per-model usage counter.</li>
+        <li><strong>A disk candidate cache</strong>, keyed by language and source text. A re-run selects from the cache with zero API calls.</li>
+        <li><strong>Parsing without a schema.</strong> Gemma has no <code>response_schema</code>, so structured output is parsed from plain text: strip the code fences, then match balanced brackets.</li>
+      </ul>
+      <p>The cache matters more than it looks. The production audit measured translation for the same class of clip at 152 s, 51 s and 40 s on fresh runs, and <strong>16 s with a warm cache</strong>. The spread comes from free-tier 503/429 retries and the cold load of IndicSBERT, not from the model thinking harder.</p>
+
+      <h2 id="kaggle"><span class="h2num">05</span>Deployment today: a free T4 behind a tunnel</h2>
+      <p>The version that runs today costs nothing. <code>kaggle/deploy_dubbing_cloudflare.py</code> is a headless Kaggle kernel, pushed with <code>kaggle kernels push -p . --accelerator NvidiaTeslaT4</code>. The repo calls it the ShadowGPU pattern:</p>
+      <ol>
+        <li>Install dependencies and write the pipeline files into the kernel.</li>
+        <li>Patch IndicF5's <code>model.py</code>.</li>
+        <li>Launch the Streamlit app on port 8501.</li>
+        <li>Open a Cloudflare Quick Tunnel to it.</li>
+        <li>Broadcast the tunnel's public URL to an ntfy.sh channel.</li>
+        <li>Listen on that channel for a <code>SHUTDOWN_DUBBING</code> message, a remote kill switch for the session.</li>
+      </ol>
+      <p>API keys come from Kaggle Secrets by name, and nothing is committed. For batch work there is no UI at all. <code>run_headless.py</code> runs stages 1–7 for Kaggle's "Save &amp; Run All", configured by environment variables and using the same stage modules as the app.</p>
+      <p>The semantic gate runs on CPU on purpose. Kaggle's GPU lottery can hand out a Tesla P100 (sm_60), and the installed torch build has no kernels for it. So IndicSBERT is pinned to CPU with <code>CUDA_VISIBLE_DEVICES=""</code>. Losing a little speed is better than losing the run.</p>
+      <h3>The freeze fix</h3>
+      <p>The worst bug in this deployment was not a crash. IndicF5 could wedge inside a CUDA operation while holding Python's GIL. With the GIL held, the whole Streamlit app froze, including the watchdog thread I had written to catch exactly this. <strong>A thread cannot rescue the process it lives in.</strong></p>
+      <p>The fix moved synthesis into a separate OS process (<code>tts_supervisor.py</code> and <code>tts_worker.py</code>). The parent watches a heartbeat. If the heartbeat stalls, the parent SIGKILLs the child and launches a fresh one, which resumes from what is already on disk. A segment that stalls or crashes the worker too many times is declared poison and degrades to silence, so one bad line never aborts a long render.</p>
+
+      <h2 id="api"><span class="h2num">06</span>Deployment next: an async job API</h2>
+      <div class="callout">
+        <i class="fas fa-triangle-exclamation"></i>
+        <div class="ct"><strong>Status, stated plainly</strong>This track lives in <code>deploy/</code>, and its own README still calls it a scaffold. It has not been <code>modal deploy</code>-ed as a public service, and the RapidAPI plans are planned, not live. The timings below come from real run logs in the repo. Anything marked <em>projection</em> is arithmetic, not a run.</div>
+      </div>
+      <p>The honest latency number drove the design. A full fresh run of an 80-second video takes about <strong>7.8 minutes</strong> of wall time. Nobody holds an HTTP request open for that, so the product is shaped as an async job API: FastAPI on Modal.</p>
+      <table class="data-table">
+        <thead><tr><th>Endpoint</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td><code>POST /v1/dub</code></td><td>Upload a video with <code>target_lang</code> and <code>mode</code> (<code>basic</code> or <code>vc</code>). An <code>Idempotency-Key</code> header stops a retried upload from starting a second job</td></tr>
+          <tr><td><code>GET /v1/dub/{id}</code></td><td>Job status with a live stage string, such as "step 6/7 — TTS segment 9/13"</td></tr>
+          <tr><td><code>GET /v1/dub/{id}/download</code></td><td>The finished video</td></tr>
+        </tbody>
+      </table>
+      <p>Before any GPU starts, the API measures the upload with ffprobe. A video over the plan's ceiling (<code>PLAN_MAX_SECONDS</code>) gets a 413. A video whose duration can't be determined gets a 400: <em>rejected, not waived</em>. The same <code>probe_duration()</code> gates the input and meters the output, so what was allowed in and what gets metered can't disagree.</p>
+      <p>Model weights live on a Modal Volume and download on the first job only. Job files live on a second volume, and job status in a Modal Dict. The GPU is an L4 by default, and two flags (<code>MODAL_WARM</code>, <code>MODAL_TTS_WARM</code>) trade idle cost for no cold start. Secrets are referenced by name from a Modal secret, never written into code.</p>
+      <h3>The A/B that retired the primer</h3>
+      <p>Premium mode keeps the original speaker's voice, and my first approach to that failed in an instructive way. IndicF5 can be conditioned on a reference clip, so I conditioned it on the English speaker's audio and text, plus a short Hindi primer ("नमस्ते।") that was sliced off after synthesis. In an A/B against the Basic run, <strong>Basic was clean and the primer run was garbled.</strong></p>
+      <p>Timing was not the problem. Every segment drifted under 500 ms, and isochrony averaged 0.94. The cause was cross-lingual conditioning, which destabilised IndicF5's flow-matching alignment across the whole utterance. The onsets gave it away. Basic segments started with 175–450 ms of leading silence, the primer run with roughly none, and the slicer's cut points were scattered anywhere from 0.31 s to 1.57 s.</p>
+      <p>So the primer is retired, and the fix separates content from timbre. First, synthesise clean native Hindi. Then a new Step 6.5 converts the voice with kNN-VC: zero-shot voice conversion over WavLM features, with no per-speaker training. It preserves duration, so it cannot undo the timing work. The API rejects the cross-lingual mode outright.</p>
+
+      <h2 id="time"><span class="h2num">07</span>Where the time actually goes</h2>
+      <p>The production audit, a draft on the <code>feat/modal-deploy</code> branch, parsed a real run log for a full fresh 80-second run at <code>nfe=32</code>:</p>
+      <table class="data-table">
+        <thead><tr><th>Stage</th><th>Seconds</th><th>Share</th></tr></thead>
+        <tbody>
+          <tr><td>Extract</td><td>1</td><td>&lt;1%</td></tr>
+          <tr><td>Separation (Demucs)</td><td>12</td><td>3%</td></tr>
+          <tr><td>Transcription (Whisper medium)</td><td>16</td><td>3%</td></tr>
+          <tr><td>Translation</td><td>152</td><td><strong>32%</strong></td></tr>
+          <tr><td>Voice reference</td><td>2</td><td>&lt;1%</td></tr>
+          <tr><td>TTS (IndicF5): 28 s model load + 205 s synthesis, 13 segments at a mean of 15.8 s</td><td>240</td><td><strong>51%</strong></td></tr>
+          <tr><td>Assembly</td><td>45</td><td>10%</td></tr>
+          <tr><td><strong>Total wall</strong></td><td><strong>468</strong></td><td>100%</td></tr>
+        </tbody>
+      </table>
+      <p class="figcap" style="text-align:left">Measured. Source: <code>PRODUCTION_OPTIMIZATION_AUDIT.md</code> in the repo.</p>
+      <p>Reading that table as a bill instead of a profile changed the plan. The audit draws three conclusions from it:</p>
+      <ul>
+        <li><strong>The orchestrator rents a GPU to make phone calls and run FFmpeg.</strong> The job runs inside one GPU function, so the L4 is held and billed per second through the 152 s translation call and the 45 s FFmpeg step. <strong>200 of 468 s (43%) of the billed GPU wall is non-GPU work</strong> (measured).</li>
+        <li><strong>Fan-out buys latency, not savings.</strong> Splitting TTS across containers finishes sooner, but every extra container loads the model again, so total GPU-seconds go up, not down.</li>
+        <li><strong>After fan-out, translation is the critical path</strong>, and it should never touch a GPU.</li>
+      </ul>
+      <p>Two fixes from the audit have landed, both verified on CPU by <code>tools/test_merge_and_cache.py</code>. Subtitles are soft-muxed and the video stream is copied rather than re-encoded. The translation cache now persists on the Modal Volume. The rest is still a backlog, and it is labelled that way in the repo: moving the orchestrator off the GPU, stopping the retry storm, stage checkpoints and content-hash idempotency.</p>
+      <h3>TTS fan-out</h3>
+      <p>TTS is the biggest GPU stage, and its segments are independent. <code>tts_fanout.py</code> shards them across TTS containers. Each shard runs the same synthesis function on its slice of global segment indices, so nothing is renumbered, and the orchestrator is the single writer that merges the results. It maps over shards, not segments, so the model loads once per shard rather than once per line.</p>
+      <p>Expected wall time is <code>model_load + ceil(n / shards) × per_segment</code>. For the 13-segment video:</p>
+      <table class="data-table">
+        <thead><tr><th>Shards</th><th>Cold</th><th>Warm</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>~275 s</td><td>~235 s</td></tr>
+          <tr><td>4</td><td>~112 s</td><td>~72 s</td></tr>
+          <tr><td>8</td><td>~76 s</td><td>~36 s</td></tr>
+          <tr><td>13</td><td>~58 s</td><td>~18 s</td></tr>
+        </tbody>
+      </table>
+      <p class="figcap" style="text-align:left">Projection, not measurement. It is computed from the measured serial TTS time of ~235 s for 13 segments at ~18 s each.</p>
+      <p>One measured data point exists for the fan-out path. A 25-second clip ran end to end on an L4 in 275 s, with fan-out TTS at 82 s across roughly 3–4 containers, dominated by cold model load. The target for a warm 1-minute clip is about 60–90 seconds end to end. That is a projection until it runs.</p>
+
+      <h2 id="next"><span class="h2num">08</span>What's next</h2>
+      <ul>
+        <li><strong>Get the orchestrator off the GPU.</strong> It is the largest avoidable cost in the audit.</li>
+        <li><strong>Move translation off the free Gemini key</strong>, most likely onto IndicTrans2, which also ends the retry storm.</li>
+        <li><strong>Check commercial licensing</strong> for IndicF5 and kNN-VC before anything is sold.</li>
+        <li><strong>Store artifacts in S3/R2</strong> instead of the container, and master the final mix to EBU R128 loudness.</li>
+      </ul>
+
+      <div class="takeaways">
+        <h4>The transferable lesson</h4>
+        <ul>
+          <li>A gate that can't fail isn't a gate. Test your meaning check on the scripts you actually ship.</li>
+          <li>Fail loudly per item. <code>gates_passed=False</code> on one segment beats a silent compromise spread across a video.</li>
+          <li>A thread can't rescue the process it lives in. Put GPU work you may have to kill in its own process.</li>
+          <li>Read a profile as a bill. 43% of the GPU time was the GPU waiting on something else.</li>
+          <li>Label every number as measured or projected, and keep the two apart.</li>
+        </ul>
+      </div>
+
+      <div class="article-cta">
+        <a href="https://github.com/nirmitktripathii/dubbing_app" target="_blank" class="btn-article primary"><i class="fab fa-github"></i> View the repo</a>
+        <a href="whitepaper-dubbing.html" class="btn-article ghost"><i class="fas fa-file-lines"></i> The v2 pipeline</a>
+      </div>
+
+      <div class="author-card">
+        <img src="images/user.png" alt="Nirmit K. Tripathii"/>
+        <div>
+          <div class="an">Nirmit K. Tripathii — AI/ML Engineer &amp; Football Data Scientist</div>
+          <div class="ar">Three years shipping NLP, agentic AI and multimodal systems. I write up real projects — including the parts that failed. Available now for part-time, consulting and research collaboration (remote), and open to full-time roles from September 2026. If you're working on speech, multilingual NLP, or sports analytics, I'd like to hear about it.</div>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026 Nirmit K. Tripathii &nbsp;&middot;&nbsp; Made with <span>&#9829;</span> by Nirmit</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  (function(){
+    const bar = document.getElementById('readProgress');
+    const links = Array.from(document.querySelectorAll('#toc a'));
+    const ids = links.map(a => a.getAttribute('href').slice(1));
+    const onScroll = () => {
+      const h = document.documentElement;
+      const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      if (bar) bar.style.width = Math.max(0, Math.min(1, scrolled)) * 100 + '%';
+      let current = ids[0];
+      for (const id of ids){
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 120) current = id;
+      }
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+</body>
+</html>
