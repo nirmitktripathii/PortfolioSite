@@ -79,16 +79,16 @@
           <text class="svg-label" x="305" y="178" text-anchor="middle">cooling down 60s</text>
           <rect class="svg-box" x="470" y="90" width="130" height="46" rx="23"/>
           <text class="svg-label" x="535" y="118" text-anchor="middle">reconnecting</text>
-          <path class="svg-flow" d="M150,100 C200,70 210,60 244,53"/>
-          <text class="svg-label" x="185" y="70">onclose/onerror</text>
-          <path class="svg-flow" d="M365,53 C420,60 440,75 472,100"/>
-          <text class="svg-label" x="415" y="60">next call</text>
-          <path class="svg-flow" d="M535,90 C560,50 380,20 165,105" opacity="0.85"/>
-          <text class="svg-label" x="470" y="30" fill="var(--accent)">success → connected</text>
-          <path class="svg-flow" d="M500,136 C440,170 400,175 366,175"/>
-          <text class="svg-label" x="410" y="150">connect fails</text>
-          <path class="svg-flow" d="M305,150 C305,120 470,120 470,113" opacity="0.6"/>
-          <text class="svg-label" x="300" y="130">cooldown ends → retry</text>
+          <path class="svg-flow" d="M152,95 C185,70 205,56 243,53"/>
+          <text class="svg-label" x="232" y="40" text-anchor="end">onclose/onerror</text>
+          <path class="svg-flow" d="M367,53 C420,56 455,68 484,89"/>
+          <text class="svg-label" x="440" y="52">next call</text>
+          <path class="svg-flow" d="M468,113 H164"/>
+          <text style="fill:var(--accent)" class="svg-label" x="305" y="105" text-anchor="middle">success → connected</text>
+          <path class="svg-flow" d="M520,138 C512,178 430,188 368,180"/>
+          <text class="svg-label" x="455" y="206" text-anchor="middle">connect fails</text>
+          <path class="svg-flow" d="M352,152 C380,134 435,127 469,124"/>
+          <text class="svg-label" x="345" y="141" text-anchor="end">cooldown ends → retry</text>
         </svg>
         <figcaption class="figcap">A connection is a state you maintain, not a boolean you set. A drop flips it to reconnect-on-next-use; a failed connect cools down for 60s so a dead account never stalls the fan-out.</figcaption>
       </figure>
