@@ -45,6 +45,7 @@
             transition: 0.3s;
         }
         .btn-search:hover { transform: scale(1.1); background: #fff; }
+        .btn-search:disabled, #cityInput:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 
         .weather-card {
             background: var(--glass);
@@ -90,10 +91,15 @@
 <body>
     <div class="container">
         <h1 style="margin-bottom: 30px; font-weight: 300;">World Weather <span style="font-weight: 800; color: #4ecca3;">Insights</span></h1>
-        
+
+        <!-- Demo paused: the weather-proxy-api Space is paused on Hugging Face. To re-enable, delete this note and the two "disabled" attributes below. -->
+        <div id="pausedNote" role="status" style="margin: 0 auto 24px; max-width: 460px; padding: 14px 18px; border-radius: 12px; border: 1px solid rgba(255, 193, 7, 0.45); background: rgba(255, 193, 7, 0.08); color: #ffd666; font-size: 0.95rem; line-height: 1.5;">
+            <i class="fas fa-pause-circle"></i> <b>Demo paused.</b> The live weather API behind this page is temporarily offline, so city search is disabled for now.
+        </div>
+
         <div class="search-box">
-            <input type="text" id="cityInput" placeholder="Enter city name..." onkeypress="handleKey(event)">
-            <button class="btn-search" onclick="getWeather()"><i class="fas fa-search"></i></button>
+            <input type="text" id="cityInput" placeholder="Enter city name..." onkeypress="handleKey(event)" disabled>
+            <button class="btn-search" onclick="getWeather()" disabled><i class="fas fa-search"></i></button>
         </div>
 
         <div class="loader" id="loader"></div>
@@ -199,8 +205,9 @@
             if (e.key === 'Enter') getWeather();
         }
         
-        // Auto-load a city
+        // Auto-load a city (skipped while the demo is paused)
         window.onload = () => {
+            if (document.getElementById('cityInput').disabled) return;
             document.getElementById('cityInput').value = 'Mumbai';
             getWeather();
         };
