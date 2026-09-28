@@ -41,14 +41,20 @@
         
         .loading-shimmer { height: 20px; background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .demo-paused .upload-section { opacity: 0.45; pointer-events: none; }
     </style>
 </head>
-<body>
+<body class="demo-paused">
     <div class="container">
         <a href="index.html" class="back-btn">← Back to Portfolio</a>
         <div class="header" style="margin-bottom: 40px;">
             <h1 style="font-size: 2.2rem; margin-bottom: 10px;">AI Resume Matcher</h1>
             <p style="color: rgba(255,255,255,0.6);">Powered by SBERT (all-MiniLM-L6-v2) for deep semantic matching.</p>
+        </div>
+
+        <!-- Demo paused: the resume-matcher-api Space is paused on Hugging Face. To re-enable, delete this note, the "demo-paused" class on <body> and the "disabled" attribute on the button. -->
+        <div id="pausedNote" role="status" style="margin: 0 0 28px; padding: 14px 18px; border-radius: 12px; border: 1px solid rgba(255, 193, 7, 0.45); background: rgba(255, 193, 7, 0.08); color: #ffd666; font-size: 0.95rem; line-height: 1.5;">
+            &#9208; <b>Demo paused.</b> The live matching API behind this page is temporarily offline, so uploads and analysis are disabled for now.
         </div>
         
         <div class="upload-section">
@@ -66,7 +72,7 @@
             </div>
         </div>
         
-        <button class="btn-match" id="matchBtn" onclick="runMatch()">Analyze Compatibility</button>
+        <button class="btn-match" id="matchBtn" onclick="runMatch()" disabled>Analyze Compatibility</button>
         
         <div class="result-layout" id="resultCard">
             <div class="score-display">

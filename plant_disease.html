@@ -17,14 +17,20 @@
         .prediction-label { font-size: 2rem; font-weight: 700; color: var(--accent2); margin: 15px 0; text-transform: capitalize; }
         .back-btn { display: inline-block; margin-bottom: 20px; color: var(--accent); text-decoration: none; }
         #previewImage { max-width: 100%; max-height: 300px; border-radius: 10px; margin-top: 20px; display: none; }
+        .demo-paused .upload-section { opacity: 0.45; pointer-events: none; }
     </style>
 </head>
-<body>
+<body class="demo-paused">
     <div class="container">
         <a href="index.html" class="back-btn">← Back to Portfolio</a>
         <div class="header">
             <h2>Plant Disease Classifier</h2>
             <p>Upload a leaf image to diagnose potential diseases using Deep Learning (CNN).</p>
+        </div>
+
+        <!-- Demo paused: the plant-disease-api Space is paused on Hugging Face. To re-enable, delete this note, the "demo-paused" class on <body> and the "disabled" attribute on the button. -->
+        <div id="pausedNote" role="status" style="margin: 20px 0 28px; padding: 14px 18px; border-radius: 12px; border: 1px solid rgba(255, 193, 7, 0.45); background: rgba(255, 193, 7, 0.08); color: #ffd666; font-size: 0.95rem; line-height: 1.5;">
+            &#9208; <b>Demo paused.</b> The live model API behind this page is temporarily offline, so image upload and diagnosis are disabled for now.
         </div>
         
         <div class="upload-section">
@@ -36,7 +42,7 @@
             </div>
         </div>
         
-        <button class="btn-predict" id="predictBtn" onclick="runPrediction()">Identify Disease</button>
+        <button class="btn-predict" id="predictBtn" onclick="runPrediction()" disabled>Identify Disease</button>
         
         <div class="result-card" id="resultCard">
             <h3>Diagnosis Result</h3>
